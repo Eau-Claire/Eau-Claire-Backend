@@ -1,1 +1,6 @@
-﻿.vs/
+﻿*.mdf
+*.ldf
+.vs/
+bin/
+obj/
+FishFarmDB/
