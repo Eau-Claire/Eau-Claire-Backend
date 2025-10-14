@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FishFarmAPI_v2.Models;
+namespace FishFarm.BusinessObjects;
 
-public partial class Sensortype
+public partial class SensorType
 {
     public int SensorTypeId { get; set; }
 

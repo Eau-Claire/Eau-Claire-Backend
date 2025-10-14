@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FishFarmAPI_v2.Models;
+namespace FishFarm.BusinessObjects;
 
-public partial class Permissiongroup
+public partial class PermissionGroup
 {
     public int GroupId { get; set; }
 

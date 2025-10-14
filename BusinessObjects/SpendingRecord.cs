@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FishFarmAPI_v2.Models;
+namespace FishFarm.BusinessObjects;
 
-public partial class Spendingrecord
+public partial class SpendingRecord
 {
     public int RecordId { get; set; }
 
@@ -23,7 +23,7 @@ public partial class Spendingrecord
 
     public DateTime? Timestamp { get; set; }
 
-    public virtual Spendingtype SpendingType { get; set; } = null!;
+    public virtual SpendingType SpendingType { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;
 }

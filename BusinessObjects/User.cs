@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FishFarmAPI_v2.Models;
+namespace FishFarm.BusinessObjects;
 
 public partial class User
 {
@@ -19,9 +19,11 @@ public partial class User
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
-    public virtual ICollection<Shopowner> Shopowners { get; set; } = new List<Shopowner>();
+    public virtual ICollection<ShopOwner> ShopOwners { get; set; } = new List<ShopOwner>();
 
-    public virtual ICollection<Shopstaff> Shopstaffs { get; set; } = new List<Shopstaff>();
+    public virtual ICollection<ShopStaff> ShopStaffs { get; set; } = new List<ShopStaff>();
 
-    public virtual ICollection<Spendingrecord> Spendingrecords { get; set; } = new List<Spendingrecord>();
+    public virtual ICollection<SpendingRecord> SpendingRecords { get; set; } = new List<SpendingRecord>();
+
+    public virtual ICollection<UserProfile> UserProfiles { get; set; } = new List<UserProfile>();
 }

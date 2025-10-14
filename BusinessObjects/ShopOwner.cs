@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FishFarmAPI_v2.Models;
+namespace FishFarm.BusinessObjects;
 
-public partial class Shopstaff
+public partial class ShopOwner
 {
-    public int StaffId { get; set; }
+    public int OwnerId { get; set; }
 
     public int UserId { get; set; }
 
-    public string? Permissions { get; set; }
+    public string? Address { get; set; }
 
     public virtual User User { get; set; } = null!;
 }

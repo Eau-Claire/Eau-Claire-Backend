@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FishFarmAPI_v2.Models;
+namespace FishFarm.BusinessObjects;
 
-public partial class Fishhealthstatus
+public partial class FishHealthStatus
 {
     public int StatusId { get; set; }
 

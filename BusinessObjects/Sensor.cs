@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FishFarmAPI_v2.Models;
+namespace FishFarm.BusinessObjects;
 
 public partial class Sensor
 {
@@ -15,11 +15,11 @@ public partial class Sensor
 
     public int? AssignedToCluster { get; set; }
 
-    public virtual Tankcluster? AssignedToClusterNavigation { get; set; }
+    public virtual TankCluster? AssignedToClusterNavigation { get; set; }
 
     public virtual Tank? AssignedToTankNavigation { get; set; }
 
-    public virtual ICollection<Iotdatum> Iotdata { get; set; } = new List<Iotdatum>();
+    public virtual ICollection<IoTdatum> IoTdata { get; set; } = new List<IoTdatum>();
 
-    public virtual Sensortype SensorType { get; set; } = null!;
+    public virtual SensorType SensorType { get; set; } = null!;
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FishFarmAPI_v2.Models;
+namespace FishFarm.BusinessObjects;
 
 public partial class Tank
 {
@@ -15,11 +15,11 @@ public partial class Tank
 
     public int? BreedId { get; set; }
 
-    public virtual Fishbreed? Breed { get; set; }
+    public virtual FishBreed? Breed { get; set; }
 
-    public virtual Tankcluster? Cluster { get; set; }
+    public virtual TankCluster? Cluster { get; set; }
 
-    public virtual ICollection<Fishhealthstatus> Fishhealthstatuses { get; set; } = new List<Fishhealthstatus>();
+    public virtual ICollection<FishHealthStatus> FishHealthStatuses { get; set; } = new List<FishHealthStatus>();
 
     public virtual ICollection<Sensor> Sensors { get; set; } = new List<Sensor>();
 }
