@@ -22,10 +22,10 @@ namespace FishFarm.DataAccessLayer
             return "N/A";
         }
 
-        public bool Login(string username, string passwordHash)
+        public User? Login(string username, string passwordHash)
         {
             var user = _dbcontext.Users.FirstOrDefault(u => u.Username == username && u.PasswordHash == passwordHash);
-            return user != null;
+            return user;
         }
 
         public bool Register(string username, string passwordHash)

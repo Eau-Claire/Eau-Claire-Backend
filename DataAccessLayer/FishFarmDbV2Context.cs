@@ -17,6 +17,9 @@ public partial class FishFarmDbV2Context : DbContext
     {
     }
 
+    //Class moi
+    public virtual DbSet<Device> Device { get; set; }
+    public virtual DbSet<RefreshToken> RefreshToken { get; set; }
     public virtual DbSet<FishBreed> FishBreeds { get; set; }
 
     public virtual DbSet<FishHealthStatus> FishHealthStatuses { get; set; }
