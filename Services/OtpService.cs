@@ -24,7 +24,7 @@ namespace FishFarm.Services
             return new string(otp);
         }
 
-        public static bool SendOtp(string phoneNumber, string otp)
+        public static bool SendOtp(string method, string otp)
         {
             try
             {
