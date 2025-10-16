@@ -13,10 +13,12 @@ namespace FishFarm.Services
     public class OtpService
     {
         private readonly IMemoryCache _cache;
+        private readonly TemplateService _templateService;
 
         public OtpService(IMemoryCache cache)
         {
             _cache = cache;
+            _templateService = new TemplateService();
         }
         public string GenerateOtp(int length = 6)
         {
@@ -98,7 +100,7 @@ namespace FishFarm.Services
                         From = new MailAddress("eauclaire1510@gmail.com", "Eau Claire Support"),
                         To = { new MailAddress(email ?? "eauclaire1510@gmail.com") },
                         Subject = "Your OTP Code to Verify Eau Claire account!",
-                        Body = $"Your OTP code is: {otp}",
+                        Body = _templateService.GetEmailOtpTemplate(otp),
                         IsBodyHtml = true,
 
                     };

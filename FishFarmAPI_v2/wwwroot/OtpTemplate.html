@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email OTP</title>
+    <style>
+        body {
+            font-family: "Tinos", serif;
+            background: #f0e1c4;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .box {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #b89968;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .email-container {
+            padding: 20px;
+            color: #000;
+        }
+
+            .email-container p {
+                margin-bottom: 15px;
+                line-height: 1.5;
+            }
+
+        .otp-box {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 25px;
+            border: 2px dashed #b89968;
+            border-radius: 15px;
+            max-width: 400px;
+            margin: 20px auto;
+            background: #fff;
+        }
+
+            .otp-box span {
+                display: flex;
+                font-size: 36px;
+                font-weight: bold;
+                width: 40px;
+                justify-content: center;
+
+            }
+
+        .otp-info {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+            .otp-info .highlight {
+                font-weight: bold;
+                margin-bottom: 5px;
+                display: block;
+            }
+
+            .otp-info .italic {
+                font-style: italic;
+                font-weight: bold;
+                display: block;
+                margin: 5px 0;
+            }
+
+        .footer {
+            background-color: #b89968;
+            color: #fff;
+            padding: 15px 20px;
+            font-size: 14px;
+            line-height: 1.5;
+            border-radius: 0 0 15px 15px;
+        }
+
+        @media (max-width: 480px) {
+            .otp-box {
+                padding: 10px 15px;
+                max-width: 100%;
+            }
+
+                .otp-box span {
+                    font-size: 28px;
+                    width: 32px;
+                }
+        }
+    </style>
+</head>
+<body>
+    <div class="box"> <div class="header"> Mã OTP xác nhận đăng nhập của bạn từ Eau Claire Co. </div> <div class="email-container"> <p>Kính gửi Quý khách hàng,</p> <p>Bạn hoặc ai đó đã yêu cầu mã xác minh (OTP) để đăng nhập vào tài khoản của bạn tại <strong>Eau Claire Co.</strong></p> <div class="otp-box"> {OTP} </div> <div class="otp-info"> <span class="highlight">Mã này chỉ có hiệu lực trong vòng 5 phút.</span> <span class="italic">Vui lòng không chia sẻ mã này với bất kỳ ai để bảo mật tài khoản của bạn.</span> <span>Nếu bạn không phải là người yêu cầu mã này, vui lòng bỏ qua email này.</span> </div> <p>Trân trọng,<br>Đội ngũ <strong>Công ty Eau Claire Co.</strong></p> </div> <div class="footer"> Website: [Địa chỉ website của bạn]<br> Hỗ trợ: [Địa chỉ Email hỗ trợ, ví dụ: support@trangca.com]<br> Địa chỉ: [Địa chỉ của trại cá/văn phòng của bạn] </div> </div>
+</body>
+</html>
