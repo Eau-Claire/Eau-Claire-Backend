@@ -6,11 +6,18 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace FishFarm.Services
 {
     public class OtpService
     {
+        private readonly IMemoryCache _cache;
+
+        public OtpService(IMemoryCache cache)
+        {
+            _cache = cache;
+        }
         public string GenerateOtp(int length = 6)
         {
             const string digits = "0123456789";
@@ -24,20 +31,72 @@ namespace FishFarm.Services
             return new string(otp);
         }
 
-        public static bool SendOtp(string method, string otp)
+        public string FindExistedOtp(string method, string? phone, string? email)
+        {
+            var cacheKey = method == "sms" ? $"otp_{phone}" : $"otp_{email}";
+            return _cache.Get<string>(cacheKey) ?? "";
+        }
+
+        public bool SendOtp(string method, string otp, string? phone, string? email)
         {
             try
             {
-                using (SmtpClient client = new SmtpClient("eauclaire1510@gmail.com"))
+                var cacheKey = string.Empty;
+                var cacheOptions = new MemoryCacheEntryOptions();
+
+                string existedOtp = FindExistedOtp(method, phone, email);
+
+                if (existedOtp != null && existedOtp != "")
+                {
+                    _cache.Remove(cacheKey);
+                }
+
+                if (string.IsNullOrEmpty(method) || string.IsNullOrEmpty(otp))
+                {
+                    throw new ArgumentException("Method and OTP must be provided");
+                }
+
+                if (method == "email" && string.IsNullOrEmpty(email))
+                {
+                    throw new ArgumentException("Email must be provided for email method");
+                }
+
+                if (method == "sms" && string.IsNullOrEmpty(phone))
+                {
+                    throw new ArgumentException("Phone number must be provided for SMS method");
+                }
+
+                if (method == "sms")
+                {
+                    cacheKey = $"otp_{phone}";
+                    cacheOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                    };
+
+                    _cache.Set(cacheKey, otp, cacheOptions);
+
+                    return true;
+                }
+
+                cacheKey = $"otp_{email}";
+                cacheOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                };
+
+                _cache.Set(cacheKey, otp, cacheOptions);
+
+                using (SmtpClient client = new SmtpClient("smtp.gmail.com"))
                 {
                     client.Port = 587;
-                    client.Credentials = new NetworkCredential("eauclaire1510@gmail.com", "12345@abc");
+                    client.Credentials = new NetworkCredential("eauclaire1510@gmail.com", "rgyg xwmf giwk sdpb\r\n");
                     client.EnableSsl = true;
 
                     MailMessage mailMessage = new MailMessage
                     {
-                        From = new MailAddress("eauclaire1510@gmail.com"),
-                        To = { new MailAddress("eauclaire1510@gmail.com") },
+                        From = new MailAddress("eauclaire1510@gmail.com", "Eau Claire Support"),
+                        To = { new MailAddress(email ?? "eauclaire1510@gmail.com") },
                         Subject = "Your OTP Code to Verify Eau Claire account!",
                         Body = $"Your OTP code is: {otp}",
                         IsBodyHtml = true,
@@ -58,9 +117,25 @@ namespace FishFarm.Services
             }
         }
 
-        public static bool VerifyOtp(string inputOtp, string actualOtp)
+        public bool VerifyOtp(string method, string inputOtp, string? phone, string? email)
         {
-            return inputOtp == actualOtp;
+            if (string.IsNullOrEmpty(method) || string.IsNullOrEmpty(inputOtp))
+            {
+                throw new ArgumentException("Method and input OTP must be provided");
+            }
+
+            var cacheKey = method == "sms" ? $"otp_{phone}" : $"otp_{email}";
+
+            if (_cache.TryGetValue(cacheKey, out string? actualOtp))
+            {
+                if (inputOtp == actualOtp)
+                {
+                    _cache.Remove(cacheKey);
+                    return true;
+                }
+               
+            }
+            return false;
         }
     }
 }
