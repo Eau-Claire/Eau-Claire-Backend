@@ -42,6 +42,7 @@
         .otp-box {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             padding: 15px 25px;
             border: 2px dashed #b89968;
             border-radius: 15px;
@@ -52,11 +53,11 @@
 
             .otp-box span {
                 display: flex;
+                justify-content: center;
+                align-items: center;
                 font-size: 36px;
                 font-weight: bold;
                 width: 40px;
-                justify-content: center;
-
             }
 
         .otp-info {
@@ -100,20 +101,6 @@
     </style>
 </head>
 <body>
-    <div class="box"> 
-    <div class="header"> 
-        Mã OTP xác nhận đăng nhập của bạn từ Eau Claire Co. 
-    </div> 
-    <div class="email-container"> 
-        <p>Kính gửi Quý khách hàng,</p> 
-        <p>Bạn hoặc ai đó đã yêu cầu mã xác minh (OTP) để đăng nhập vào tài khoản của bạn tại <strong>Eau Claire Co.</strong></p> 
-        <div class="otp-box"> {OTP} </div> 
-        <div class="otp-info"> 
-            <span class="highlight">Mã này chỉ có hiệu lực trong vòng 5 phút.</span> 
-            <span class="italic">Vui lòng không chia sẻ mã này với bất kỳ ai để bảo mật tài khoản của bạn.</span> 
-            <span>Nếu bạn không phải là người yêu cầu mã này, vui lòng bỏ qua email này.</span> 
-        </div> 
-        <p>Trân trọng,<br>Đội ngũ <strong>Công ty Eau Claire Co.</strong></p> </div>
-    <div class="footer"> Website: [Địa chỉ website của bạn]<br> Hỗ trợ: [Địa chỉ Email hỗ trợ, ví dụ: support@trangca.com]<br> Địa chỉ: [Địa chỉ của trại cá/văn phòng của bạn] </div> </div>
+    <div class="box"> <div class="header">Mã OTP xác nhận đăng nhập của bạn từ Eau Claire Co.</div><div class="email-container"><p>Kính gửi Quý khách hàng,</p><p>Bạn hoặc ai đó đã yêu cầu mã xác minh (OTP) để đăng nhập vào tài khoản của bạn tại <strong>Eau Claire Co.</strong></p> <div class="otp-box"> <span></span><span></span> {OTP} </div> <div class="otp-info"> <span class="highlight">Mã này chỉ có hiệu lực trong vòng 5 phút.</span> <span class="italic">Vui lòng không chia sẻ mã này với bất kỳ ai để bảo mật tài khoản của bạn.</span> <span>Nếu bạn không phải là người yêu cầu mã này, vui lòng bỏ qua email này.</span> </div> <p>Trân trọng,<br>Đội ngũ <strong>Công ty Eau Claire Co.</strong></p> </div><div class="footer"> Website: [Địa chỉ website của bạn]<br> Hỗ trợ: [Địa chỉ Email hỗ trợ, ví dụ: support@trangca.com]<br> Địa chỉ: [Địa chỉ của trại cá/văn phòng của bạn] </div> </div>
 </body>
 </html>
