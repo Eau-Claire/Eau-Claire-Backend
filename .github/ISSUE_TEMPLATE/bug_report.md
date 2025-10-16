@@ -1,30 +1,38 @@
-## Issue Type
-`<Select one: bug>`
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
 
-`<If this is a bug, add it to the “Eau-Claire-Bug-Tracker” project.  
-If this is a feature or enhancement, add it to the “Eau-Claire” project.>`
+---
 
-## Summary
-`<Briefly describe the issue or request.>`
+**Describe the bug**
+A clear and concise description of what the bug is.
 
-## Current Behavior
-`<Describe what is currently happening.>`
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
-## Expected Behavior
-`<Describe what you expected to happen instead.>`
+**Expected behavior**
+A clear and concise description of what you expected to happen.
 
-## Steps to Reproduce (for bugs)
-`<List the steps to reproduce the issue.>`
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
 
-1. `<Step 1>`
-2. `<Step 2>`
-3. `<Observed result>`
+**Desktop (please complete the following information):**
+ - OS: [e.g. iOS]
+ - Browser [e.g. chrome, safari]
+ - Version [e.g. 22]
 
-## Screenshots (Optional)
-`<Attach screenshots or logs if available.>`
+**Smartphone (please complete the following information):**
+ - Device: [e.g. iPhone6]
+ - OS: [e.g. iOS8.1]
+ - Browser [e.g. stock browser, safari]
+ - Version [e.g. 22]
 
-## Environment
-`<Specify environment details, such as OS, browser, app version, etc.>`
-
-## Additional Notes
-`<Add any other context or suggestions.>`
+**Additional context**
+Add any other context about the problem here.
