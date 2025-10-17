@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace FishFarm.Services
 {
@@ -14,9 +16,16 @@ namespace FishFarm.Services
     {
         private readonly IMemoryCache _cache;
         private readonly TemplateService _templateService;
+        private readonly string _accountSid;
+        private readonly string _authToken;
+        private readonly string _fromPhoneNumber;
 
-        public OtpService(IMemoryCache cache)
+        public OtpService(IMemoryCache cache, IConfiguration config)
         {
+            _accountSid = config["Twilio:AccountSid"] ?? "";
+            _authToken = config["Twilio:AuthToken"] ?? "";
+            _fromPhoneNumber = config["Twilio:FromPhoneNumber"] ?? "";
+
             _cache = cache;
             _templateService = new TemplateService();
         }
@@ -77,6 +86,12 @@ namespace FishFarm.Services
                     };
 
                     _cache.Set(cacheKey, otp, cacheOptions);
+
+                    var message = MessageResource.Create(
+                        body : $"Your OTP code to verify Eau Claire account is: {otp}",
+                        from : new Twilio.Types.PhoneNumber(_fromPhoneNumber),
+                        to : new Twilio.Types.PhoneNumber(phone ?? "")
+                    );
 
                     return true;
                 }

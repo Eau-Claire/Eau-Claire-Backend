@@ -5,3 +5,51 @@ bin/
 obj/
 FishFarmDB/
 .env/
+
+## Build results
+bin/
+obj/
+out/
+*.exe
+*.dll
+*.app
+*.log
+
+## User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Visual Studio
+.vs/
+*.vscode/
+*.ncrunch*
+*.localhistory/
+
+## ASP.NET
+wwwroot/lib/
+App_Data/
+node_modules/
+logs/
+
+## Configuration
+appsettings.*.json
+secrets.json
+.env
+
+## Testing
+TestResult*/
+*.coverage
+*.trx
+
+## Packages
+*.nupkg
+*.snupkg
+packages/
+!packages/build/
+
+## Others
+Thumbs.db
+*.DS_Store
+*.swp
