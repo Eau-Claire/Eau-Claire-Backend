@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace FishFarm.BusinessObjects
 {
-    public class Device
+    public partial class Device
     {
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
         public int UserId { get; set; }
         public string DeviceName { get; set; }
         public string DeviceType { get; set; }
-        public string Token { get; set; }
+        public string DeviceId { get; set; } //DeviceId
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime ExpiredAt { get; set; } = DateTime.UtcNow;
-        public bool IsActive { get; set; } = true;
+        public bool IsVerified { get; set; } = true;
         
         public virtual User User { get; set; } = null!;
     }

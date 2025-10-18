@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FishFarmAPI_v2.Controllers
 {
+
     [ApiController]
     [Route("api/v1/sys")]
     public class OtpController : ControllerBase
@@ -26,9 +27,17 @@ namespace FishFarmAPI_v2.Controllers
                     return StatusCode(500, new { Message = "Failed to generate OTP" });
                 }
 
-                bool isSent = _otpService.SendOtp(request.Method, otp, request.Phone, request.Email);
+                var result = _otpService.SendOtp(request.Method, otp, request.UserId, request.DeviceId, request.Phone, request.Email);
                 
-                return Ok(new { IsOtpSent = isSent});
+                if (result.ErrorCode == "500")
+                {
+                    return StatusCode(500, result.Message);
+                } else if (result.ErrorCode == "409")
+                {
+                    return BadRequest(result.Message);
+                }
+
+                return Ok(result);
 
             }
             catch (Exception ex)
@@ -39,13 +48,23 @@ namespace FishFarmAPI_v2.Controllers
 
         [HttpPost]
         [Route("verify-otp")]
-        public IActionResult VerifyOtpCode([FromBody] OtpRequest otpRequest)
+        public IActionResult VerifyOtpCode([FromBody] OtpRequest request)
         {
             try
             {
-                bool isVerified = _otpService.VerifyOtp(otpRequest.Method, otpRequest.InputOtp, otpRequest.Phone, otpRequest.Email);
+                if (request.Method == null || request.InputOtp == null)
+                {
+                    return BadRequest(new { Message = "Method or InputOtp is missing" });
+                }
 
-                return Ok(new { Verified = isVerified });
+                var tempToken = _otpService.VerifyOtp(request.Method, request.InputOtp, request.UserId, request.DeviceId, request.Phone, request.Email);
+
+                if (tempToken == "")
+                {
+                    return StatusCode(401, new { Message = "Invalid or expired OTP" });
+                }
+
+                return Ok(new {tempToken});
 
             }
             catch (Exception ex)

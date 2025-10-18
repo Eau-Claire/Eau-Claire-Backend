@@ -22,7 +22,12 @@ namespace FishFarm.Repositories
             return _deviceDAO.AddDevice(userId, deviceName, deviceType);
         }
 
-        public bool CheckDeviceStatus(Guid deviceId)
+        public bool CheckDeviceIsVerified(string deviceId, string userId)
+        {
+            return _deviceDAO.CheckDeviceIsVerified(deviceId, userId);
+        }
+
+        public bool CheckDeviceStatus(string deviceId)
         {
             return _deviceDAO.CheckDeviceStatus(deviceId);
         }

@@ -9,6 +9,8 @@ namespace FishFarm.Services
     public interface IDeviceService
     {
         public bool AddDevice(int userId, string deviceName, string deviceType);
-        public bool CheckDeviceStatus(Guid deviceId);
+        public bool CheckDeviceStatus(string deviceId);
+
+        public bool CheckDeviceIsVerified(string deviceId, string userId);
     }
 }

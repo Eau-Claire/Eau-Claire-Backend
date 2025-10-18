@@ -9,6 +9,7 @@ namespace FishFarm.BusinessObjects
 {
     public class LoginResponse
     {
+        public string status { get; set; }
         public string accessToken { get; set; }
         public int expiresIn { get; set; } = 3600;
         public int refreshExpiresIn { get; set; } = 86400;
@@ -17,6 +18,7 @@ namespace FishFarm.BusinessObjects
 
         public string scope { get; set; } = "profile email";
         public int userId { get; set; }
+        public bool isDeviceVerified { get; set; }
         public UserProfile userProfile { get; set; } = null!;
     }
 }

@@ -7,7 +7,7 @@ using FishFarm.Repositories;
 
 namespace FishFarm.Services
 {
-    public class DeviceService
+    public class DeviceService : IDeviceService
     {
         private readonly DeviceRepository _deviceRepository;
         
@@ -21,7 +21,12 @@ namespace FishFarm.Services
             return _deviceRepository.AddDevice(userId, deviceName, deviceType);
         }
 
-        public bool CheckDeviceStatus(Guid deviceId)
+        public bool CheckDeviceIsVerified(string deviceId, string userId)
+        {
+            return _deviceRepository.CheckDeviceIsVerified(deviceId, userId);
+        }
+
+        public bool CheckDeviceStatus(string deviceId)
         {
             return _deviceRepository.CheckDeviceStatus(deviceId);
         }

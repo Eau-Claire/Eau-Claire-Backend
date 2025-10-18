@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using FishFarm.BusinessObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,7 @@ namespace FishFarm.Services
     {
         private readonly IMemoryCache _cache;
         private readonly TemplateService _templateService;
+        private readonly DeviceService deviceService;
         private readonly string _accountSid;
         private readonly string _authToken;
         private readonly string _fromPhoneNumber;
@@ -28,6 +30,7 @@ namespace FishFarm.Services
 
             _cache = cache;
             _templateService = new TemplateService();
+            deviceService = new DeviceService();
         }
         public string GenerateOtp(int length = 6)
         {
@@ -42,20 +45,20 @@ namespace FishFarm.Services
             return new string(otp);
         }
 
-        public string FindExistedOtp(string method, string? phone, string? email)
+        public string FindExistedOtp(string method, int userId, string deviceId, string? phone, string? email)
         {
-            var cacheKey = method == "sms" ? $"otp_{phone}" : $"otp_{email}";
+            var cacheKey = method == "sms" ? $"{userId}_otp_{deviceId}_{phone}" : $"{userId}_otp_{deviceId}_{phone}";
             return _cache.Get<string>(cacheKey) ?? "";
         }
 
-        public bool SendOtp(string method, string otp, string? phone, string? email)
+        public ServiceResult SendOtp(string method, string otp, int userId, string deviceId, string? phone, string? email)
         {
             try
             {
                 var cacheKey = string.Empty;
                 var cacheOptions = new MemoryCacheEntryOptions();
 
-                string existedOtp = FindExistedOtp(method, phone, email);
+                string existedOtp = FindExistedOtp(method,userId, deviceId, phone, email);
 
                 if (existedOtp != null && existedOtp != "")
                 {
@@ -64,39 +67,66 @@ namespace FishFarm.Services
 
                 if (string.IsNullOrEmpty(method) || string.IsNullOrEmpty(otp))
                 {
-                    throw new ArgumentException("Method and OTP must be provided");
+                    return new ServiceResult
+                    {
+                        IsSuccess = false,
+                        ErrorCode = "409",
+                        Message = "Method or OTP is missing",
+                        Data = null
+                    };
                 }
 
                 if (method == "email" && string.IsNullOrEmpty(email))
                 {
-                    throw new ArgumentException("Email must be provided for email method");
+                    return new ServiceResult 
+                    {
+                        IsSuccess = false,
+                        ErrorCode = "409",
+                        Message = "Email must be provided for Email method",
+                        Data = null
+                    };
                 }
 
                 if (method == "sms" && string.IsNullOrEmpty(phone))
                 {
-                    throw new ArgumentException("Phone number must be provided for SMS method");
+                    return new ServiceResult
+                    {
+                        IsSuccess = false,
+                        ErrorCode = "409",
+                        Message = "Phone number must be provided for SMS method",
+                        Data = null
+                    };
                 }
 
                 if (method == "sms")
                 {
-                    cacheKey = $"otp_{phone}";
+                    cacheKey = $"{userId}_otp_{deviceId}_{phone}";
                     cacheOptions = new MemoryCacheEntryOptions
                     {
                         AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+
                     };
 
                     _cache.Set(cacheKey, otp, cacheOptions);
 
+                    Twilio.TwilioClient.Init(_accountSid, _authToken);
                     var message = MessageResource.Create(
-                        body : $"Your OTP code to verify Eau Claire account is: {otp}",
-                        from : new Twilio.Types.PhoneNumber(_fromPhoneNumber),
-                        to : new Twilio.Types.PhoneNumber(phone ?? "")
+                        body: $"Your OTP code is: {otp}",
+                        from: new Twilio.Types.PhoneNumber(_fromPhoneNumber),
+                        to: new Twilio.Types.PhoneNumber(phone)
                     );
 
-                    return true;
+                    return new ServiceResult
+                    {
+                        IsSuccess = true,
+                        ErrorCode = "200",
+                        Message = "OTP sent successfully via SMS",
+                        Data = null
+                    };
+
                 }
 
-                cacheKey = $"otp_{email}";
+                cacheKey = $"{userId}_otp_{deviceId}_{email}";
                 cacheOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
@@ -122,37 +152,59 @@ namespace FishFarm.Services
 
                     client.Send(mailMessage);
 
-                    return true;
+                    return new ServiceResult
+                    {
+                        IsSuccess = true,
+                        ErrorCode = "200",
+                        Message = "OTP sent successfully via Email",
+                        Data = null
+
+                    };
                 }
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error sending OTP: {ex.Message}");
-                return false;
+                return new ServiceResult 
+                {
+                    IsSuccess = false,
+                    ErrorCode = "500",
+                    Message = $"Error sending OTP: {ex.Message}",
+                    Data = null
+
+                };
 
             }
         }
 
-        public bool VerifyOtp(string method, string inputOtp, string? phone, string? email)
+        public string VerifyOtp(string method, string inputOtp, int userId, string deviceId, string? phone, string? email)
         {
-            if (string.IsNullOrEmpty(method) || string.IsNullOrEmpty(inputOtp))
-            {
-                throw new ArgumentException("Method and input OTP must be provided");
-            }
+            var cacheKey = method == "sms" ? $"{userId}_otp_{deviceId}_{phone}" : $"{userId}_otp_{deviceId}_{email}";
 
-            var cacheKey = method == "sms" ? $"otp_{phone}" : $"otp_{email}";
+            var storedOtp = _cache.Get<string>(cacheKey);
 
-            if (_cache.TryGetValue(cacheKey, out string? actualOtp))
+            if (storedOtp != null && storedOtp == inputOtp)
             {
-                if (inputOtp == actualOtp)
+                _cache.Remove(cacheKey);
+                var tempToken = Guid.NewGuid().ToString();
+
+                _cache.Set(tempToken, new 
                 {
-                    _cache.Remove(cacheKey);
-                    return true;
-                }
-               
+                    UserId = userId,
+                    DeviceId = deviceId,
+                    Phone = phone,
+                    Email = email,
+                    Method = method
+
+                }, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
+                });
+
+                return tempToken;
             }
-            return false;
+            return "";
         }
     }
 }

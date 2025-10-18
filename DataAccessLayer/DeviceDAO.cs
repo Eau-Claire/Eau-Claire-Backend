@@ -19,10 +19,10 @@ namespace FishFarm.DataAccessLayer
                 UserId = userId, 
                 DeviceName = deviceName, 
                 DeviceType = deviceType, 
-                Token = Guid.NewGuid().ToString(), 
+                DeviceId = Guid.NewGuid().ToString(), 
                 CreatedAt = DateTime.UtcNow, 
                 ExpiredAt = DateTime.UtcNow.AddDays(1),
-                IsActive = true 
+                IsVerified = false 
             };
 
             _context.Device.Add(device);
@@ -31,9 +31,9 @@ namespace FishFarm.DataAccessLayer
             return true;
         }
 
-        public bool CheckDeviceStatus(Guid deviceId)
+        public bool CheckDeviceStatus(string deviceId)
         {
-            var device = _context.Device.FirstOrDefault(d => d.Id == deviceId);
+            var device = _context.Device.FirstOrDefault(d => d.DeviceId == deviceId);
             DateTime createdAt = device.CreatedAt;
             DateTime expiredAt = device.ExpiredAt;
 
@@ -46,5 +46,23 @@ namespace FishFarm.DataAccessLayer
             }
             return true;
         }
+
+        public bool CheckDeviceIsVerified (string deviceId, string userId)
+        {
+            Device existedDevice = _context.Device.FirstOrDefault(d => d.DeviceId == deviceId && d.UserId.ToString() == userId)!;
+
+            if (existedDevice == null) 
+            {
+                return false;
+            }
+
+            if (existedDevice.IsVerified == true) 
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        } 
     }
 }
