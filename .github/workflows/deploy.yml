@@ -1,0 +1,21 @@
+name: Build API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '9.0.x'
+
+      - run: dotnet restore FishFarmAPI_v2.sln
+      - run: dotnet build FishFarmAPI_v2.sln --configuration Release --no-restore
+      - run: dotnet publish FishFarmAPI_v2/FishFarmAPI_v2.csproj -c Release -o ./publish
