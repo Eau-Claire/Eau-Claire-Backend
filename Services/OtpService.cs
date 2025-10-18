@@ -22,10 +22,11 @@ namespace FishFarm.Services
         private readonly string _authToken;
         private readonly string _fromPhoneNumber;
 
+
         public OtpService(IMemoryCache cache, IConfiguration config)
         {
-            _accountSid = config["Twilio:AccountSid"] ?? "";
-            _authToken = config["Twilio:AuthToken"] ?? "";
+            _accountSid = Environment.GetEnvironmentVariable("TWILIO_ACCOUNT_SID");
+            _authToken = Environment.GetEnvironmentVariable("TWILIO_AUTH_TOKEN");
             _fromPhoneNumber = config["Twilio:FromPhoneNumber"] ?? "";
 
             _cache = cache;
