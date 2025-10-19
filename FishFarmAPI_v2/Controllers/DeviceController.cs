@@ -4,6 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FishFarmAPI_v2.Controllers
 {
+    public class DeviceRequest
+    {
+        public string DeviceId { get; set; }
+        public int UserId { get; set; }
+        public string? DeviceName { get; set; }
+        public string? DeviceType { get; set; }
+    }
+
     [ApiController]
     [Route("api/v1/sys")]
     public class DeviceController : ControllerBase
@@ -16,11 +24,11 @@ namespace FishFarmAPI_v2.Controllers
         }
 
         [HttpPost("add-device")]
-        public IActionResult GetDeviceInformation([FromBody] int userId, string deviceName, string deviceType)
+        public IActionResult GetDeviceInformation([FromBody] DeviceRequest deviceRequest)
         {
             try
             {
-                bool isAdded = _deviceService.AddDevice(userId, deviceName, deviceType);
+                var device = _deviceService.AddDevice(deviceRequest.DeviceId, deviceRequest.UserId, deviceRequest.DeviceName, deviceRequest.DeviceType);
 
                 return Ok();
             } catch (Exception e)

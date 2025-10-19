@@ -17,21 +17,25 @@ namespace FishFarm.Services
     {
         private readonly IMemoryCache _cache;
         private readonly TemplateService _templateService;
-        private readonly DeviceService deviceService;
         private readonly string _accountSid;
         private readonly string _authToken;
         private readonly string _fromPhoneNumber;
+        private readonly string _gmailAppPassword;
+
+        private readonly DeviceService _deviceService;
 
 
         public OtpService(IMemoryCache cache, IConfiguration config)
         {
-            _accountSid = Environment.GetEnvironmentVariable("TWILIO_ACCOUNT_SID");
-            _authToken = Environment.GetEnvironmentVariable("TWILIO_AUTH_TOKEN");
+            _accountSid = config["Twilio:AccountSid"] ?? "";
+            _authToken = config["Twilio:AuthToken"] ?? "";
             _fromPhoneNumber = config["Twilio:FromPhoneNumber"] ?? "";
+
+            _gmailAppPassword = config["Gmail:GmailAppPassword"] ?? "";
 
             _cache = cache;
             _templateService = new TemplateService();
-            deviceService = new DeviceService();
+            _deviceService = new DeviceService();
         }
         public string GenerateOtp(int length = 6)
         {
@@ -46,22 +50,16 @@ namespace FishFarm.Services
             return new string(otp);
         }
 
-        public string FindExistedOtp(string method, int userId, string deviceId, string? phone, string? email)
-        {
-            var cacheKey = method == "sms" ? $"{userId}_otp_{deviceId}_{phone}" : $"{userId}_otp_{deviceId}_{phone}";
-            return _cache.Get<string>(cacheKey) ?? "";
-        }
 
-        public ServiceResult SendOtp(string method, string otp, int userId, string deviceId, string? phone, string? email)
+        public async Task<ServiceResult> SendOtp(string method, string otp, int userId, string deviceId, string? phone, string? email)
         {
             try
             {
-                var cacheKey = string.Empty;
+                var cacheKey = method == "sms" ? $"{userId}_otp_{deviceId}_{email}" : $"{userId}_otp_{deviceId}_{phone}";
                 var cacheOptions = new MemoryCacheEntryOptions();
 
-                string existedOtp = FindExistedOtp(method,userId, deviceId, phone, email);
 
-                if (existedOtp != null && existedOtp != "")
+                if (_cache.TryGetValue(cacheKey, out _))
                 {
                     _cache.Remove(cacheKey);
                 }
@@ -101,6 +99,7 @@ namespace FishFarm.Services
 
                 if (method == "sms")
                 {
+                    Console.WriteLine("hay: " + _accountSid + " " + _authToken + "" + _fromPhoneNumber);
                     cacheKey = $"{userId}_otp_{deviceId}_{phone}";
                     cacheOptions = new MemoryCacheEntryOptions
                     {
@@ -138,7 +137,7 @@ namespace FishFarm.Services
                 using (SmtpClient client = new SmtpClient("smtp.gmail.com"))
                 {
                     client.Port = 587;
-                    client.Credentials = new NetworkCredential("eauclaire1510@gmail.com", "rgyg xwmf giwk sdpb\r\n");
+                    client.Credentials = new NetworkCredential("eauclaire1510@gmail.com", _gmailAppPassword);
                     client.EnableSsl = true;
 
                     MailMessage mailMessage = new MailMessage
@@ -151,7 +150,7 @@ namespace FishFarm.Services
 
                     };
 
-                    client.Send(mailMessage);
+                    await client.SendMailAsync(mailMessage);
 
                     return new ServiceResult
                     {
@@ -190,7 +189,7 @@ namespace FishFarm.Services
                 _cache.Remove(cacheKey);
                 var tempToken = Guid.NewGuid().ToString();
 
-                _cache.Set(tempToken, new 
+                _cache.Set(tempToken, new TempTokenData 
                 {
                     UserId = userId,
                     DeviceId = deviceId,

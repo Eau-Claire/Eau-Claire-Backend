@@ -48,13 +48,13 @@ namespace FishFarm.Services
                 return null;
             }
 
-            var isVerified = _deviceService.CheckDeviceIsVerified(deviceId, user.UserId.ToString());
+            var isVerified = _deviceService.CheckDeviceIsVerified(deviceId, user.UserId);
 
             if(!isVerified)
             {
                 return new LoginResponse
                 {
-                    status = "Device not verified",
+                    status = "Device is not verified",
                     accessToken = "",
                     expiresIn = 0,
                     refreshExpiresIn = 0,
@@ -132,7 +132,7 @@ namespace FishFarm.Services
         {
             try
             {
-                var userToken = _cache.Get<dynamic>(tempToken);
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken);
                 Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
                 if (userToken == null)
@@ -177,6 +177,25 @@ namespace FishFarm.Services
                         Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature)
                 };
 
+                var device = _deviceService.AddOrUpdateDeviceIsVerified(userToken?.DeviceId, userToken.UserId, "", "");
+
+                if (device == null)
+                {
+                    return new LoginResponse
+                    {
+                        status = "Device can not be verified",
+                        accessToken = "",
+                        expiresIn = 0,
+                        refreshExpiresIn = 0,
+                        refreshToken = "",
+                        tokenType = "Bearer",
+                        scope = "",
+                        userId = 0,
+                        isDeviceVerified = false,
+                        userProfile = new UserProfile()
+                    };
+                }
+
                 var token = tokenHandler.CreateToken(tokenDescriptor);
                 var accessToken = tokenHandler.WriteToken(token);
 
@@ -189,7 +208,7 @@ namespace FishFarm.Services
                     refreshToken = Guid.NewGuid().ToString(),
                     tokenType = "Bearer",
                     scope = "profile email",
-                    userId = userToken?.UserId,
+                    userId = userToken.UserId,
                     isDeviceVerified = true,
                     userProfile = new UserProfile
                     {
@@ -205,7 +224,7 @@ namespace FishFarm.Services
             {
                 return new LoginResponse
                 {
-                    status = "Invalid token",
+                    status = "An error occurs during verifying your token",
                     accessToken = "",
                     expiresIn = 0,
                     refreshExpiresIn = 0,

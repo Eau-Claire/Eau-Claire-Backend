@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FishFarm.BusinessObjects;
 using FishFarm.Repositories;
 
 namespace FishFarm.Services
@@ -16,12 +17,17 @@ namespace FishFarm.Services
             _deviceRepository = new DeviceRepository();
         }
 
-        public bool AddDevice(int userId, string deviceName, string deviceType)
+        public Device AddDevice(string deviceId, int userId, string? deviceName, string? deviceType)
         {
-            return _deviceRepository.AddDevice(userId, deviceName, deviceType);
+            return _deviceRepository.AddDevice(deviceId, userId, deviceName, deviceType);
         }
 
-        public bool CheckDeviceIsVerified(string deviceId, string userId)
+        public Device AddOrUpdateDeviceIsVerified(string deviceId, int userId, string? deviceName, string? deviceType)
+        {
+            return _deviceRepository.AddOrUpdateDeviceIsVerified(deviceId, userId, deviceName, deviceType);
+        }
+
+        public bool CheckDeviceIsVerified(string deviceId, int userId)
         {
             return _deviceRepository.CheckDeviceIsVerified(deviceId, userId);
         }

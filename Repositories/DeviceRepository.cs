@@ -17,12 +17,17 @@ namespace FishFarm.Repositories
             _deviceDAO = new DeviceDAO();
         }
 
-        public bool AddDevice(int userId, string deviceName, string deviceType)
+        public Device AddDevice(string deviceId, int userId, string? deviceName, string? deviceType)
         {
-            return _deviceDAO.AddDevice(userId, deviceName, deviceType);
+            return _deviceDAO.AddDevice(deviceId, userId, deviceName, deviceType);
         }
 
-        public bool CheckDeviceIsVerified(string deviceId, string userId)
+        public Device AddOrUpdateDeviceIsVerified(string deviceId, int userId, string? deviceName, string? deviceType)
+        {
+            return _deviceDAO.AddOrUpdateDeviceIsVerified(deviceId, userId, deviceName, deviceType);
+        }
+
+        public bool CheckDeviceIsVerified(string deviceId, int userId)
         {
             return _deviceDAO.CheckDeviceIsVerified(deviceId, userId);
         }

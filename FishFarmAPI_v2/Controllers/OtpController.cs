@@ -29,12 +29,12 @@ namespace FishFarmAPI_v2.Controllers
 
                 var result = _otpService.SendOtp(request.Method, otp, request.UserId, request.DeviceId, request.Phone, request.Email);
                 
-                if (result.ErrorCode == "500")
+                if (result.IsCanceled)
                 {
-                    return StatusCode(500, result.Message);
-                } else if (result.ErrorCode == "409")
+                    return StatusCode(500, result.Result);
+                } else if (result.IsFaulted)
                 {
-                    return BadRequest(result.Message);
+                    return BadRequest(result.Result);
                 }
 
                 return Ok(result);
