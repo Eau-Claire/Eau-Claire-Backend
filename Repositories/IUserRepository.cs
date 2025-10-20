@@ -9,7 +9,7 @@ namespace FishFarm.Repositories
 {
     public interface IUserRepository
     {
-        public string GetUserRole(int id);
+        public User GetUserInfo(int id);
         public User? Login(string username, string passwordHash);
         public bool Register(string username, string passwordHash);
         public bool ForgetPassword(int id, string newPasswordHash);

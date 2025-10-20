@@ -11,15 +11,9 @@ namespace FishFarm.DataAccessLayer
     {
         private FishFarmDbV2Context _dbcontext = new FishFarmDbV2Context();
 
-        public string GetUserRole(int id)
+        public User GetUserInfo(int id)
         {
-            var user = _dbcontext.Users.FirstOrDefault(u => u.UserId == id);
-
-            if (user != null)
-            {
-                return user.Role ?? "N";
-            }
-            return "N/A";
+            return _dbcontext.Users.FirstOrDefault(u => u.UserId == id) ?? new User();
         }
 
         public User? Login(string username, string passwordHash)

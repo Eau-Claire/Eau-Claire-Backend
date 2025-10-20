@@ -1,24 +1,11 @@
-﻿using FishFarm.Services;
+﻿using FishFarm.BusinessObjects;
+using FishFarm.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace FishFarmAPI_v2.Controllers
 {
-    public class LoginRequest
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-
-        public string DeviceId { get; set; }
-    }
-
-    public class TempToken
-    {
-        public string tempToken { get; set; }
-    }
-
     [ApiController]
     [Route("api/v1/sys")]
     public class UserController : ControllerBase
@@ -35,42 +22,36 @@ namespace FishFarmAPI_v2.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            try
+            var result = _userService.Login(request.Username, request.Password, request.DeviceId);
+
+            if (result.status == "401")
             {
-                var result = _userService.Login(request.Username, request.Password, request.DeviceId);
-
-                if (result == null)
-                {
-                    return Unauthorized(new { message = "Invalid username or password" });
-                } else if (result.status == "Device not verified")
-                {
-                    return StatusCode(403, result);
-                }
-
-                    return Ok(result);
-
-            } catch (Exception e)
+                return Unauthorized(new {message = result.message, isDeviceVerified = result.isDeviceVerified});
+            } else if (result.status == "500")
             {
-                return StatusCode(500, new { message = "An error occurred during login", error = e.Message });
+                return StatusCode(500, new { message = result.message, isDeviceVerified = result.isDeviceVerified });
+            } else if (result == null)
+            {
+                return StatusCode(500, new { message = "An unknown error occurred during login" });
             }
-            
+
+                return Ok(result);
         }
 
         [HttpPost("token")]
-        public IActionResult GetToken([FromBody] TempToken tempToken)
+        public IActionResult GetToken([FromBody] TempTokenRequest tempTokenRequest)
         {
-            try
+
+            var loginResponse = _userService.ValidateTempToken(tempTokenRequest.tempToken);
+            if (loginResponse.status == "401")
             {
-                var loginResponse = _userService.ValidateTempToken(tempToken.tempToken);
-                if (loginResponse.status != "success")
-                {
-                    return Unauthorized(loginResponse);
-                }
-                return Ok(loginResponse);
-            } catch (Exception e)
+                return Unauthorized(new {message = loginResponse.message, isDeviceVerified = loginResponse.isDeviceVerified});
+            } else if (loginResponse.status == "500")
             {
-                return StatusCode(500, new { message = "An error occurred during token validation", error = e.Message });
+                return StatusCode(500, new { message = loginResponse.message, isDeviceVerified = loginResponse.isDeviceVerified });
             }
+            
+            return Ok(loginResponse);
         }
     }
 }

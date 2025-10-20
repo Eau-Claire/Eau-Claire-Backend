@@ -14,64 +14,53 @@ namespace FishFarmAPI_v2.Controllers
         {
             _otpService = otpService;
         }
-        
+
         [HttpPost]
         [Route("request-otp")]
         public IActionResult GetOtpCode([FromBody] OtpRequest request)
         {
-            try
+
+            var otp = _otpService.GenerateOtp(6);
+
+            if (otp == null)
             {
-                var otp = _otpService.GenerateOtp(6);
-
-                if (otp == null) {
-                    return StatusCode(500, new { Message = "Failed to generate OTP" });
-                }
-
-                var result = _otpService.SendOtp(request.Method, otp, request.UserId, request.DeviceId, request.Phone, request.Email);
-                
-                if (result.IsCanceled)
-                {
-                    return StatusCode(500, result.Result);
-                } else if (result.IsFaulted)
-                {
-                    return BadRequest(result.Result);
-                }
-
-                return Ok(result);
-
+                return StatusCode(500, new { Message = "Failed to generate OTP" });
             }
-            catch (Exception ex)
+
+            var result = _otpService.SendOtp(request.Method, otp, request.UserId, request.DeviceId, request.Phone, request.Email);
+
+            if (result.IsCanceled)
             {
-                return StatusCode(500, new { Message = "Error generating or sending OTP", Details = ex.Message });
+                return StatusCode(500, result.Result);
             }
+            else if (result.IsFaulted)
+            {
+                return BadRequest(result.Result);
+            }
+
+            return Ok(result);
+
         }
 
         [HttpPost]
         [Route("verify-otp")]
         public IActionResult VerifyOtpCode([FromBody] OtpRequest request)
         {
-            try
+
+            if (request.Method == null || request.InputOtp == null)
             {
-                if (request.Method == null || request.InputOtp == null)
-                {
-                    return BadRequest(new { Message = "Method or InputOtp is missing" });
-                }
-
-                var tempToken = _otpService.VerifyOtp(request.Method, request.InputOtp, request.UserId, request.DeviceId, request.Phone, request.Email);
-
-                if (tempToken == "")
-                {
-                    return StatusCode(401, new { Message = "Invalid or expired OTP" });
-                }
-
-                return Ok(new {tempToken});
-
+                return BadRequest(new { Message = "Method or InputOtp is missing" });
             }
-            catch (Exception ex)
+
+            var tempToken = _otpService.VerifyOtp(request.Method, request.InputOtp, request.UserId, request.DeviceId, request.Phone, request.Email);
+
+            if (string.IsNullOrEmpty(tempToken))
             {
-                return StatusCode(500, new { Message = "Error verifying OTP", Details = ex.Message });
-
+                return StatusCode(401, new { Message = "Invalid or expired OTP" });
             }
+
+            return Ok(new { tempToken });
+
         }
     }
 }

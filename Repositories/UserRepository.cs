@@ -16,9 +16,9 @@ namespace FishFarm.Repositories
             return _userDAO.ForgetPassword(id, newPasswordHash);
         }
 
-        public string GetUserRole(int id)
+        public User GetUserInfo(int id)
         {
-            return _userDAO.GetUserRole(id);
+            return _userDAO.GetUserInfo(id);
         }
 
         public User? Login(string username, string passwordHash)
