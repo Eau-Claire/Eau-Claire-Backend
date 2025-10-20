@@ -64,39 +64,6 @@ namespace FishFarm.Services
                     _cache.Remove(cacheKey);
                 }
 
-                if (string.IsNullOrEmpty(method) || string.IsNullOrEmpty(otp))
-                {
-                    return new ServiceResult
-                    {
-                        IsSuccess = false,
-                        ErrorCode = "409",
-                        Message = "Method or OTP is missing",
-                        Data = null
-                    };
-                }
-
-                if (method == "email" && string.IsNullOrEmpty(email))
-                {
-                    return new ServiceResult 
-                    {
-                        IsSuccess = false,
-                        ErrorCode = "409",
-                        Message = "Email must be provided for Email method",
-                        Data = null
-                    };
-                }
-
-                if (method == "sms" && string.IsNullOrEmpty(phone))
-                {
-                    return new ServiceResult
-                    {
-                        IsSuccess = false,
-                        ErrorCode = "409",
-                        Message = "Phone number must be provided for SMS method",
-                        Data = null
-                    };
-                }
-
                 if (method == "sms")
                 {
                     Console.WriteLine("hay: " + _accountSid + " " + _authToken + "" + _fromPhoneNumber);
@@ -125,48 +92,58 @@ namespace FishFarm.Services
                     };
 
                 }
-
-                cacheKey = $"{userId}_otp_{deviceId}_{email}";
-                cacheOptions = new MemoryCacheEntryOptions
+                else if (method == "email")
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-                };
-
-                _cache.Set(cacheKey, otp, cacheOptions);
-
-                using (SmtpClient client = new SmtpClient("smtp.gmail.com"))
-                {
-                    client.Port = 587;
-                    client.Credentials = new NetworkCredential("eauclaire1510@gmail.com", _gmailAppPassword);
-                    client.EnableSsl = true;
-
-                    MailMessage mailMessage = new MailMessage
+                    cacheKey = $"{userId}_otp_{deviceId}_{email}";
+                    cacheOptions = new MemoryCacheEntryOptions
                     {
-                        From = new MailAddress("eauclaire1510@gmail.com", "Eau Claire Support"),
-                        To = { new MailAddress(email ?? "eauclaire1510@gmail.com") },
-                        Subject = "Your OTP Code to Verify Eau Claire account!",
-                        Body = _templateService.GetEmailOtpTemplate(otp),
-                        IsBodyHtml = true,
-
+                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
                     };
 
-                    await client.SendMailAsync(mailMessage);
+                    _cache.Set(cacheKey, otp, cacheOptions);
 
-                    return new ServiceResult
+                    using (SmtpClient client = new SmtpClient("smtp.gmail.com"))
                     {
-                        IsSuccess = true,
-                        ErrorCode = "200",
-                        Message = "OTP sent successfully via Email",
-                        Data = null
+                        client.Port = 587;
+                        client.Credentials = new NetworkCredential("eauclaire1510@gmail.com", _gmailAppPassword);
+                        client.EnableSsl = true;
 
-                    };
+                        MailMessage mailMessage = new MailMessage
+                        {
+                            From = new MailAddress("eauclaire1510@gmail.com", "Eau Claire Support"),
+                            To = { new MailAddress(email ?? "eauclaire1510@gmail.com") },
+                            Subject = "Your OTP Code to Verify Eau Claire account!",
+                            Body = _templateService.GetEmailOtpTemplate(otp),
+                            IsBodyHtml = true,
+
+                        };
+
+                        await client.SendMailAsync(mailMessage);
+
+                        return new ServiceResult
+                        {
+                            IsSuccess = true,
+                            ErrorCode = "200",
+                            Message = "OTP sent successfully via Email",
+                            Data = null
+
+                        };
+                    }
+
                 }
+                return new ServiceResult
+                {
+                    IsSuccess = false,
+                    ErrorCode = "400",
+                    Message = "Invalid method. Use 'sms' or 'email'.",
+                    Data = null
+                };
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error sending OTP: {ex.Message}");
-                return new ServiceResult 
+                return new ServiceResult
                 {
                     IsSuccess = false,
                     ErrorCode = "500",
@@ -189,7 +166,7 @@ namespace FishFarm.Services
                 _cache.Remove(cacheKey);
                 var tempToken = Guid.NewGuid().ToString();
 
-                _cache.Set(tempToken, new TempTokenData 
+                _cache.Set(tempToken, new TempTokenData
                 {
                     UserId = userId,
                     DeviceId = deviceId,
