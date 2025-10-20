@@ -11,9 +11,9 @@ namespace FishFarm.Repositories
     public class UserRepository : IUserRepository
     {
         private UserDAO _userDAO = new UserDAO();
-        public bool ForgetPassword(int id, string newPasswordHash)
+        public bool ResetPassword(int id, string newPasswordHash)
         {
-            return _userDAO.ForgetPassword(id, newPasswordHash);
+            return _userDAO.ResetPassword(id, newPasswordHash);
         }
 
         public User GetUserInfo(int id)
@@ -21,6 +21,10 @@ namespace FishFarm.Repositories
             return _userDAO.GetUserInfo(id);
         }
 
+        public User GetUserByUsername(string username)
+        {
+            return _userDAO.GetUserByUsername(username);
+        }
         public User? Login(string username, string passwordHash)
         {
             return _userDAO.Login(username, passwordHash);

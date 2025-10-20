@@ -29,10 +29,6 @@ namespace FishFarm.Services
             _configure = configure;
             _cache = cache;
         }
-        public bool ForgetPassword(int id, string newPassword)
-        {
-            return _userRepository.ForgetPassword(id, newPassword);
-        }
 
         public User GetUserInfo(int id)
         {
@@ -129,12 +125,77 @@ namespace FishFarm.Services
 
                 };
             }
-            
         }
 
-        public bool Register(string username, string password)
+        public UserInfoResponse GetUserInfoByUsername (string username)
         {
-            return _userRepository.Register(username, password);
+            var user = _userRepository.GetUserByUsername(username);
+            return new UserInfoResponse
+            {
+                UserId = user.UserId,
+                Username = user.Username,
+                Phone = user.Phone ?? "",
+                Email = user.Email ?? "",
+                Role = user.Role ?? ""
+            };
+        }
+
+        public LoginResponse ResetPassword(int userId, string newPassword, string confirmPassword, string tempToken)
+        {
+            try
+            {
+                if(string.Compare(newPassword, confirmPassword) != 0)
+                {
+                    return new LoginResponse
+                    {
+                        status = "400",
+                        message = "New password and confirm password do not match",
+                        isDeviceVerified = false,
+                    };
+                }
+
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
+                Console.WriteLine(JsonConvert.SerializeObject(userToken));
+
+                if (userToken == null)
+                {
+                    return new LoginResponse
+                    {
+                        status = "401",
+                        message = "Invalid token",
+                        isDeviceVerified = false,
+                    };
+                }
+
+                var isSuccess = _userRepository.ResetPassword(userId, newPassword);
+
+                if (isSuccess)
+                {
+                    return new LoginResponse
+                    {
+                        status = "200",
+                        message = "Password updated successfully",
+                        isDeviceVerified = true,
+                    };
+                } 
+
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = "Failed to update password",
+                    isDeviceVerified = false,
+                };
+
+            }
+            catch (Exception ex)
+            {
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = ex.Message,
+                    isDeviceVerified = false
+                };
+            }
         }
 
         public LoginResponse ValidateTempToken (string tempToken)

@@ -16,6 +16,11 @@ namespace FishFarm.DataAccessLayer
             return _dbcontext.Users.FirstOrDefault(u => u.UserId == id) ?? new User();
         }
 
+        public User GetUserByUsername(string username)
+        {
+            return _dbcontext.Users.FirstOrDefault(u => u.Username == username) ?? new User();
+        }
+
         public User? Login(string username, string passwordHash)
         {
             var user = _dbcontext.Users.FirstOrDefault(u => u.Username == username && u.PasswordHash == passwordHash);
@@ -41,7 +46,7 @@ namespace FishFarm.DataAccessLayer
             return true;
         }
 
-        public bool ForgetPassword(int id, string newPasswordHash)
+        public bool ResetPassword(int id, string newPasswordHash)
         {
             var user = _dbcontext.Users.FirstOrDefault(u => u.UserId == id);
             if (user == null)
