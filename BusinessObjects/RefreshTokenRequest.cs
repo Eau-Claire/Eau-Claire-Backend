@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FishFarm.BusinessObjects
 {
-    public class TempTokenRequest
+    public class RefreshTokenRequest
     {
-        public string Purpose { get; set; }
-        public string tempToken { get; set; }
+        public int UserId { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

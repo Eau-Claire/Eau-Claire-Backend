@@ -19,7 +19,7 @@ namespace FishFarmAPI_v2.Controllers
         [Route("request-otp")]
         public async Task<IActionResult> GetOtpCode([FromBody] OtpRequest request)
         {
-            if (string.IsNullOrEmpty(request.DeviceId) || string.IsNullOrEmpty(request.UserId.ToString()))
+            if (string.IsNullOrEmpty(request.DeviceId))
             {
                 return StatusCode(500, new { Message = "Device Id and User Id can not be empty" });
             }
@@ -31,7 +31,7 @@ namespace FishFarmAPI_v2.Controllers
                 return StatusCode(500, new { Message = "Failed to generate OTP" });
             }
 
-            var result = await _otpService.SendOtp(request.Method, otp, request.UserId, request.DeviceId, request.Phone, request.Email);
+            var result = await _otpService.SendOtp(request.Method, otp, request.DeviceId, request.Phone, request.Email);
 
             if (result.ErrorCode == "500")
             {
@@ -51,7 +51,8 @@ namespace FishFarmAPI_v2.Controllers
         public IActionResult VerifyOtpCode([FromBody] OtpRequest request)
         {
 
-            if (request.Method == null || request.InputOtp == null)
+            if (string.IsNullOrEmpty(request.Method) 
+                || string.IsNullOrEmpty(request.InputOtp))
             {
                 return BadRequest(new { Message = "Method or InputOtp is missing" });
             }

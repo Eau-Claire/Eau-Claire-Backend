@@ -13,5 +13,7 @@ namespace FishFarm.BusinessObjects
         public string Phone { get; set; }
         public string Email { get; set; }
         public string Method { get; set; }
+
+        public bool isVerified { get; set; }
     }
 }

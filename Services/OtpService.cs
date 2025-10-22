@@ -51,12 +51,15 @@ namespace FishFarm.Services
         }
 
 
-        public async Task<ServiceResult> SendOtp(string method, string otp, int userId, string deviceId, string? phone, string? email)
+        public async Task<ServiceResult> SendOtp(string method, string otp, string deviceId, string? phone, string? email)
         {
             try
             {
-                var cacheKey = method == "sms" ? $"{userId}_otp_{deviceId}_{email}" : $"{userId}_otp_{deviceId}_{phone}";
-                var cacheOptions = new MemoryCacheEntryOptions();
+                var cacheKey = method == "sms" ? $"otp_{deviceId}_{phone}" : $"otp_{deviceId}_{email}";
+                var cacheOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+                };
 
 
                 if (_cache.TryGetValue(cacheKey, out _))
@@ -67,12 +70,6 @@ namespace FishFarm.Services
                 if (method == "sms")
                 {
                     Console.WriteLine("hay: " + _accountSid + " " + _authToken + "" + _fromPhoneNumber);
-                    cacheKey = $"{userId}_otp_{deviceId}_{phone}";
-                    cacheOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-
-                    };
 
                     _cache.Set(cacheKey, otp, cacheOptions);
 
@@ -94,12 +91,7 @@ namespace FishFarm.Services
                 }
                 else if (method == "email")
                 {
-                    cacheKey = $"{userId}_otp_{deviceId}_{email}";
-                    cacheOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
-                    };
-
+                   
                     _cache.Set(cacheKey, otp, cacheOptions);
 
                     using (SmtpClient client = new SmtpClient("smtp.gmail.com"))
@@ -155,9 +147,9 @@ namespace FishFarm.Services
             }
         }
 
-        public string VerifyOtp(string method, string inputOtp, int userId, string deviceId, string? phone, string? email)
+        public string VerifyOtp(string method, string inputOtp, int? userId, string deviceId, string? phone, string? email)
         {
-            var cacheKey = method == "sms" ? $"{userId}_otp_{deviceId}_{phone}" : $"{userId}_otp_{deviceId}_{email}";
+            var cacheKey = method == "sms" ? $"otp_{deviceId}_{phone}" : $"otp_{deviceId}_{email}";
 
             var storedOtp = _cache.Get<string>(cacheKey);
 
@@ -168,11 +160,12 @@ namespace FishFarm.Services
 
                 _cache.Set(tempToken, new TempTokenData
                 {
-                    UserId = userId,
                     DeviceId = deviceId,
-                    Phone = phone,
-                    Email = email,
-                    Method = method
+                    UserId = userId ?? 0,
+                    Phone = phone ?? "",
+                    Email = email ?? "",
+                    Method = method,
+                    isVerified = false
 
                 }, new MemoryCacheEntryOptions
                 {

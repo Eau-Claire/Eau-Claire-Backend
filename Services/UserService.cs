@@ -13,11 +13,13 @@ using Newtonsoft.Json;
 
 namespace FishFarm.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly UserRepository _userRepository;
         private readonly UserProfileRepository _userProfileRepository;
         private readonly DeviceService _deviceService;
+        private readonly RefreshTokenService _refreshTokenService;
+        private readonly IConfiguration _configuration;
         private readonly IMemoryCache _cache;
         private IConfiguration _configure;
 
@@ -26,6 +28,7 @@ namespace FishFarm.Services
             _userRepository = new UserRepository();
             _userProfileRepository = new UserProfileRepository();
             _deviceService = new DeviceService();
+            _refreshTokenService = new RefreshTokenService();
             _configure = configure;
             _cache = cache;
         }
@@ -34,6 +37,149 @@ namespace FishFarm.Services
         {
             return _userRepository.GetUserInfo(id);
         }
+        public User GetUserInfoByUsername(string username)
+        {
+            return _userRepository.GetUserByUsername(username);
+        }
+
+        public LoginResponse GetNewAccessTokenIfRefreshTokenValid(int userId, string refreshToken)
+        {
+            try
+            {
+                var isValid = _refreshTokenService.isValidRefreshToken(userId, refreshToken);
+                if (!isValid)
+                {
+                    return new LoginResponse
+                    {
+                        status = "401",
+                        message = "Invalid refresh token",
+                        isDeviceVerified = false,
+                    };
+                }
+                var user = _userRepository.GetUserInfo(userId);
+                var userProfile = _userProfileRepository.GetUserProfile(userId);
+
+                return GenerateTokenResponse(user, userProfile);
+            }
+            catch (Exception ex)
+            {
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = "An error occurred while generating new access token",
+                    isDeviceVerified = false,
+                };
+            }
+        }
+
+        private LoginResponse GenerateTokenResponse(User user, UserProfile userProfile)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configure["Jwt:Key"] ?? "");
+
+            var tokenDescriptor = new Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor
+            {
+                Subject = new System.Security.Claims.ClaimsIdentity(
+                    new[]
+                        {
+                            new System.Security.Claims.Claim("username", user.Username),
+                            new System.Security.Claims.Claim("role", user.Role ?? ""),
+                            new System.Security.Claims.Claim("userId", user.UserId.ToString()),
+                            new System.Security.Claims.Claim("fullName", userProfile?.FullName ?? ""),
+                            new System.Security.Claims.Claim("contactAddress", userProfile?.ContactAddress ?? ""),
+                            new System.Security.Claims.Claim("permanentAddress", userProfile?.PermanentAddress ?? ""),
+                            new System.Security.Claims.Claim("phoneNumber", userProfile?.CurrentPhoneNumber ?? ""),
+                            new System.Security.Claims.Claim("dateOfBirth", userProfile?.DateOfBirth.ToString() ?? ""),
+                            new System.Security.Claims.Claim("email", user ?.Email ?? "")
+                        }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(
+                    new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
+                    Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var accessToken = tokenHandler.WriteToken(token);
+            var refreshToken = Guid.NewGuid().ToString();
+
+            bool isRefreshTokenSaved = _refreshTokenService.SaveRefreshToken(user.UserId, refreshToken, DateTime.UtcNow.AddDays(1));
+
+            if (!isRefreshTokenSaved)
+            {
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = "Failed to generate refresh token",
+                    isDeviceVerified = false,
+                };
+            }
+
+            return new LoginResponse
+            {
+                status = "200",
+                accessToken = accessToken,
+                expiresIn = 3600,
+                refreshExpiresIn = 86400,
+                refreshToken = refreshToken,
+                tokenType = "Bearer",
+                scope = "profile email",
+                userId = user.UserId,
+                isDeviceVerified = true,
+                userProfile = new UserProfile
+                {
+                    FullName = userProfile?.FullName ?? "",
+                    ContactAddress = userProfile?.ContactAddress ?? "",
+                    PermanentAddress = userProfile?.PermanentAddress ?? "",
+                    CurrentPhoneNumber = userProfile?.CurrentPhoneNumber ?? "",
+                    DateOfBirth = userProfile?.DateOfBirth ?? null
+                }
+            };
+
+        }
+
+        //public LoginResponse? Register(string username, string password, string? phone, string? email, string deviceId, string tempToken)
+        //{
+        //    try
+        //    {
+        //        TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
+        //        Console.WriteLine(JsonConvert.SerializeObject(userToken));
+
+        //        if (userToken == null)
+        //        {
+        //            return new LoginResponse
+        //            {
+        //                status = "401",
+        //                message = "Invalid token",
+        //                isDeviceVerified = false,
+        //            };
+        //        } else if (userToken.isVerified == false)
+        //        {
+        //            return new LoginResponse
+        //            {
+        //                status = "401",
+        //                message = "Token not verified for registration",
+        //                isDeviceVerified = false,
+        //            };
+        //        }
+
+        //        var registerResponse = _userRepository.RegisterNewUser(username, password, phone, email, deviceId);
+
+        //        _cache.Remove(tempToken);
+
+        //        //Goi genrate token response de tra ve cho client neu dang ky thanh cong
+
+        //        return registerResponse;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new LoginResponse
+        //        {
+        //            status = "500",
+        //            message = "An error occurred during registration",
+        //            isDeviceVerified = false,
+        //        };
+        //    }
+        //}
 
         public LoginResponse? Login(string username, string password, string deviceId)
         {
@@ -63,61 +209,17 @@ namespace FishFarm.Services
                     {
                         status = "401",
                         message = "Device is not verified",
+                        userId = user.UserId,
                         isDeviceVerified = false,
                     };
                 }
 
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_configure["Jwt:Key"] ?? "");
+                return GenerateTokenResponse(user, userProfile);
 
-                var tokenDescriptor = new Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor
-                {
-                    Subject = new System.Security.Claims.ClaimsIdentity(
-                        new[]
-                            {
-                            new System.Security.Claims.Claim("username", username),
-                            new System.Security.Claims.Claim("role", userInfo.Role ?? ""),
-                            new System.Security.Claims.Claim("userId", user.UserId.ToString()),
-                            new System.Security.Claims.Claim("fullName", userProfile?.FullName ?? ""),
-                            new System.Security.Claims.Claim("contactAddress", userProfile?.ContactAddress ?? ""),
-                            new System.Security.Claims.Claim("permanentAddress", userProfile?.PermanentAddress ?? ""),
-                            new System.Security.Claims.Claim("phoneNumber", userProfile?.CurrentPhoneNumber ?? ""),
-                            new System.Security.Claims.Claim("dateOfBirth", userProfile?.DateOfBirth.ToString() ?? ""),
-                            new System.Security.Claims.Claim("email", user ?.Email ?? "")
-                            }),
-                    Expires = DateTime.UtcNow.AddHours(1),
-                    SigningCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(
-                        new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
-                        Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var accessToken = tokenHandler.WriteToken(token);
-
-                return new LoginResponse
-                {
-                    status = "200",
-                    accessToken = accessToken,
-                    expiresIn = 3600,
-                    refreshExpiresIn = 86400,
-                    refreshToken = Guid.NewGuid().ToString(),
-                    tokenType = "Bearer",
-                    scope = "profile email",
-                    userId = user.UserId,
-                    isDeviceVerified = true,
-                    userProfile = new UserProfile
-                    {
-                        FullName = userProfile?.FullName ?? "",
-                        ContactAddress = userProfile?.ContactAddress ?? "",
-                        PermanentAddress = userProfile?.PermanentAddress ?? "",
-                        CurrentPhoneNumber = userProfile?.CurrentPhoneNumber ?? "",
-                        DateOfBirth = userProfile?.DateOfBirth ?? null
-                    }
-                };
-
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                return new LoginResponse 
+                return new LoginResponse
                 {
                     status = "500",
                     message = "An error occurred during login",
@@ -126,25 +228,12 @@ namespace FishFarm.Services
                 };
             }
         }
-
-        public UserInfoResponse GetUserInfoByUsername (string username)
-        {
-            var user = _userRepository.GetUserByUsername(username);
-            return new UserInfoResponse
-            {
-                UserId = user.UserId,
-                Username = user.Username,
-                Phone = user.Phone ?? "",
-                Email = user.Email ?? "",
-                Role = user.Role ?? ""
-            };
-        }
-
+        
         public LoginResponse ResetPassword(int userId, string newPassword, string confirmPassword, string tempToken)
         {
             try
             {
-                if(string.Compare(newPassword, confirmPassword) != 0)
+                if (string.Compare(newPassword, confirmPassword) != 0)
                 {
                     return new LoginResponse
                     {
@@ -167,6 +256,16 @@ namespace FishFarm.Services
                     };
                 }
 
+                if (userToken.isVerified == false)
+                {
+                    return new LoginResponse
+                    {
+                        status = "401",
+                        message = "Token not verified for password reset",
+                        isDeviceVerified = false,
+                    };
+                }
+
                 var isSuccess = _userRepository.ResetPassword(userId, newPassword);
 
                 if (isSuccess)
@@ -177,7 +276,7 @@ namespace FishFarm.Services
                         message = "Password updated successfully",
                         isDeviceVerified = true,
                     };
-                } 
+                }
 
                 return new LoginResponse
                 {
@@ -198,7 +297,8 @@ namespace FishFarm.Services
             }
         }
 
-        public LoginResponse ValidateTempToken (string tempToken)
+        //Validate temp token generated after OTP verification for Login
+        public LoginResponse ValidateTempToken(string tempToken)
         {
             try
             {
@@ -216,76 +316,93 @@ namespace FishFarm.Services
                 }
 
                 var userProfile = _userProfileRepository.GetUserProfile(userToken.UserId);
-                var userInfo = _userRepository.GetUserInfo(userToken.UserId);
+                var user = _userRepository.GetUserInfo(userToken.UserId);
 
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_configure["Jwt:Key"]);
-
-                var tokenDescriptor = new Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor
-                {
-                    Subject = new System.Security.Claims.ClaimsIdentity(
-                        new[]
-                            {
-                            new System.Security.Claims.Claim("username", userInfo.Username),
-                            new System.Security.Claims.Claim("role", userInfo.Role ?? ""),
-                            new System.Security.Claims.Claim("userId", userToken.UserId.ToString()),
-                            new System.Security.Claims.Claim("fullName", userProfile?.FullName ?? ""),
-                            new System.Security.Claims.Claim("contactAddress", userProfile?.ContactAddress ?? ""),
-                            new System.Security.Claims.Claim("permanentAddress", userProfile?.PermanentAddress ?? ""),
-                            new System.Security.Claims.Claim("phoneNumber", userProfile?.CurrentPhoneNumber ?? ""),
-                            new System.Security.Claims.Claim("dateOfBirth", userProfile?.DateOfBirth.ToString() ?? ""),
-                            new System.Security.Claims.Claim("email", userToken ?.Email ?? "")
-                            }),
-                    Expires = DateTime.UtcNow.AddHours(1),
-                    SigningCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(
-                        new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
-                        Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                var device = _deviceService.AddOrUpdateDeviceIsVerified(userToken.DeviceId, userToken.UserId, "", "");
+                Device device = _deviceService.AddOrUpdateDeviceIsVerified(userToken.DeviceId, userToken.UserId, "", "");
 
                 if (device == null)
                 {
                     return new LoginResponse
                     {
-                        status = "401",
-                        message = "Device is not verified",
+                        status = "500",
+                        message = "Failed to verify device",
                         isDeviceVerified = false,
                     };
                 }
 
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                var accessToken = tokenHandler.WriteToken(token);
+                _cache.Remove(tempToken);
 
-                return new LoginResponse
-                {
-                    status = "200",
-                    accessToken = accessToken,
-                    expiresIn = 3600,
-                    refreshExpiresIn = 86400,
-                    refreshToken = Guid.NewGuid().ToString(),
-                    tokenType = "Bearer",
-                    scope = "profile email",
-                    userId = userToken.UserId,
-                    isDeviceVerified = true,
-                    userProfile = new UserProfile
-                    {
-                        FullName = userProfile?.FullName ?? "",
-                        ContactAddress = userProfile?.ContactAddress ?? "",
-                        PermanentAddress = userProfile?.PermanentAddress ?? "",
-                        CurrentPhoneNumber = userProfile?.CurrentPhoneNumber ?? "",
-                        DateOfBirth = userProfile?.DateOfBirth ?? null
-                    }
-                };
+                return GenerateTokenResponse(user, userProfile);
 
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return new LoginResponse
                 {
                     status = "500",
-                    message = "Invalid token",
+                    message = "Error occures while verifying Temperal Token",
                     isDeviceVerified = false,
                 };
+            }
+        }
+
+
+        //Validate temp token generated after OTP verification for Register
+        //Missing item: accesToken and createUser
+        public LoginResponse ValidateRegistrationTempToken(string tempToken)
+        {
+            try
+            {
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
+                Console.WriteLine(JsonConvert.SerializeObject(userToken));
+                if (userToken == null)
+                {
+                    return new LoginResponse
+                    {
+                        status = "401",
+                        message = "Invalid token",
+                        isDeviceVerified = false,
+                    };
+                }
+
+                userToken.isVerified = true;
+
+                return new LoginResponse
+                {
+                    status = "200",
+                    message = "Token is valid for registration",
+                    isDeviceVerified = true,
+                };
+
+            }
+            catch (Exception e)
+            {
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = "Error occures while verifying Temperal Token",
+                    isDeviceVerified = false,
+                };
+            }
+        }
+
+        //Validate temp token for other functions if needed in future
+        public bool ValidateGenericTempToken(string tempToken)
+        {
+            try
+            {
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
+                Console.WriteLine(JsonConvert.SerializeObject(userToken));
+                if (userToken == null)
+                {
+                    return false;
+                }
+                userToken.isVerified = true;
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
             }
         }
     }
