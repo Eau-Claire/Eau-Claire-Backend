@@ -15,5 +15,7 @@ namespace FishFarm.BusinessObjects
         public string Method { get; set; }
 
         public bool isVerified { get; set; }
+
+        public string Purpose { get; set; } 
     }
 }

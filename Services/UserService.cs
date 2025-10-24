@@ -19,7 +19,6 @@ namespace FishFarm.Services
         private readonly UserProfileRepository _userProfileRepository;
         private readonly DeviceService _deviceService;
         private readonly RefreshTokenService _refreshTokenService;
-        private readonly IConfiguration _configuration;
         private readonly IMemoryCache _cache;
         private IConfiguration _configure;
 
@@ -66,7 +65,7 @@ namespace FishFarm.Services
                 return new LoginResponse
                 {
                     status = "500",
-                    message = "An error occurred while generating new access token",
+                    message = $"An error occurred while generating new access token: {ex.Message}",
                     isDeviceVerified = false,
                 };
             }
@@ -102,9 +101,17 @@ namespace FishFarm.Services
             var accessToken = tokenHandler.WriteToken(token);
             var refreshToken = Guid.NewGuid().ToString();
 
-            bool isRefreshTokenSaved = _refreshTokenService.SaveRefreshToken(user.UserId, refreshToken, DateTime.UtcNow.AddDays(1));
+            if (user == null || user.UserId == 0)
+            {
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = "Invalid user information",
+                    isDeviceVerified = false,
+                };
+            }
 
-            if (!isRefreshTokenSaved)
+            if (!_refreshTokenService.SaveRefreshToken(user.UserId, refreshToken, DateTime.UtcNow.AddDays(1)))
             {
                 return new LoginResponse
                 {
@@ -181,6 +188,11 @@ namespace FishFarm.Services
         //    }
         //}
 
+        //public LoginResponse ProcessTempToken (string tempToken)
+        //{
+
+        //}
+
         public LoginResponse? Login(string username, string password, string deviceId)
         {
             try
@@ -222,13 +234,13 @@ namespace FishFarm.Services
                 return new LoginResponse
                 {
                     status = "500",
-                    message = "An error occurred during login",
+                    message = $"An error occurred during login: {ex.Message} ",
                     isDeviceVerified = false,
 
                 };
             }
         }
-        
+
         public LoginResponse ResetPassword(int userId, string newPassword, string confirmPassword, string tempToken)
         {
             try
@@ -318,29 +330,43 @@ namespace FishFarm.Services
                 var userProfile = _userProfileRepository.GetUserProfile(userToken.UserId);
                 var user = _userRepository.GetUserInfo(userToken.UserId);
 
-                Device device = _deviceService.AddOrUpdateDeviceIsVerified(userToken.DeviceId, userToken.UserId, "", "");
-
-                if (device == null)
+                if (userToken.Purpose == "login")
                 {
-                    return new LoginResponse
+                    Device device = _deviceService.AddOrUpdateDeviceIsVerified(userToken.DeviceId, userToken.UserId, "", "");
+
+                    if (device == null)
                     {
-                        status = "500",
-                        message = "Failed to verify device",
-                        isDeviceVerified = false,
-                    };
+                        return new LoginResponse
+                        {
+                            status = "500",
+                            message = "Failed to verify device",
+                            isDeviceVerified = false,
+                        };
+                    }
+
+                    _cache.Remove(tempToken);
+
+                    return GenerateTokenResponse(user, userProfile);
+
+                }
+                else if (userToken.Purpose == "register")
+                {
+
                 }
 
-                _cache.Remove(tempToken);
-
-                return GenerateTokenResponse(user, userProfile);
-
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = "Invalid token purpose",
+                    isDeviceVerified = false,
+                };
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 return new LoginResponse
                 {
                     status = "500",
-                    message = "Error occures while verifying Temperal Token",
+                    message = $"Error occures while verifying Temperal Token: {ex.Message}",
                     isDeviceVerified = false,
                 };
             }
@@ -375,12 +401,12 @@ namespace FishFarm.Services
                 };
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 return new LoginResponse
                 {
                     status = "500",
-                    message = "Error occures while verifying Temperal Token",
+                    message = $"Error occures while verifying Temperal Token: {ex.Message}",
                     isDeviceVerified = false,
                 };
             }
@@ -393,15 +419,18 @@ namespace FishFarm.Services
             {
                 TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
                 Console.WriteLine(JsonConvert.SerializeObject(userToken));
-                if (userToken == null)
+
+                if (userToken == null || userToken.Purpose != "generic")
                 {
                     return false;
                 }
+
                 userToken.isVerified = true;
                 return true;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }

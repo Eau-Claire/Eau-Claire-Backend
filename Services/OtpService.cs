@@ -147,7 +147,7 @@ namespace FishFarm.Services
             }
         }
 
-        public string VerifyOtp(string method, string inputOtp, int? userId, string deviceId, string? phone, string? email)
+        public string VerifyOtp(string method, string inputOtp, int? userId, string deviceId, string? phone, string? email, string purpose)
         {
             var cacheKey = method == "sms" ? $"otp_{deviceId}_{phone}" : $"otp_{deviceId}_{email}";
 
@@ -165,7 +165,8 @@ namespace FishFarm.Services
                     Phone = phone ?? "",
                     Email = email ?? "",
                     Method = method,
-                    isVerified = false
+                    isVerified = false,
+                    Purpose = purpose
 
                 }, new MemoryCacheEntryOptions
                 {

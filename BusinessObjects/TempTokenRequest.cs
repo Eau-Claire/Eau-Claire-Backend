@@ -8,7 +8,6 @@ namespace FishFarm.BusinessObjects
 {
     public class TempTokenRequest
     {
-        public string Purpose { get; set; }
-        public string tempToken { get; set; }
+        public string tempToken { get; set; } = string.Empty;
     }
 }

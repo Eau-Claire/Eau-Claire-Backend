@@ -18,5 +18,7 @@ namespace FishFarm.BusinessObjects
 
         public string? InputOtp { get; set; }
 
+        public string? Purpose { get; set; }
+
     }
 }

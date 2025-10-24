@@ -57,7 +57,7 @@ namespace FishFarmAPI_v2.Controllers
                 return BadRequest(new { Message = "Method or InputOtp is missing" });
             }
 
-            var tempToken = _otpService.VerifyOtp(request.Method, request.InputOtp, request.UserId, request.DeviceId, request.Phone, request.Email);
+            var tempToken = _otpService.VerifyOtp(request.Method, request.InputOtp, request.UserId, request.DeviceId, request.Phone, request.Email, request.Purpose);
 
             if (string.IsNullOrEmpty(tempToken))
             {

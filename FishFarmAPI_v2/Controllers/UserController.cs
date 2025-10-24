@@ -24,64 +24,55 @@ namespace FishFarmAPI_v2.Controllers
         {
             var result = _userService.Login(request.Username, request.Password, request.DeviceId);
 
-            if (result.status == "401")
-            {
-                return Unauthorized(new { message = result.message, isDeviceVerified = result.isDeviceVerified });
-            } else if (result.status == "500")
-            {
-                return StatusCode(500, new { message = result.message, isDeviceVerified = result.isDeviceVerified });
-            } else if (result == null)
+            if (result == null)
             {
                 return StatusCode(500, new { message = "An unknown error occurred during login" });
             }
+            else if (result.status == "401")
+            {
+                return Unauthorized(new { message = result.message, isDeviceVerified = result.isDeviceVerified });
+            }
+            else if (result.status == "500")
+            {
+                return StatusCode(500, new { message = result.message, isDeviceVerified = result.isDeviceVerified });
+            }
+
 
             return Ok(result);
         }
 
-        [HttpPost("token")]
+        [HttpPost("auth/token")]
         public IActionResult GetToken([FromBody] TempTokenRequest tempTokenRequest)
         {
-            if (tempTokenRequest.Purpose == "login")
-            {
-                var loginResponse = _userService.ValidateTempToken(tempTokenRequest.tempToken);
-                if (loginResponse == null)
-                {
-                    return StatusCode(500, new { message = "An unknown error occurred during token validation" });
-                }
 
-                if (loginResponse.status == "401")
-                {
-                    return Unauthorized(new { message = loginResponse.message, isDeviceVerified = loginResponse.isDeviceVerified });
-                }
-                else if (loginResponse.status == "500")
-                {
-                    return StatusCode(500, new { message = loginResponse.message, isDeviceVerified = loginResponse.isDeviceVerified });
-                }
+            var loginResponse = _userService.ValidateTempToken(tempTokenRequest.tempToken);
+            if (loginResponse == null)
+            {
+                return StatusCode(500, new { message = "An unknown error occurred during token validation" });
+            }
 
-                return Ok(loginResponse);
-            }
-            else if (tempTokenRequest.Purpose == "register")
+            if (loginResponse.status == "401")
             {
-                var registerResponse = _userService.ValidateRegistrationTempToken(tempTokenRequest.tempToken);
-                if (registerResponse == null)
-                {
-                    return StatusCode(500, new { message = "An unknown error occurred during token validation" });
-                }
-                return Ok(registerResponse);
+                return Unauthorized(new { message = loginResponse.message, isDeviceVerified = loginResponse.isDeviceVerified });
             }
-            else if (tempTokenRequest.Purpose == "generic")
+            else if (loginResponse.status == "500")
             {
-                var resetResponse = _userService.ValidateGenericTempToken(tempTokenRequest.tempToken);
-                if (resetResponse == false)
-                {
-                    return StatusCode(500, new { message = "An unknown error occurred during token validation" });
-                }
-                return Ok(new { status = "success", message = "Temp token is valid" });
+                return StatusCode(500, new { message = loginResponse.message, isDeviceVerified = loginResponse.isDeviceVerified });
             }
-            else
+
+            return Ok(loginResponse);
+        }
+
+        [HttpPost("token")]
+        public IActionResult GetTokenForGeneric([FromBody] TempTokenRequest tempTokenRequest)
+        {
+            var resetResponse = _userService.ValidateGenericTempToken(tempTokenRequest.tempToken);
+            if (resetResponse == false)
             {
-                return BadRequest(new { message = "Invalid purpose for temp token" });
+                return StatusCode(500, new { message = "An unknown error occurred during token validation" });
             }
+            return Ok(new { status = "success", message = "Temp token is valid" });
+
         }
 
         [HttpPost("refresh-token")]
@@ -109,10 +100,10 @@ namespace FishFarmAPI_v2.Controllers
             var user = _userService.GetUserInfoByUsername(username);
             if (user == null)
             {
-                return NotFound(new {status = "", Message = "User not found" });
+                return NotFound(new { status = "", Message = "User not found" });
             }
-            
-            return Ok(new {status = "success", userId = user.UserId, username = user.Username, phone = user.Phone, email = user.Email});
+
+            return Ok(new { status = "success", userId = user.UserId, username = user.Username, phone = user.Phone, email = user.Email });
         }
 
         [HttpPost("reset-password")]
@@ -122,7 +113,8 @@ namespace FishFarmAPI_v2.Controllers
             if (result.status == "500")
             {
                 return StatusCode(500, new { Message = "Failed to reset password" });
-            } else if (result.status == "400")
+            }
+            else if (result.status == "400")
             {
                 return BadRequest(new { Message = result.message });
             }
