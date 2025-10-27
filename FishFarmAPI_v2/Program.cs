@@ -71,12 +71,6 @@ app.UseCors();
 
 app.UseRateLimiter();
 
-app.MapPost("/api/v1/sys/request-otp", 
-    [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("otp")] () => Results.Ok());
-
-app.MapPost("/api/v1/sys/verify-otp", 
-    [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("otp")] () => Results.Ok());
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

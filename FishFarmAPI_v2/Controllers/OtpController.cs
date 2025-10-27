@@ -1,6 +1,7 @@
 ﻿using FishFarm.BusinessObjects;
 using FishFarm.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FishFarmAPI_v2.Controllers
 {
@@ -16,6 +17,7 @@ namespace FishFarmAPI_v2.Controllers
         }
 
         [HttpPost]
+        [EnableRateLimiting("otp")]
         [Route("request-otp")]
         public async Task<IActionResult> GetOtpCode([FromBody] OtpRequest request)
         {
@@ -47,6 +49,7 @@ namespace FishFarmAPI_v2.Controllers
         }
 
         [HttpPost]
+        [EnableRateLimiting("otp")]
         [Route("verify-otp")]
         public IActionResult VerifyOtpCode([FromBody] OtpRequest request)
         {
