@@ -13,12 +13,12 @@ namespace FishFarm.DataAccessLayer
 
         public User GetUserInfo(int id)
         {
-            return _dbcontext.Users.FirstOrDefault(u => u.UserId == id) ?? new User();
+            return _dbcontext.Users.FirstOrDefault(u => u.UserId == id);
         }
 
         public User GetUserByUsername(string username)
         {
-            return _dbcontext.Users.FirstOrDefault(u => u.Username == username) ?? new User();
+            return _dbcontext.Users.FirstOrDefault(u => u.Username == username);
         }
 
         public User? Login(string username, string passwordHash)

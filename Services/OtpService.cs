@@ -175,7 +175,7 @@ namespace FishFarm.Services
 
                 return tempToken;
             }
-            return "";
+            return null;
         }
     }
 }

@@ -314,8 +314,7 @@ namespace FishFarm.Services
         {
             try
             {
-                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
-                Console.WriteLine(JsonConvert.SerializeObject(userToken));
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken);
 
                 if (userToken == null)
                 {
@@ -327,8 +326,20 @@ namespace FishFarm.Services
                     };
                 }
 
+                Console.WriteLine(JsonConvert.SerializeObject(userToken));
+
                 var userProfile = _userProfileRepository.GetUserProfile(userToken.UserId);
                 var user = _userRepository.GetUserInfo(userToken.UserId);
+
+                if (user == null || user.UserId == 0)
+                {
+                    return new LoginResponse
+                    {
+                        status = "500",
+                        message = "Invalid user information",
+                        isDeviceVerified = false,
+                    };
+                }
 
                 if (userToken.Purpose == "login")
                 {
@@ -366,7 +377,7 @@ namespace FishFarm.Services
                 return new LoginResponse
                 {
                     status = "500",
-                    message = $"Error occures while verifying Temperal Token: {ex.Message}",
+                    message = $"Error occures while verifying Temporal Token: {ex.Message}",
                     isDeviceVerified = false,
                 };
             }

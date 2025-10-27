@@ -1,6 +1,7 @@
 ﻿using FishFarm.BusinessObjects;
 using FishFarm.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -94,6 +95,7 @@ namespace FishFarmAPI_v2.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpGet("get-user-by-username")]
         public IActionResult GetUserByUsername([FromQuery] string username)
         {

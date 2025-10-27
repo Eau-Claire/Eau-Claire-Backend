@@ -1,6 +1,8 @@
 using FishFarm.DataAccessLayer;
 using FishFarm.Services;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,23 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = false,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]
+                ))
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddScoped<OtpService>();
 builder.Services.AddScoped<UserService>();
 
@@ -26,8 +45,18 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<FishFarmDbV2Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbConnection")));
 
-builder.Services.AddAuthentication();
-builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("otp", opt =>
+    {
+        opt.PermitLimit = 5;
+        opt.Window = TimeSpan.FromMinutes(1);
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0;
+    });
+    
+    options.RejectionStatusCode = 429;
+});
 
 builder.Configuration.AddEnvironmentVariables();
 
@@ -35,7 +64,18 @@ builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
+app.UseAuthentication();
+app.UseAuthorization(); 
+
 app.UseCors();
+
+app.UseRateLimiter();
+
+app.MapPost("/api/v1/sys/request-otp", 
+    [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("otp")] () => Results.Ok());
+
+app.MapPost("/api/v1/sys/verify-otp", 
+    [Microsoft.AspNetCore.RateLimiting.EnableRateLimiting("otp")] () => Results.Ok());
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
