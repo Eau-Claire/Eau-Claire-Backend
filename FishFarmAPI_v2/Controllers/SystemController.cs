@@ -24,6 +24,7 @@ namespace FishFarmAPI_v2.Controllers
             {
                 return StatusCode(500, new { message = "An unknown error occurred during login" });
             }
+
             else if (result.status == "401")
             {
                 return Unauthorized(new { message = result.message, isDeviceVerified = result.isDeviceVerified });

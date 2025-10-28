@@ -63,6 +63,8 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddMemoryCache();
 
+Console.WriteLine("Connection: " + builder.Configuration.GetConnectionString("MyDbConnection"));
+
 var app = builder.Build();
 
 app.UseAuthentication();
