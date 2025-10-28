@@ -55,3 +55,4 @@ Thumbs.db
 *.swp
 /FishFarmAPI_v2/appsettings.json
 /FishFarmAPI_v2/appsettings.json
+/FishFarmAPI_v2/appsettings.Development.json
