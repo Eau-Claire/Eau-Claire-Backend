@@ -22,9 +22,6 @@ namespace FishFarm.Services
         private readonly string _fromPhoneNumber;
         private readonly string _gmailAppPassword;
 
-        private readonly DeviceService _deviceService;
-
-
         public OtpService(IMemoryCache cache, IConfiguration config)
         {
             _accountSid = config["Twilio:AccountSid"] ?? "";
@@ -35,9 +32,8 @@ namespace FishFarm.Services
 
             _cache = cache;
             _templateService = new TemplateService();
-            _deviceService = new DeviceService();
         }
-        public string GenerateOtp(int length = 6)
+        private string GenerateOtp(int length = 6)
         {
             const string digits = "0123456789";
             var random = new Random();
@@ -51,7 +47,7 @@ namespace FishFarm.Services
         }
 
 
-        public async Task<ServiceResult> SendOtp(string method, string otp, string deviceId, string? phone, string? email)
+        public async Task<ServiceResult> SendOtp(string method, string deviceId, string? phone, string? email)
         {
             try
             {
@@ -61,11 +57,12 @@ namespace FishFarm.Services
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
                 };
 
-
                 if (_cache.TryGetValue(cacheKey, out _))
                 {
                     _cache.Remove(cacheKey);
                 }
+
+                string otp = GenerateOtp(6);
 
                 if (method == "sms")
                 {
@@ -89,7 +86,7 @@ namespace FishFarm.Services
                     };
 
                 }
-                else if (method == "email")
+                else
                 {
                    
                     _cache.Set(cacheKey, otp, cacheOptions);
@@ -123,14 +120,6 @@ namespace FishFarm.Services
                     }
 
                 }
-                return new ServiceResult
-                {
-                    IsSuccess = false,
-                    ErrorCode = "400",
-                    Message = "Invalid method. Use 'sms' or 'email'.",
-                    Data = null
-                };
-
             }
             catch (Exception ex)
             {

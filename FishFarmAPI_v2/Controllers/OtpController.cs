@@ -26,14 +26,7 @@ namespace FishFarmAPI_v2.Controllers
                 return StatusCode(500, new { Message = "Device Id and User Id can not be empty" });
             }
 
-            var otp = _otpService.GenerateOtp(6);
-
-            if (otp == null)
-            {
-                return StatusCode(500, new { Message = "Failed to generate OTP" });
-            }
-
-            var result = await _otpService.SendOtp(request.Method, otp, request.DeviceId, request.Phone, request.Email);
+            var result = await _otpService.SendOtp(request.Method, request.DeviceId, request.Phone, request.Email);
 
             if (result.ErrorCode == "500")
             {
@@ -58,6 +51,19 @@ namespace FishFarmAPI_v2.Controllers
                 || string.IsNullOrEmpty(request.InputOtp) || string.IsNullOrEmpty(request.Purpose))
             {
                 return BadRequest(new { Message = "Method, InputOtp or Purpose is missing" });
+            }
+
+            if (request.Method != "sms" && request.Method != "email")
+            {
+                return BadRequest(new { Message = "Invalid method. Use 'sms' or 'email'." });
+            }
+            else if (request.Method == "sms" && string.IsNullOrEmpty(request.Phone))
+            {
+                return BadRequest(new { Message = "Phone number is required for SMS method" });
+            }
+            else if (request.Method == "email" && string.IsNullOrEmpty(request.Email))
+            {
+                return BadRequest(new { Message = "Email is required for Email method" });
             }
 
             var tempToken = _otpService.VerifyOtp(request.Method, request.InputOtp, request.UserId, request.DeviceId, request.Phone, request.Email, request.Purpose);

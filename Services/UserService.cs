@@ -192,7 +192,6 @@ namespace FishFarm.Services
         //{
 
         //}
-
         public LoginResponse? Login(string username, string password, string deviceId)
         {
             try
@@ -240,7 +239,6 @@ namespace FishFarm.Services
                 };
             }
         }
-
         public LoginResponse ResetPassword(int userId, string newPassword, string confirmPassword, string tempToken)
         {
             try
