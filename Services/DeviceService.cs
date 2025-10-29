@@ -12,9 +12,9 @@ namespace FishFarm.Services
     {
         private readonly DeviceRepository _deviceRepository;
         
-        public DeviceService()
+        public DeviceService(DeviceRepository deviceRepository)
         {
-            _deviceRepository = new DeviceRepository();
+            _deviceRepository = deviceRepository;
         }
 
         public Device AddDevice(string deviceId, int userId, string? deviceName, string? deviceType)

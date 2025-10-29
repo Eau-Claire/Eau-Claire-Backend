@@ -9,7 +9,12 @@ namespace FishFarm.Repositories
 {
     public class RefreshTokenRepository : IRefreshTokenRepository
     {
-        private readonly RefreshTokenDAO _refreshTokenDAO = new RefreshTokenDAO();
+        private readonly RefreshTokenDAO _refreshTokenDAO ;
+
+        public RefreshTokenRepository (RefreshTokenDAO refreshTokenDAO)
+        {
+            _refreshTokenDAO = refreshTokenDAO;
+        }
 
         public bool isValidRefreshToken(int userId, string refreshToken)
         {

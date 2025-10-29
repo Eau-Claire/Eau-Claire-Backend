@@ -9,7 +9,12 @@ namespace FishFarm.DataAccessLayer
 {
     public class RefreshTokenDAO
     {
-        private FishFarmDbV2Context _dbcontext = new FishFarmDbV2Context();
+        private FishFarmDbV2Context _dbcontext;
+
+        public RefreshTokenDAO (FishFarmDbV2Context dbcontext)
+        {
+            _dbcontext = dbcontext;
+        }
 
         public bool SaveRefreshToken(int userId, string refreshToken, DateTime expiryDate)
         {

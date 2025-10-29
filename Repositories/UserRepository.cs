@@ -10,7 +10,12 @@ namespace FishFarm.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private UserDAO _userDAO = new UserDAO();
+        private UserDAO _userDAO;
+
+        public UserRepository(UserDAO userDAO)
+        {
+            _userDAO = userDAO;
+        }
         public bool ResetPassword(int id, string newPasswordHash)
         {
             return _userDAO.ResetPassword(id, newPasswordHash);

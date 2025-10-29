@@ -12,9 +12,9 @@ namespace FishFarm.Repositories
     {
         private readonly DeviceDAO _deviceDAO;
 
-        public DeviceRepository()
+        public DeviceRepository(DeviceDAO deviceDAO)
         {
-            _deviceDAO = new DeviceDAO();
+            _deviceDAO = deviceDAO;
         }
 
         public Device AddDevice(string deviceId, int userId, string? deviceName, string? deviceType)

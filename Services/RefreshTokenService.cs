@@ -10,9 +10,9 @@ namespace FishFarm.Services
     public class RefreshTokenService : IRefreshTokenService
     {
         private readonly RefreshTokenRepository _refreshTokenRepository;
-        public RefreshTokenService()
+        public RefreshTokenService(RefreshTokenRepository refreshTokenRepository)
         {
-            _refreshTokenRepository = new RefreshTokenRepository();
+            _refreshTokenRepository = refreshTokenRepository;
         }
         public bool SaveRefreshToken(int userId, string refreshToken, DateTime expiryDate)
         {

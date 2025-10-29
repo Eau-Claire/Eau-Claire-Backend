@@ -1,4 +1,5 @@
 ﻿using FishFarm.BusinessObjects;
+using FishFarm.Repositories;
 using FishFarm.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -14,9 +15,12 @@ namespace FishFarmAPI_v2.Controllers
     {
         private readonly UserService _userService;
 
-        public UserController(IMemoryCache cache, IConfiguration configuration)
+        public UserController(IMemoryCache cache, IConfiguration configure,
+            UserRepository userRepository, UserProfileService userProfileService,
+            DeviceService deviceService, RefreshTokenService refreshTokenService)
         {
-            _userService = new UserService(cache, configuration);
+            _userService = new UserService(cache, configure, userRepository,
+                userProfileService, deviceService, refreshTokenService);
         }
 
         [HttpGet("get-user-by-username")]

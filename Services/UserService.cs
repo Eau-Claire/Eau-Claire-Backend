@@ -16,18 +16,20 @@ namespace FishFarm.Services
     public class UserService : IUserService
     {
         private readonly UserRepository _userRepository;
-        private readonly UserProfileRepository _userProfileRepository;
+        private readonly UserProfileService _userProfileService;
         private readonly DeviceService _deviceService;
         private readonly RefreshTokenService _refreshTokenService;
         private readonly IMemoryCache _cache;
         private IConfiguration _configure;
 
-        public UserService(IMemoryCache cache, IConfiguration configure)
+        public UserService(IMemoryCache cache, IConfiguration configure, 
+            UserRepository userRepository, UserProfileService userProfileService,
+            DeviceService deviceService, RefreshTokenService refreshTokenService)
         {
-            _userRepository = new UserRepository();
-            _userProfileRepository = new UserProfileRepository();
-            _deviceService = new DeviceService();
-            _refreshTokenService = new RefreshTokenService();
+            _userRepository = userRepository;
+            _userProfileService = userProfileService;
+            _deviceService = deviceService;
+            _refreshTokenService = refreshTokenService;
             _configure = configure;
             _cache = cache;
         }
@@ -56,7 +58,7 @@ namespace FishFarm.Services
                     };
                 }
                 var user = _userRepository.GetUserInfo(userId);
-                var userProfile = _userProfileRepository.GetUserProfile(userId);
+                var userProfile = _userProfileService.GetUserProfile(userId);
 
                 return GenerateTokenResponse(user, userProfile);
             }
@@ -208,7 +210,7 @@ namespace FishFarm.Services
                     };
                 }
 
-                var userProfile = _userProfileRepository.GetUserProfile(user.UserId);
+                var userProfile = _userProfileService.GetUserProfile(user.UserId);
                 var userInfo = _userRepository.GetUserInfo(user.UserId);
 
 
@@ -326,7 +328,7 @@ namespace FishFarm.Services
 
                 Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
-                var userProfile = _userProfileRepository.GetUserProfile(userToken.UserId);
+                var userProfile = _userProfileService.GetUserProfile(userToken.UserId);
                 var user = _userRepository.GetUserInfo(userToken.UserId);
 
                 if (user == null || user.UserId == 0)

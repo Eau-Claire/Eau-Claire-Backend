@@ -10,7 +10,11 @@ namespace FishFarm.DataAccessLayer
 {
     public class DeviceDAO
     {
-        private FishFarmDbV2Context _context = new FishFarmDbV2Context();
+        private FishFarmDbV2Context _context;
+        public DeviceDAO(FishFarmDbV2Context context)
+        {
+            _context = context;
+        }
 
         public Device AddDevice(string deviceId, int userId, string? deviceName, string? deviceType)
         {

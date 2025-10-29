@@ -1,4 +1,5 @@
 ﻿using FishFarm.BusinessObjects;
+using FishFarm.Repositories;
 using FishFarm.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -10,9 +11,13 @@ namespace FishFarmAPI_v2.Controllers
     public class SystemController : Controller
     {
         private readonly UserService _userService;
-        public SystemController(IMemoryCache cache, IConfiguration configuration)
+        public SystemController(IMemoryCache cache, IConfiguration configure,
+            UserRepository userRepository, UserProfileService userProfileService,
+            DeviceService deviceService, RefreshTokenService refreshTokenService
+            )
         {
-            _userService = new UserService(cache, configuration);
+            _userService = new UserService(cache, configure, userRepository, 
+                userProfileService, deviceService, refreshTokenService);
         }
 
         [HttpPost("login")]

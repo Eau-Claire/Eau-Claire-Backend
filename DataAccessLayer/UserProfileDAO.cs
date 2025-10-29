@@ -9,7 +9,12 @@ namespace FishFarm.DataAccessLayer
 {
     public class UserProfileDAO
     {
-        private FishFarmDbV2Context _dbcontext = new FishFarmDbV2Context();
+        private FishFarmDbV2Context _dbcontext ;
+
+        public UserProfileDAO(FishFarmDbV2Context dbcontext)
+        {
+            _dbcontext = dbcontext;
+        }
 
         public UserProfile GetUserProfile(int userId)
         {
