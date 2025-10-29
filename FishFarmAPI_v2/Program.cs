@@ -62,6 +62,11 @@ builder.Services.AddOpenApi();
 var provider = builder.Configuration["DB_PROVIDER"];
 var conn = builder.Configuration.GetConnectionString("MyDbConnection");
 
+//For supabase testing environment only
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("System.Net.DontEnableSystemDefaultDns", true);
+AppContext.SetSwitch("System.Net.DisableIPv6", true);
+
 builder.Services.AddDbContext<FishFarmDbV2Context>(options =>
 {
     if (provider == "Postgres")
