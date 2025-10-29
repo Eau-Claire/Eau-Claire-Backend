@@ -56,3 +56,6 @@ Thumbs.db
 /FishFarmAPI_v2/appsettings.json
 /FishFarmAPI_v2/appsettings.json
 /FishFarmAPI_v2/appsettings.Development.json
+/FishFarmAPI_v2/appsettings.json
+/FishFarmAPI_v2/appsettings.Development.json
+/FishFarmAPI_v2/appsettings.Production.json
