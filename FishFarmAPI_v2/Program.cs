@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using FishFarm.DataAccessLayer;
 using FishFarm.Repositories;
 using FishFarm.Services;
@@ -70,7 +70,9 @@ AppContext.SetSwitch("System.Net.DisableIPv6", true);
 builder.Services.AddDbContext<FishFarmDbV2Context>(options =>
 {
     if (provider == "Postgres")
-        options.UseNpgsql(conn);
+        options.UseNpgsql(conn)
+        .UseSnakeCaseNamingConvention();  // ép EF dùng kiểu snake_case tương thích với PostgreSQL
+
     else
         options.UseSqlServer(conn);
 });

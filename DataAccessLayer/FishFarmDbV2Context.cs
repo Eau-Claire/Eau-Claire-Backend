@@ -70,8 +70,13 @@ public partial class FishFarmDbV2Context : DbContext
             optionsBuilder.UseSqlServer(GetConnectionString());
         }
     }
+
+    //ep kieu chu hoa thuong
+    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
         modelBuilder.Entity<FishBreed>(entity =>
         {
             entity.HasKey(e => e.BreedId).HasName("PK__FishBree__9C0214357AA6B114");
