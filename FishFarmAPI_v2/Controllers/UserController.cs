@@ -16,7 +16,7 @@ namespace FishFarmAPI_v2.Controllers
         private readonly UserService _userService;
 
         public UserController(IMemoryCache cache, IConfiguration configure,
-            UserRepository userRepository, UserProfileService userProfileService,
+            IUserRepository userRepository, UserProfileService userProfileService,
             DeviceService deviceService, RefreshTokenService refreshTokenService)
         {
             _userService = new UserService(cache, configure, userRepository,

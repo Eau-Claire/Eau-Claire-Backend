@@ -10,9 +10,9 @@ namespace FishFarm.Services
 {
     public class UserProfileService : IUserProfileService
     {
-        private readonly UserProfileRepository _userProfileRepository;
+        private readonly IUserProfileRepository _userProfileRepository;
 
-        public UserProfileService(UserProfileRepository userProfileRepository)
+        public UserProfileService(IUserProfileRepository userProfileRepository)
         {
             _userProfileRepository = userProfileRepository;
         }

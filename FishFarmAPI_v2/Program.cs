@@ -37,13 +37,23 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddAuthorization();
 
+
+//dang ky service
 builder.Services.AddScoped<UserDAO>();
 builder.Services.AddScoped<DeviceDAO>();
-builder.Services.AddScoped<OtpService>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<DeviceService>();
+builder.Services.AddScoped<UserProfileDAO>();
+builder.Services.AddScoped<RefreshTokenDAO>();
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<DeviceService>();
+builder.Services.AddScoped<UserProfileService>();
+builder.Services.AddScoped<RefreshTokenService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

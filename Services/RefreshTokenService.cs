@@ -9,8 +9,8 @@ namespace FishFarm.Services
 {
     public class RefreshTokenService : IRefreshTokenService
     {
-        private readonly RefreshTokenRepository _refreshTokenRepository;
-        public RefreshTokenService(RefreshTokenRepository refreshTokenRepository)
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        public RefreshTokenService(IRefreshTokenRepository refreshTokenRepository)
         {
             _refreshTokenRepository = refreshTokenRepository;
         }
