@@ -31,5 +31,17 @@ namespace FishFarmAPI_v2.Controllers
             return Ok(new { status = "success", userId = user.UserId, username = user.Username, phone = user.Phone, email = user.Email });
         }
 
+        [HttpGet("get-user-info")]
+        public IActionResult GetUserInfo()
+        {
+            int userId = User.FindFirst("userId") != null ? int.Parse(User.FindFirst("userId")!.Value) : 0;
+            var user = _userService.GetUserInfo(userId);
+            if (user == null)
+            {
+                return NotFound(new { status = "", Message = "User not found" });
+            }
+            return Ok(new { status = "success", user = user });
+        }
+
     }
 }

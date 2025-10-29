@@ -43,8 +43,17 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+var provider = builder.Configuration["DB_PROVIDER"];
+var conn = builder.Configuration.GetConnectionString("MyDbConnection");
+
 builder.Services.AddDbContext<FishFarmDbV2Context>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDbConnection")));
+{
+    if (provider == "Postgres")
+        options.UseNpgsql(conn);
+    else
+        options.UseSqlServer(conn);
+});
+
 
 builder.Services.AddRateLimiter(options =>
 {
