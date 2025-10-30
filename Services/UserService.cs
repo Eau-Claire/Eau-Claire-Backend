@@ -43,7 +43,7 @@ namespace FishFarm.Services
             return _userRepository.GetUserByUsername(username);
         }
 
-        public LoginResponse GetNewAccessTokenIfRefreshTokenValid(int userId, string refreshToken)
+        public LoginResponse GetNewAccessTokenIfRefreshTokenValid(int userId, string refreshToken, string method)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace FishFarm.Services
                 var user = _userRepository.GetUserInfo(userId);
                 var userProfile = _userProfileService.GetUserProfile(userId);
 
-                return GenerateTokenResponse(user, userProfile);
+                return GenerateTokenResponse(user, userProfile, method);
             }
             catch (Exception ex)
             {
@@ -73,7 +73,7 @@ namespace FishFarm.Services
             }
         }
 
-        private LoginResponse GenerateTokenResponse(User user, UserProfile userProfile)
+        private LoginResponse GenerateTokenResponse(User user, UserProfile userProfile, string method)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configure["Jwt:Key"] ?? "");
@@ -131,7 +131,7 @@ namespace FishFarm.Services
                 refreshExpiresIn = 86400,
                 refreshToken = refreshToken,
                 tokenType = "Bearer",
-                scope = "profile email",
+                scope = $"profile {method}", //sua sau
                 userId = user.UserId,
                 isDeviceVerified = true,
                 userProfile = new UserProfile
@@ -227,7 +227,7 @@ namespace FishFarm.Services
                     };
                 }
 
-                return GenerateTokenResponse(user, userProfile);
+                return GenerateTokenResponse(user, userProfile, "direct login");
 
             }
             catch (Exception ex)
@@ -357,7 +357,7 @@ namespace FishFarm.Services
 
                     _cache.Remove(tempToken);
 
-                    return GenerateTokenResponse(user, userProfile);
+                    return GenerateTokenResponse(user, userProfile, userToken.Method);
 
                 }
                 else if (userToken.Purpose == "register")

@@ -80,7 +80,7 @@ namespace FishFarmAPI_v2.Controllers
         [HttpPost("refresh-token")]
         public IActionResult RefreshToken([FromBody] RefreshTokenRequest request)
         {
-            var result = _userService.GetNewAccessTokenIfRefreshTokenValid(request.UserId, request.RefreshToken);
+            var result = _userService.GetNewAccessTokenIfRefreshTokenValid(request.UserId, request.RefreshToken, "new access token");
             if (result == null)
             {
                 return StatusCode(500, new { message = "An unknown error occurred during token refresh" });
