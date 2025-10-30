@@ -9,6 +9,8 @@ using FishFarm.BusinessObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using Twilio.Rest.Api.V2010.Account;
 
 namespace FishFarm.Services
@@ -93,33 +95,50 @@ namespace FishFarm.Services
                    
                     _cache.Set(cacheKey, otp, cacheOptions);
 
-                    using (SmtpClient client = new SmtpClient("smtp.sendgrid.net"))
+                    //using (SmtpClient client = new SmtpClient("smtp.sendgrid.net"))
+                    //{
+                    //    client.Port = 587;
+                    //    client.Credentials = new NetworkCredential("apikey", _sendGridAppPassword);
+                    //    client.EnableSsl = true;
+
+                    //    MailMessage mailMessage = new MailMessage
+                    //    {
+                    //        From = new MailAddress("eauclaire1510@gmail.com", "Eau Claire Support"),
+                    //        To = { new MailAddress(email ?? "eauclaire1510@gmail.com") },
+                    //        Subject = "Your OTP Code to Verify Eau Claire account!",
+                    //        Body = _templateService.GetEmailOtpTemplate(otp),
+                    //        IsBodyHtml = true,
+
+                    //    };
+
+                    //    await client.SendMailAsync(mailMessage);
+
+                    //    return new ServiceResult
+                    //    {
+                    //        IsSuccess = true,
+                    //        ErrorCode = "200",
+                    //        Message = "OTP sent successfully via Email",
+                    //        Data = null
+
+                    //    };
+                    //}
+
+                    var client = new SendGridClient(_sendGridAppPassword);
+                    var from = new EmailAddress("eauclaire1510@gmail.com", "Eau Claire Support");
+                    var subject = "Your OTP Code to Verify Eau Claire account!";
+                    var to = new EmailAddress(email ?? "eauclaire1510@gmail.com");
+                    var htmlContent = _templateService.GetEmailOtpTemplate(otp);
+                    var msg = MailHelper.CreateSingleEmail(from, to, subject, $"Your OTP code is {otp}", htmlContent);
+                    var response = await client.SendEmailAsync(msg);
+
+                    return new ServiceResult
                     {
-                        client.Port = 587;
-                        client.Credentials = new NetworkCredential("apikey", _sendGridAppPassword);
-                        client.EnableSsl = true;
+                        IsSuccess = true,
+                        ErrorCode = "200",
+                        Message = "OTP sent successfully via Email",
+                        Data = null
 
-                        MailMessage mailMessage = new MailMessage
-                        {
-                            From = new MailAddress("eauclaire1510@gmail.com", "Eau Claire Support"),
-                            To = { new MailAddress(email ?? "eauclaire1510@gmail.com") },
-                            Subject = "Your OTP Code to Verify Eau Claire account!",
-                            Body = _templateService.GetEmailOtpTemplate(otp),
-                            IsBodyHtml = true,
-
-                        };
-
-                        await client.SendMailAsync(mailMessage);
-
-                        return new ServiceResult
-                        {
-                            IsSuccess = true,
-                            ErrorCode = "200",
-                            Message = "OTP sent successfully via Email",
-                            Data = null
-
-                        };
-                    }
+                    };
 
                 }
             }
