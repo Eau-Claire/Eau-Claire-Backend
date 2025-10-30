@@ -21,6 +21,7 @@ namespace FishFarm.Services
         private readonly string _authToken;
         private readonly string _fromPhoneNumber;
         private readonly string _gmailAppPassword;
+        private readonly string _sendGridAppPassword;
 
         public OtpService(IMemoryCache cache, IConfiguration config)
         {
@@ -29,6 +30,7 @@ namespace FishFarm.Services
             _fromPhoneNumber = config["Twilio:FromPhoneNumber"] ?? "";
 
             _gmailAppPassword = config["Gmail:GmailAppPassword"] ?? "";
+            _sendGridAppPassword = config["SendGrid:SendGridPassword"] ?? "";
 
             _cache = cache;
             _templateService = new TemplateService();
@@ -91,10 +93,10 @@ namespace FishFarm.Services
                    
                     _cache.Set(cacheKey, otp, cacheOptions);
 
-                    using (SmtpClient client = new SmtpClient("smtp.gmail.com"))
+                    using (SmtpClient client = new SmtpClient("smtp.sendgrid.net"))
                     {
                         client.Port = 587;
-                        client.Credentials = new NetworkCredential("eauclaire1510@gmail.com", _gmailAppPassword);
+                        client.Credentials = new NetworkCredential("apikey", _sendGridAppPassword);
                         client.EnableSsl = true;
 
                         MailMessage mailMessage = new MailMessage
