@@ -109,6 +109,10 @@ namespace FishFarm.Services
 
                         await client.SendMailAsync(mailMessage);
 
+                        client.SendCompleted += (s, e) => {
+                            Console.WriteLine($"SMTP error: {e.Error?.Message}");
+                        };
+
                         return new ServiceResult
                         {
                             IsSuccess = true,
