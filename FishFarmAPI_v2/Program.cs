@@ -41,6 +41,7 @@ builder.Services.AddAuthorization();
 //dang ky service
 builder.Services.AddControllers();
 builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<UserDAO>();
 builder.Services.AddScoped<DeviceDAO>();
