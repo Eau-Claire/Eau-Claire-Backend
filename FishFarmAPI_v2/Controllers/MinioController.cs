@@ -8,9 +8,10 @@ namespace FishFarmAPI_v2.Controllers
     {
         private readonly HttpClient _httpClient;
 
-        public MinioController(HttpClient httpClient)
+        public MinioController(IHttpClientFactory clientFactory)
         {
-            _httpClient = httpClient;
+            _httpClient = clientFactory.CreateClient();
+            _httpClient.Timeout = Timeout.InfiniteTimeSpan; //Vô hạn timeout
         }
 
         [HttpGet("{**path}")] //Bất cứ chuỗi nào (kể cả có / trong đó) đi sau /minio/ đều nhét hết vào biến path
