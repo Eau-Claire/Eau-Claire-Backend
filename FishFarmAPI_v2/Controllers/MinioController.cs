@@ -11,7 +11,7 @@ namespace FishFarmAPI_v2.Controllers
         public MinioController(IHttpClientFactory clientFactory)
         {
             _httpClient = clientFactory.CreateClient();
-            _httpClient.Timeout = Timeout.InfiniteTimeSpan; //Vô hạn timeout
+            _httpClient.Timeout = Timeout.InfiniteTimeSpan; 
         }
 
         [HttpGet("{**path}")] //Bất cứ chuỗi nào (kể cả có / trong đó) đi sau /minio/ đều nhét hết vào biến path
@@ -19,19 +19,28 @@ namespace FishFarmAPI_v2.Controllers
         {
             try
             {
-                string minioUrl = $"http://100.98.59.51:9000/{path}";
+                var minioUrl = $"http://100.98.59.51:9000/{path}";
 
-                var response = await _httpClient.GetAsync(minioUrl);
+                // Chỉ đọc header, tai ve dan dan
+                using var response = await _httpClient.GetAsync(minioUrl, HttpCompletionOption.ResponseHeadersRead);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return NotFound();
+                    return StatusCode((int)response.StatusCode, $"Failed to fetch from MinIO: {response.StatusCode}");
                 }
 
-                var content = await response.Content.ReadAsStreamAsync();
-                var contentType = response.Content.Headers.ContentType?.ToString();
+                var contentType = response.Content.Headers.ContentType?.ToString() ?? "application/octet-stream";
+                var contentStream = await response.Content.ReadAsStreamAsync();
 
-                return File(content, contentType);
+                return File(contentStream, contentType);
+            }
+            catch (HttpRequestException ex)
+            {
+                return StatusCode(502, $"Cannot reach MinIO: {ex.Message}");
+            }
+            catch (TaskCanceledException)
+            {
+                return StatusCode(504, "Request to MinIO timed out.");
             }
             catch (Exception ex)
             {
