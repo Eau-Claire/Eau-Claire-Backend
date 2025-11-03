@@ -31,9 +31,13 @@ namespace FishFarmAPI_v2.Controllers
                 }
 
                 var contentType = response.Content.Headers.ContentType?.ToString() ?? "application/octet-stream";
-                var contentStream = await response.Content.ReadAsStreamAsync();
+                await using var contentStream = await response.Content.ReadAsStreamAsync();
 
-                return File(contentStream, contentType);
+                var memoryStream = new MemoryStream();
+                await contentStream.CopyToAsync(memoryStream);
+                memoryStream.Position = 0; // Reset stream position
+
+                return File(memoryStream, contentType);
             }
             catch (HttpRequestException ex)
             {
