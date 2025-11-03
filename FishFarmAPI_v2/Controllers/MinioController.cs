@@ -20,7 +20,7 @@ namespace FishFarmAPI_v2.Controllers
         {
             try
             {
-                var minioUrl = $"https://eau-claire-documents.onrender.com/{path}";
+                var minioUrl = $"http://10.24.0.175:9000/{path}";
 
                 // Chỉ đọc header, tai ve dan dan
                 using var response = await _httpClient.GetAsync(minioUrl, HttpCompletionOption.ResponseHeadersRead);
