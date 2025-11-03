@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Minio;
 
 namespace FishFarmAPI_v2.Controllers
 {
@@ -11,7 +12,7 @@ namespace FishFarmAPI_v2.Controllers
         public MinioController(IHttpClientFactory clientFactory)
         {
             _httpClient = clientFactory.CreateClient();
-            _httpClient.Timeout = Timeout.InfiniteTimeSpan; 
+            _httpClient.Timeout = Timeout.InfiniteTimeSpan;
         }
 
         [HttpGet("{**path}")] //Bất cứ chuỗi nào (kể cả có / trong đó) đi sau /minio/ đều nhét hết vào biến path
@@ -19,7 +20,7 @@ namespace FishFarmAPI_v2.Controllers
         {
             try
             {
-                var minioUrl = $"http://100.98.59.51:9000/{path}";
+                var minioUrl = $"https://eau-claire-documents.onrender.com/{path}";
 
                 // Chỉ đọc header, tai ve dan dan
                 using var response = await _httpClient.GetAsync(minioUrl, HttpCompletionOption.ResponseHeadersRead);
