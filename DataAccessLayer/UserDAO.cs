@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FishFarm.BusinessObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace FishFarm.DataAccessLayer
 {
@@ -14,6 +15,7 @@ namespace FishFarm.DataAccessLayer
         public UserDAO(FishFarmDbV2Context dbcontext)
         {
             _dbcontext = dbcontext;
+            Console.WriteLine(_dbcontext.Database.GetConnectionString());
         }
 
         public User GetUserInfo(int id)
