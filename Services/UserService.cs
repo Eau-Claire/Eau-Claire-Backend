@@ -255,25 +255,17 @@ namespace FishFarm.Services
                     };
                 }
 
-                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken);
                 Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
-                if (userToken == null)
-                {
-                    return new LoginResponse
-                    {
-                        status = "401",
-                        message = "Invalid token",
-                        isDeviceVerified = false,
-                    };
-                }
+                bool isVerified = userToken.isVerified;
 
-                if (userToken.isVerified == false)
+                if (!isVerified)
                 {
                     return new LoginResponse
                     {
                         status = "401",
-                        message = "Token not verified for password reset",
+                        message = "Token not verified for password reset, please verify it first",
                         isDeviceVerified = false,
                     };
                 }
@@ -428,7 +420,7 @@ namespace FishFarm.Services
         {
             try
             {
-                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken);
                 Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
                 if (userToken == null || userToken.Purpose != "generic")

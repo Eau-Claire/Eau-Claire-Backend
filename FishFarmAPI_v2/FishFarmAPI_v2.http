@@ -1,6 +1,6 @@
 @FishFarmAPI_v2_HostAddress = http://localhost:5076
 
-GET {{FishFarmAPI_v2_HostAddress}}/weatherforecast/
+GET {{FishFarmAPI_v2_HostAddress}}
 Accept: application/json
 
 ###
