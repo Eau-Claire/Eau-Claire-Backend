@@ -6,11 +6,17 @@ namespace FishFarm.BusinessObjects;
 
 public partial class User
 {
+    [Column("UserId")]
     public int UserId { get; set; }
+    [Column("Username")]
     public string Username { get; set; } = null!;
+    [Column("PasswordHash")]
     public string PasswordHash { get; set; } = null!;
+    [Column("Email")]
     public string? Email { get; set; }
+    [Column("Phone")]
     public string? Phone { get; set; }
+    [Column("Role")]
     public string? Role { get; set; }
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
