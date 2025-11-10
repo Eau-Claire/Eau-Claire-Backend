@@ -1,6 +1,15 @@
-@FishFarmAPI_v2_HostAddress = http://localhost:5076
+@FishFarmAPI_v2_HostAddress = https://100.98.59.51:7132
 
 GET {{FishFarmAPI_v2_HostAddress}}
 Accept: application/json
+
+###
+
+POST {{FishFarmAPI_v2_HostAddress}}/api/v1/sys/reset-password
+Content-Type: application/json
+
+{
+  //ResetPasswordRequest
+}
 
 ###
