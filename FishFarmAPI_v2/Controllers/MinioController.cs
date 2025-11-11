@@ -20,7 +20,7 @@ namespace FishFarmAPI_v2.Controllers
         {
             try
             {
-                var minioUrl = $"https://acb19aa40e6c.ngrok-free.app/{path}";
+                var minioUrl = $"https://a937894596c1.ngrok-free.app/{path}";
 
                 // Chỉ đọc header, tai ve dan dan
                 using var response = await _httpClient.GetAsync(minioUrl, HttpCompletionOption.ResponseHeadersRead);
