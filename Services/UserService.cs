@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using FishFarm.BusinessObjects;
 using FishFarm.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -20,7 +17,7 @@ namespace FishFarm.Services
         private readonly DeviceService _deviceService;
         private readonly RefreshTokenService _refreshTokenService;
         private readonly IMemoryCache _cache;
-        private IConfiguration _configure;
+        private readonly IConfiguration _configure;
 
         public UserService(IMemoryCache cache, IConfiguration configure, 
             IUserRepository userRepository, UserProfileService userProfileService,
@@ -76,9 +73,34 @@ namespace FishFarm.Services
         private LoginResponse GenerateTokenResponse(User user, UserProfile userProfile, string method)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configure["Jwt:Key"] ?? "");
+            var keyBase64 = Encoding.ASCII.GetBytes(_configure["Jwt:Key"]).ToString();
 
-            var tokenDescriptor = new Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor
+            if(string.IsNullOrEmpty(keyBase64))
+            {
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = "JWT Key is not configured properly",
+                    isDeviceVerified = false,
+                };
+            }
+
+            byte[] keyBytes;
+
+            try
+            {
+                keyBytes = Convert.FromBase64String(_configure[keyBase64]);
+
+            } catch (Exception ex)
+            {
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = $"Error while processing JWT Key: {ex.Message}"
+                };
+            }
+
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new System.Security.Claims.ClaimsIdentity(
                     new[]
@@ -91,19 +113,19 @@ namespace FishFarm.Services
                             new System.Security.Claims.Claim("permanentAddress", userProfile?.PermanentAddress ?? ""),
                             new System.Security.Claims.Claim("phoneNumber", userProfile?.CurrentPhoneNumber ?? ""),
                             new System.Security.Claims.Claim("dateOfBirth", userProfile?.DateOfBirth.ToString() ?? ""),
-                            new System.Security.Claims.Claim("email", user ?.Email ?? "")
+                            new System.Security.Claims.Claim("email", user.Email ?? "")
                         }),
                 Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(
-                    new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
-                    Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(keyBytes),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var accessToken = tokenHandler.WriteToken(token);
             var refreshToken = Guid.NewGuid().ToString();
 
-            if (user == null || user.UserId == 0)
+            if (user.UserId == 0)
             {
                 return new LoginResponse
                 {
@@ -211,8 +233,6 @@ namespace FishFarm.Services
                 }
 
                 var userProfile = _userProfileService.GetUserProfile(user.UserId);
-                var userInfo = _userRepository.GetUserInfo(user.UserId);
-
 
                 var isVerified = _deviceService.CheckDeviceIsVerified(deviceId, user.UserId);
 
@@ -255,7 +275,7 @@ namespace FishFarm.Services
                     };
                 }
 
-                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken);
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken)!;
                 Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
                 bool isVerified = userToken.isVerified;
@@ -306,9 +326,10 @@ namespace FishFarm.Services
         {
             try
             {
-                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken);
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken)!;
+                Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
-                if (userToken == null)
+                if (userToken.Purpose != "login" || userToken.Purpose != "register")
                 {
                     return new LoginResponse
                     {
@@ -317,8 +338,6 @@ namespace FishFarm.Services
                         isDeviceVerified = false,
                     };
                 }
-
-                Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
                 var userProfile = _userProfileService.GetUserProfile(userToken.UserId);
                 var user = _userRepository.GetUserInfo(userToken.UserId);
@@ -354,7 +373,7 @@ namespace FishFarm.Services
                 }
                 else if (userToken.Purpose == "register")
                 {
-
+                    //Missing item: register user function
                 }
 
                 return new LoginResponse
@@ -382,9 +401,10 @@ namespace FishFarm.Services
         {
             try
             {
-                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken)!;
                 Console.WriteLine(JsonConvert.SerializeObject(userToken));
-                if (userToken == null)
+
+                if (userToken.Purpose != "register")
                 {
                     return new LoginResponse
                     {
@@ -420,10 +440,10 @@ namespace FishFarm.Services
         {
             try
             {
-                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken);
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken)!;
                 Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
-                if (userToken == null || userToken.Purpose != "generic")
+                if (userToken.Purpose != "generic")
                 {
                     return false;
                 }

@@ -8,7 +8,7 @@ namespace FishFarm.Services
 {
     public class TemplateService
     {
-        public string GetEmailOtpTemplate(string otp)
+        public static string GetEmailOtpTemplate(string otp)
         {
             string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "OtpTemplate.html");
             string htmlContent = File.ReadAllText(templatePath);

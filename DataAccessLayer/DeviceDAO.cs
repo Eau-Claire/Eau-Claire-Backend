@@ -10,7 +10,7 @@ namespace FishFarm.DataAccessLayer
 {
     public class DeviceDAO
     {
-        private FishFarmDbV2Context _context;
+        private readonly FishFarmDbV2Context _context;
         public DeviceDAO(FishFarmDbV2Context context)
         {
             _context = context;
@@ -38,18 +38,26 @@ namespace FishFarm.DataAccessLayer
 
         public bool CheckDeviceStatus(string deviceId)
         {
-            var device = _context.Device.FirstOrDefault(d => d.DeviceId == deviceId);
-            DateTime createdAt = device.CreatedAt;
-            DateTime expiredAt = device.ExpiredAt;
-
-            TimeSpan timeSpan = (expiredAt - createdAt);
-
-            if (timeSpan < TimeSpan.Zero)
+            try
             {
-                _context.Device.Remove(device);
+                var device = _context.Device.FirstOrDefault(d => d.DeviceId == deviceId)!;
+                DateTime createdAt = device.CreatedAt;
+                DateTime expiredAt = device.ExpiredAt;
+
+                TimeSpan timeSpan = (expiredAt - createdAt);
+
+                if (timeSpan < TimeSpan.Zero)
+                {
+                    _context.Device.Remove(device);
+                    return false;
+                }
+                return true;
+
+            }catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
                 return false;
             }
-            return true;
         }
 
         public bool CheckDeviceIsVerified (string deviceId, int userId)
@@ -61,7 +69,7 @@ namespace FishFarm.DataAccessLayer
                 return false;
             }
 
-            if (existedDevice.IsVerified == true) 
+            if (existedDevice.IsVerified) 
             {
                 return true;
             } else
@@ -91,7 +99,7 @@ namespace FishFarm.DataAccessLayer
                 Console.WriteLine("DbUpdateException: " + ex.Message);
                 if (ex.InnerException != null)
                     Console.WriteLine("Inner: " + ex.InnerException.Message);
-                return null;
+                return new Device();
             }
             
         }

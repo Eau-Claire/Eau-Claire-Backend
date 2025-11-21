@@ -18,11 +18,10 @@ namespace FishFarm.Services
     public class OtpService
     {
         private readonly IMemoryCache _cache;
-        private readonly TemplateService _templateService;
         private readonly string _accountSid;
         private readonly string _authToken;
         private readonly string _fromPhoneNumber;
-        private readonly string _gmailAppPassword;
+        //private readonly string _gmailAppPassword;
         private readonly string _sendGridAppPassword;
 
         public OtpService(IMemoryCache cache, IConfiguration config)
@@ -31,13 +30,12 @@ namespace FishFarm.Services
             _authToken = config["Twilio:AuthToken"] ?? "";
             _fromPhoneNumber = config["Twilio:FromPhoneNumber"] ?? "";
 
-            _gmailAppPassword = config["Gmail:GmailAppPassword"] ?? "";
+            //_gmailAppPassword = config["Gmail:GmailAppPassword"] ?? "";
             _sendGridAppPassword = config["SendGrid:SendGridPassword"] ?? "";
 
             _cache = cache;
-            _templateService = new TemplateService();
         }
-        private string GenerateOtp(int length = 6)
+        private static string GenerateOtp(int length = 6)
         {
             const string digits = "0123456789";
             var random = new Random();
@@ -75,7 +73,7 @@ namespace FishFarm.Services
                     _cache.Set(cacheKey, otp, cacheOptions);
 
                     Twilio.TwilioClient.Init(_accountSid, _authToken);
-                    var message = MessageResource.Create(
+                    await MessageResource.CreateAsync(
                         body: $"Your OTP code is: {otp}",
                         from: new Twilio.Types.PhoneNumber(_fromPhoneNumber),
                         to: new Twilio.Types.PhoneNumber(phone)
@@ -127,9 +125,9 @@ namespace FishFarm.Services
                     var from = new EmailAddress("eauclaire1510@gmail.com", "Eau Claire Support");
                     var subject = "Your OTP Code to Verify Eau Claire account!";
                     var to = new EmailAddress(email ?? "eauclaire1510@gmail.com");
-                    var htmlContent = _templateService.GetEmailOtpTemplate(otp);
+                    var htmlContent = TemplateService.GetEmailOtpTemplate(otp);
                     var msg = MailHelper.CreateSingleEmail(from, to, subject, $"Your OTP code is {otp}", htmlContent);
-                    var response = await client.SendEmailAsync(msg);
+                    await client.SendEmailAsync(msg);
 
                     return new ServiceResult
                     {
@@ -185,7 +183,7 @@ namespace FishFarm.Services
 
                 return tempToken;
             }
-            return null;
+            return "Failed to verify OTP";
         }
     }
 }

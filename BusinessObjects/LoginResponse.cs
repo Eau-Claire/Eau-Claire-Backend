@@ -9,12 +9,14 @@ namespace FishFarm.BusinessObjects
 {
     public class LoginResponse
     {
+        [Required]
         public string status { get; set; }
+        [Required]
         public string message { get; set; }
-        public string accessToken { get; set; }
+        public string accessToken { get; set; } = "Not Set";
         public int expiresIn { get; set; } = 3600;
         public int refreshExpiresIn { get; set; } = 86400;
-        public string refreshToken { get; set; }
+        public string refreshToken { get; set; } = "Not Set";
         public string tokenType { get; set; } = "Bearer";
 
         public string scope { get; set; } = "profile email";

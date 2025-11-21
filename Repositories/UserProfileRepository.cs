@@ -10,7 +10,7 @@ namespace FishFarm.Repositories
 {
     public class UserProfileRepository : IUserProfileRepository
     {
-        private UserProfileDAO _userProfileDAO;
+        private readonly UserProfileDAO _userProfileDAO;
 
         public UserProfileRepository(UserProfileDAO userProfileDAO)
         {

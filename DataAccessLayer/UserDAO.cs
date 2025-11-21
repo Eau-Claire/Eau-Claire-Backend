@@ -10,7 +10,7 @@ namespace FishFarm.DataAccessLayer
 {
     public class UserDAO
     {
-        private FishFarmDbV2Context _dbcontext;
+        private readonly FishFarmDbV2Context _dbcontext;
 
         public UserDAO(FishFarmDbV2Context dbcontext)
         {
@@ -20,7 +20,7 @@ namespace FishFarm.DataAccessLayer
 
         public User GetUserInfo(int id)
         {
-            return _dbcontext.Users.FirstOrDefault(u => u.UserId == id);
+            return _dbcontext.Users.FirstOrDefault(u => u.UserId == id) ;
         }
 
         public User GetUserByUsername(string username)

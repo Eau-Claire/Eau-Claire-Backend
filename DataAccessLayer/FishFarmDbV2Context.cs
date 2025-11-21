@@ -54,13 +54,13 @@ public partial class FishFarmDbV2Context : DbContext
 
     public virtual DbSet<UserProfile> UserProfiles { get; set; }
 
-    private string GetConnectionString()
+    private static string GetConnectionString()
     {
         IConfiguration configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", true, true)
                 .Build();
-        return configuration["ConnectionStrings:MyDbConnection"]; 
+        return configuration["ConnectionStrings:MyDbConnection"]!; 
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

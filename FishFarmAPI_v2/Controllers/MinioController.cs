@@ -5,7 +5,7 @@ namespace FishFarmAPI_v2.Controllers
 {
     [ApiController]
     [Route("api/v1/minio")]
-    public class MinioController : Controller
+    public class MinioController : ControllerBase
     {
         private readonly HttpClient _httpClient;
 

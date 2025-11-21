@@ -12,9 +12,10 @@ namespace FishFarm.BusinessObjects
         [Key]
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string DeviceName { get; set; }
-        public string DeviceType { get; set; }
-        public string DeviceId { get; set; } //DeviceId
+        public string DeviceName { get; set; } = "Not Set";
+        public string DeviceType { get; set; } = "Not Set";
+        [Required]
+        public string DeviceId { get; set; } = null!;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime ExpiredAt { get; set; } = DateTime.UtcNow;
         public bool IsVerified { get; set; } = true;

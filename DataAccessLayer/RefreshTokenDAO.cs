@@ -9,7 +9,7 @@ namespace FishFarm.DataAccessLayer
 {
     public class RefreshTokenDAO
     {
-        private FishFarmDbV2Context _dbcontext;
+        private readonly FishFarmDbV2Context _dbcontext;
 
         public RefreshTokenDAO (FishFarmDbV2Context dbcontext)
         {

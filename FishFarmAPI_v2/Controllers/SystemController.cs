@@ -8,7 +8,7 @@ namespace FishFarmAPI_v2.Controllers
 {
     [ApiController]
     [Route("api/v1/sys")]
-    public class SystemController : Controller
+    public class SystemController : ControllerBase
     {
         private readonly UserService _userService;
         public SystemController(IMemoryCache cache, IConfiguration configure,
@@ -69,7 +69,7 @@ namespace FishFarmAPI_v2.Controllers
         public IActionResult GetTokenForGeneric([FromBody] TempTokenRequest tempTokenRequest)
         {
             var resetResponse = _userService.ValidateGenericTempToken(tempTokenRequest.tempToken);
-            if (resetResponse == false)
+            if (!resetResponse)
             {
                 return StatusCode(500, new { message = "An unknown error occurred during token validation" });
             }
