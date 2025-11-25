@@ -17,9 +17,8 @@ namespace FishFarm.Services
         private readonly DeviceService _deviceService;
         private readonly RefreshTokenService _refreshTokenService;
         private readonly IMemoryCache _cache;
-        private readonly IConfiguration _configure;
 
-        public UserService(IMemoryCache cache, IConfiguration configure, 
+        public UserService(IMemoryCache cache, 
             IUserRepository userRepository, UserProfileService userProfileService,
             DeviceService deviceService, RefreshTokenService refreshTokenService)
         {
@@ -27,7 +26,6 @@ namespace FishFarm.Services
             _userProfileService = userProfileService;
             _deviceService = deviceService;
             _refreshTokenService = refreshTokenService;
-            _configure = configure;
             _cache = cache;
         }
 
@@ -73,7 +71,7 @@ namespace FishFarm.Services
         private LoginResponse GenerateTokenResponse(User user, UserProfile userProfile, string method)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var keyBase64 = _configure["Jwt:Key"];
+            var keyBase64 = Environment.GetEnvironmentVariable("Jwt__Key");
 
             if(string.IsNullOrEmpty(keyBase64))
             {
@@ -119,8 +117,8 @@ namespace FishFarm.Services
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(keyBytes),
                     SecurityAlgorithms.HmacSha256Signature),
-                Issuer = _configure["Jwt:Issuer"],
-                Audience = _configure["Jwt:Audience"]
+                Issuer = Environment.GetEnvironmentVariable("Jwt__Issuer"),
+                Audience = Environment.GetEnvironmentVariable("Jwt__Audience")
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);

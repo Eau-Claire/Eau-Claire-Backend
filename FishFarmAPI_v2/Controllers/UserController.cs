@@ -15,11 +15,11 @@ namespace FishFarmAPI_v2.Controllers
     {
         private readonly UserService _userService;
 
-        public UserController(IMemoryCache cache, IConfiguration configure,
+        public UserController(IMemoryCache cache,
             IUserRepository userRepository, UserProfileService userProfileService,
             DeviceService deviceService, RefreshTokenService refreshTokenService)
         {
-            _userService = new UserService(cache, configure, userRepository,
+            _userService = new UserService(cache, userRepository,
                 userProfileService, deviceService, refreshTokenService);
         }
 

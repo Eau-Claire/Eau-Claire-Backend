@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
@@ -58,7 +58,6 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<DeviceService>();
 builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<RefreshTokenService>();
-builder.Services.AddScoped<TemplateService>();
 builder.Services.AddScoped<OtpService>();
 
 builder.Services.AddControllers();
@@ -97,7 +96,7 @@ builder.Services.AddRateLimiter(options =>
     options.RejectionStatusCode = 429;
 });
 
-builder.Configuration.AddEnvironmentVariables();
+//builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddMemoryCache();
 
