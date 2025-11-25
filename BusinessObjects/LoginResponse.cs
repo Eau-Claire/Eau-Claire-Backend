@@ -10,9 +10,9 @@ namespace FishFarm.BusinessObjects
     public class LoginResponse
     {
         [Required]
-        public string status { get; set; }
+        public string status { get; set; } = null!;
         [Required]
-        public string message { get; set; }
+        public string message { get; set; } = "Not Set";
         public string accessToken { get; set; } = "Not Set";
         public int expiresIn { get; set; } = 3600;
         public int refreshExpiresIn { get; set; } = 86400;

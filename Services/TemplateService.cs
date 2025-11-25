@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FishFarm.Services
 {
-    public class TemplateService
+    public static class TemplateService
     {
         public static string GetEmailOtpTemplate(string otp)
         {

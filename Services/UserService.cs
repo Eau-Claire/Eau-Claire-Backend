@@ -73,7 +73,7 @@ namespace FishFarm.Services
         private LoginResponse GenerateTokenResponse(User user, UserProfile userProfile, string method)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var keyBase64 = Encoding.ASCII.GetBytes(_configure["Jwt:Key"]).ToString();
+            var keyBase64 = _configure["Jwt:Key"];
 
             if(string.IsNullOrEmpty(keyBase64))
             {
@@ -89,7 +89,7 @@ namespace FishFarm.Services
 
             try
             {
-                keyBytes = Convert.FromBase64String(_configure[keyBase64]);
+                keyBytes = Convert.FromBase64String(keyBase64);
 
             } catch (Exception ex)
             {
@@ -118,7 +118,9 @@ namespace FishFarm.Services
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(keyBytes),
-                    SecurityAlgorithms.HmacSha256Signature)
+                    SecurityAlgorithms.HmacSha256Signature),
+                Issuer = _configure["Jwt:Issuer"],
+                Audience = _configure["Jwt:Audience"]
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
