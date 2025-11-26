@@ -1,90 +1,47 @@
 name: SonarQube
-
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    types: [ opened, synchronize, reopened ]
-
+    types: [opened, synchronize, reopened]
 jobs:
   build:
+    name: Build and analyze
     runs-on: windows-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'zulu'
-
-      - name: Cache SonarScanner
+          distribution: 'zulu' # Alternative distribution options are available.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Cache SonarQube Cloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarQube Cloud scanner
         id: cache-sonar-scanner
         uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}\scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
-
-      - name: Install SonarScanner if needed
+      - name: Install SonarQube Cloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: powershell
         run: |
-          New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory -Force
+          New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
-
-      - name: SonarQube Begin
+      - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          # Use sonar.login and tell Sonar where the cobertura file will be
-          $scanner = "${{ runner.temp }}\scanner\dotnet-sonarscanner"
-          & $scanner begin /k:"PROJECT_KEY" /o:"ORG" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.cobertura.reportsPaths="Tests/TestResults/coverage.cobertura.xml"
-
-      - name: Restore
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --no-restore
-
-      - name: Create TestResults folder
-        shell: powershell
-        run: New-Item -ItemType Directory -Force -Path Tests\TestResults
-
-      - name: Find test project and run tests with coverage
-        shell: powershell
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          # find first test project matching typical pattern (*Tests*.csproj)
-          $testProj = Get-ChildItem -Recurse -Filter "*Tests*.csproj" | Select-Object -First 1
-          if (-not $testProj) {
-            Write-Error "No test project (*.csproj) found under repo. Aborting."
-            exit 1
-          }
-          Write-Host "Found test project: $($testProj.FullName)"
-          # run tests and output cobertura to fixed path
-          dotnet test $testProj.FullName /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=Tests/TestResults/coverage.cobertura.xml --no-build
-
-      - name: Show coverage file (debug)
-        shell: powershell
-        run: |
-          if (Test-Path Tests\TestResults/coverage.cobertura.xml) {
-            Get-Item Tests\TestResults/coverage.cobertura.xml | Select-Object FullName, Length
-            Get-Content Tests\TestResults/coverage.cobertura.xml -TotalCount 40
-          } else {
-            Write-Error "coverage.cobertura.xml not found"
-            exit 1
-          }
-
-      - name: SonarQube End
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: powershell
-        run: |
-          $scanner = "${{ runner.temp }}\scanner\dotnet-sonarscanner"
-          & $scanner end /d:sonar.token="$env:SONAR_TOKEN"
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Eau-Claire_Eau-Claire-Backend" /o:"eau-claire" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet build
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
