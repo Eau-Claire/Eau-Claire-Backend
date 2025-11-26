@@ -38,10 +38,27 @@ jobs:
           New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
       - name: Build and analyze
+      # Begin SonarQube analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
-        run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Eau-Claire_Eau-Claire-Backend" /o:"eau-claire" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-          dotnet build
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+        run: ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Eau-Claire_Eau-Claire-Backend" /o:"eau-claire" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="Tests/TestResults/coverage.cobertura.xml"
+
+      # Restore packages
+      - name: Restore
+        run: dotnet restore
+
+      # Build solution
+      - name: Build
+        run: dotnet build
+
+      # Run tests with coverage
+      - name: Test with Coverage
+        run: dotnet test Tests/Eau-Claire_Eau-Claire-Backend.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=Tests/TestResults/coverage.cobertura.xml
+
+      # End SonarQube analysis
+      - name: SonarQube End
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
