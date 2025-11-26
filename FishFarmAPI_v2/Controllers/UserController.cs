@@ -13,14 +13,11 @@ namespace FishFarmAPI_v2.Controllers
     [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public UserController(IMemoryCache cache,
-            IUserRepository userRepository, UserProfileService userProfileService,
-            DeviceService deviceService, RefreshTokenService refreshTokenService)
+        public UserController(IUserService userService)
         {
-            _userService = new UserService(cache, userRepository,
-                userProfileService, deviceService, refreshTokenService);
+            _userService = userService;
         }
 
         [HttpGet("get-user-by-username")]
@@ -29,10 +26,22 @@ namespace FishFarmAPI_v2.Controllers
             var user = _userService.GetUserInfoByUsername(username);
             if (user == null)
             {
-                return NotFound(new { status = "", Message = "User not found" });
+                return NotFound(new CreateUserResponse
+                {
+                    Status = "Not Found",
+                    Message = "User not found"
+                });
             }
 
-            return Ok(new { status = "success", userId = user.UserId, username = user.Username, phone = user.Phone, email = user.Email });
+            return Ok(new CreateUserResponse
+            {
+                Status = "Success",
+                Message = "User Found",
+                UserId = user.UserId,
+                Username = user.Username,
+                Phone = user.Phone ?? "",
+                Email = user.Email ?? "",
+            });
         }
 
         [HttpGet("get-user-info")]
@@ -44,7 +53,14 @@ namespace FishFarmAPI_v2.Controllers
             {
                 return NotFound(new { status = "", Message = "User not found" });
             }
-            return Ok(new { status = "success", user = user });
+            return Ok(new CreateUserResponse
+            {
+                Status = "success",
+                UserId = user.UserId,
+                Username = user.Username,
+                Phone = user.Phone ?? "",
+                Email = user.Email ?? "",
+            });
         }
 
     }

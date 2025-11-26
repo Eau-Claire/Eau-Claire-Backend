@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishFarm.Services", "Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishFarmAPI_v2", "FishFarmAPI_v2\FishFarmAPI_v2.csproj", "{E7629846-17FC-4E12-839B-EEE4D85872FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{76AEB8DE-CF14-4E20-A2BC-C56CD594D4CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{E7629846-17FC-4E12-839B-EEE4D85872FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7629846-17FC-4E12-839B-EEE4D85872FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7629846-17FC-4E12-839B-EEE4D85872FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76AEB8DE-CF14-4E20-A2BC-C56CD594D4CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76AEB8DE-CF14-4E20-A2BC-C56CD594D4CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76AEB8DE-CF14-4E20-A2BC-C56CD594D4CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76AEB8DE-CF14-4E20-A2BC-C56CD594D4CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
