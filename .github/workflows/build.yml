@@ -1,47 +1,72 @@
 name: SonarQube
+
 on:
   push:
     branches:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+
 jobs:
   build:
     name: Build and analyze
     runs-on: windows-latest
+
     steps:
+      # Checkout code
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # cần để SonarQube phân tích lịch sử git
+
+      # Set up JDK (SonarQube Scanner yêu cầu)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available.
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Cache SonarQube Cloud packages
-        uses: actions/cache@v4
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache SonarQube Cloud scanner
+          distribution: 'zulu'
+
+      # Cache SonarScanner tool
+      - name: Cache SonarScanner
         id: cache-sonar-scanner
         uses: actions/cache@v4
         with:
           path: ${{ runner.temp }}\scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
-      - name: Install SonarQube Cloud scanner
+
+      # Install SonarScanner if not cached
+      - name: Install SonarScanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: powershell
         run: |
           New-Item -Path ${{ runner.temp }}\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
-      - name: Build and analyze
+
+      # Build, test, generate coverage, và phân tích SonarQube
+      - name: Build, Test and SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Eau-Claire_Eau-Claire-Backend" /o:"eau-claire" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          # Bắt đầu phân tích SonarQube
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin `
+            /k:"Eau-Claire_Eau-Claire-Backend" `
+            /o:"eau-claire" `
+            /d:sonar.login="${{ secrets.SONAR_TOKEN }}" `
+            /d:sonar.cs.opencover.reportsPaths="Tests/TestResults/coverage.cobertura.xml"
+
+          # Restore packages
+          dotnet restore
+
+          # Build solution
           dotnet build
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+          # Run tests với Coverlet thu thập coverage
+          dotnet test Tests/Eau-Claire_Eau-Claire-Backend.Tests.csproj `
+            /p:CollectCoverage=true `
+            /p:CoverletOutputFormat=cobertura `
+            /p:CoverletOutput=Tests/TestResults/coverage.cobertura.xml
+
+          # Kết thúc phân tích SonarQube
+          ${{ runner.temp }}\scanner\dotnet-sonarscanner end `
+            /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
