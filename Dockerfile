@@ -11,6 +11,7 @@ COPY BusinessObjects/FishFarm.BusinessObjects.csproj BusinessObjects/
 COPY Repositories/FishFarm.Repositories.csproj Repositories/
 COPY Services/FishFarm.Services.csproj Services/
 COPY DataAccessLayer/FishFarm.DataAccessLayer.csproj DataAccessLayer/
+COPY Tests/Tests.csproj Tests/
 
 # Restore dependencies
 RUN dotnet restore
