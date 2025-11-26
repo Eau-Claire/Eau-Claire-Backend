@@ -54,7 +54,7 @@ jobs:
 
       # Run tests with coverage
       - name: Test with Coverage
-        run: dotnet test Tests/Eau-Claire_Eau-Claire-Backend.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=Tests/TestResults/coverage.cobertura.xml
+        run: dotnet test Tests/Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=Tests/TestResults/coverage.cobertura.xml
 
       # End SonarQube analysis
       - name: SonarQube End
