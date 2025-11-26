@@ -43,7 +43,7 @@ jobs:
         run: |
           # Use sonar.login and tell Sonar where the cobertura file will be
           $scanner = "${{ runner.temp }}\scanner\dotnet-sonarscanner"
-          & $scanner begin /k:"PROJECT_KEY" /o:"ORG" /d:sonar.login="$env:SONAR_TOKEN" /d:sonar.cs.cobertura.reportsPaths="Tests/TestResults/coverage.cobertura.xml"
+          & $scanner begin /k:"PROJECT_KEY" /o:"ORG" /d:sonar.token="$env:SONAR_TOKEN" /d:sonar.cs.cobertura.reportsPaths="Tests/TestResults/coverage.cobertura.xml"
 
       - name: Restore
         run: dotnet restore
