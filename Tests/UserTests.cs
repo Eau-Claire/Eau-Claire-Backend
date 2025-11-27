@@ -69,7 +69,7 @@ namespace UserTests
         public void GetUserByUsername_ReturnsNotFound_WhenUserMissing()
         {
             // Arrange
-            _userService.Setup(s => s.GetUserInfoByUsername("missing")).Returns((User?)null);
+            _userService.Setup(s => s.GetUserInfoByUsername("missing")).Returns((User?)null!);
 
             var controller = CreateControllerWithUser();
 
@@ -120,7 +120,7 @@ namespace UserTests
         public void GetUserInfo_ReturnsNotFound_WhenUserNotFound()
         {
             // Arrange
-            _userService.Setup(s => s.GetUserInfo(It.IsAny<int>())).Returns((User?)null);
+            _userService.Setup(s => s.GetUserInfo(It.IsAny<int>())).Returns((User?)null!);
 
             var claims = new[] { new Claim("userId", "99") };
             var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Test"));

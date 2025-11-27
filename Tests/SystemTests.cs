@@ -154,7 +154,7 @@ namespace SystemTests
             var req = new TempTokenRequest { tempToken = "123" };
 
             _userService.Setup(s => s.ValidateTempToken("123"))
-                        .Returns((LoginResponse?)null);
+                        .Returns((LoginResponse?)null!);
 
             var res = CreateController().GetToken(req);
 
