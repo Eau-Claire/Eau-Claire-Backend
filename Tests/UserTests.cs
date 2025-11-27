@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace Tests
+namespace UserTests
 {
     [TestClass]
     public sealed class UserTests

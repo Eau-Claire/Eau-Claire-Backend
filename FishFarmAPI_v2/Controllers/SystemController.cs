@@ -10,8 +10,8 @@ namespace FishFarmAPI_v2.Controllers
     [Route("api/v1/sys")]
     public class SystemController : ControllerBase
     {
-        private readonly UserService _userService;
-        public SystemController(UserService userService)
+        private readonly IUserService _userService;
+        public SystemController(IUserService userService)
         {
             _userService = userService;
         }
