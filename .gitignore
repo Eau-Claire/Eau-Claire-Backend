@@ -61,3 +61,5 @@ Thumbs.db
 /FishFarmAPI_v2/appsettings.Production.json
 /FishFarmAPI_v2/appsettings.Development.json
 /FishFarmAPI_v2/appsettings.Production.json
+/Tests/TestResults/2f66a298-b95e-49cd-80c1-692286c68d65/coverage.cobertura.xml
+/Tests/TestResults/8fad4713-1a86-475a-ad99-7928ca447cf8/coverage.cobertura.xml
