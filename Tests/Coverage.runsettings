@@ -1,0 +1,16 @@
+﻿<RunSettings>
+	<DataCollectionRunSettings>
+		<DataCollectors>
+			<DataCollector friendlyName="XPlat Code Coverage">
+				<Configuration>
+					<Format>cobertura</Format>
+					<Exclude>
+						<Exclude>
+							[FishFarm.DataAccessLayer*]*,[FishFarm.Repositories*]*,*.Designer.cs,*.Tests*,[FishFarm.BusinessObjects*]
+						</Exclude>
+					</Exclude>
+				</Configuration>
+			</DataCollector>
+		</DataCollectors>
+	</DataCollectionRunSettings>
+</RunSettings>

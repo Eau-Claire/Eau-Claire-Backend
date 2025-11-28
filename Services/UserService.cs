@@ -13,14 +13,14 @@ namespace FishFarm.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly UserProfileService _userProfileService;
-        private readonly DeviceService _deviceService;
-        private readonly RefreshTokenService _refreshTokenService;
+        private readonly IUserProfileService _userProfileService;
+        private readonly IDeviceService _deviceService;
+        private readonly IRefreshTokenService _refreshTokenService;
         private readonly IMemoryCache _cache;
 
         public UserService(IMemoryCache cache, 
-            IUserRepository userRepository, UserProfileService userProfileService,
-            DeviceService deviceService, RefreshTokenService refreshTokenService)
+            IUserRepository userRepository, IUserProfileService userProfileService,
+            IDeviceService deviceService, IRefreshTokenService refreshTokenService)
         {
             _userRepository = userRepository;
             _userProfileService = userProfileService;

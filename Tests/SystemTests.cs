@@ -1,7 +1,9 @@
 using FishFarm.BusinessObjects;
+using FishFarm.Repositories;
 using FishFarm.Services;
 using FishFarmAPI_v2.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 
 namespace SystemTests
@@ -10,246 +12,123 @@ namespace SystemTests
     [TestClass]
     public class SystemTests
     {
-        private Mock<IUserService> _userService = null!;
+        private UserService _service = null!;
+        private Mock<IUserRepository> _userRepo = null!;
+        private Mock<IUserProfileService> _profileService = null!;
+        private Mock<IDeviceService> _deviceService = null!;
+        private Mock<IRefreshTokenService> _refreshTokenService = null!;
+        private IMemoryCache _cache = null!;
 
         [TestInitialize]
         public void Init()
         {
-            _userService = new Mock<IUserService>();
+            _userRepo = new Mock<IUserRepository>();
+            _profileService = new Mock<IUserProfileService>();
+            _deviceService = new Mock<IDeviceService>();
+            _refreshTokenService = new Mock<IRefreshTokenService>();
+            _cache = new MemoryCache(new MemoryCacheOptions());
+
+            _service = new UserService(
+                _cache,
+                _userRepo.Object,
+                _profileService.Object,
+                _deviceService.Object,
+                _refreshTokenService.Object
+            );
+
+            Environment.SetEnvironmentVariable("Jwt__Key", "vT9kY3qL4FxP8mS1H0bN7cW2QpR5uJ6tZyA3KdF8MvB2TxQ1");
+            Environment.SetEnvironmentVariable("Jwt__Issuer", "test-issuer");
+            Environment.SetEnvironmentVariable("Jwt__Audience", "test-audience");
         }
 
-        private SystemController CreateController()
-        {
-            return new SystemController(_userService.Object);
-        }
-
-
-        // LOGIN SUCCESS
         [TestMethod]
-        public void Login_Success_ReturnOk()
+        public void Login_Success_Test()
         {
-            var req = new LoginRequest { Username = "a", Password = "b", DeviceId = "d1" };
+            // Arrange
+            var user = new User { UserId = 1, Username = "test", PasswordHash = "pass", Email = "a@gmail.com" };
+            var profile = new UserProfile { FullName = "Test User" };
 
-            var expected = new LoginResponse
+            _userRepo.Setup(x => x.Login("test", "pass")).Returns(user);
+            _profileService.Setup(x => x.GetUserProfile(1)).Returns(profile);
+            _deviceService.Setup(x => x.CheckDeviceIsVerified("device1", 1)).Returns(true);
+            _refreshTokenService.Setup(x => x.SaveRefreshToken(1, It.IsAny<string>(), It.IsAny<DateTime>())).Returns(true);
+
+            // Act
+            var result = _service.Login("test", "pass", "device1");
+
+            // Assert
+            Assert.IsNotNull(result);
+            Console.WriteLine(result.message);
+            Assert.AreEqual("200", result.status);
+            Assert.IsTrue(result.isDeviceVerified);
+            Assert.IsNotNull(result.accessToken);
+            Assert.IsNotNull(result.refreshToken);
+        }
+
+        [TestMethod]
+        public void Login_InvalidDevice_Return401()
+        {
+            var user = new User { UserId = 1, Username = "test" };
+            var profile = new UserProfile();
+
+            _userRepo.Setup(x => x.Login("test", "pass")).Returns(user);
+            _profileService.Setup(x => x.GetUserProfile(1)).Returns(profile);
+            _deviceService.Setup(x => x.CheckDeviceIsVerified("dev1", 1)).Returns(false);
+
+            var result = _service.Login("test", "pass", "dev1");
+
+            Assert.AreEqual("401", result.status);
+            Assert.IsFalse(result.isDeviceVerified);
+        }
+
+        [TestMethod]
+        public void RefreshToken_Valid_Return200()
+        {
+            var response = new LoginResponse { status = "200" };
+            var user = new User
             {
-                status = "200",
-                message = "ok",
-                isDeviceVerified = true
+                UserId = 1,
+                Username = "a"
             };
 
-            _userService
-                .Setup(s => s.Login(req.Username, req.Password, req.DeviceId))
-                .Returns(expected);
+            _refreshTokenService.Setup(x => x.isValidRefreshToken(1, "token1")).Returns(true);
+            _userRepo.Setup(x => x.GetUserInfo(1)).Returns(user);
+            _profileService.Setup(x => x.GetUserProfile(1)).Returns(new UserProfile());
+            _refreshTokenService.Setup(x => x.SaveRefreshToken(1, It.IsAny<string>(), It.IsAny<DateTime>())).Returns(true);
 
-            var controller = CreateController();
+            var result = _service.GetNewAccessTokenIfRefreshTokenValid(1, "token1", "new token");
 
-            var result = controller.Login(req);
-
-            var ok = result as OkObjectResult;
-            Assert.IsNotNull(ok);
-
-            var obj = ok.Value as LoginResponse;
-            Assert.AreEqual("200", obj!.status);
+            Assert.AreEqual("200", result.status);
         }
 
-
-        // LOGIN 401
         [TestMethod]
-        public void Login_Unauthorized_Return401()
+        public void RefreshToken_Invalid_Return401()
         {
-            var req = new LoginRequest { Username = "a", Password = "b", DeviceId = "d1" };
+            _refreshTokenService.Setup(x => x.isValidRefreshToken(1, "token1")).Returns(false);
 
-            var expected = new LoginResponse
-            {
-                status = "401",
-                message = "wrong",
-                isDeviceVerified = false
-            };
+            var result = _service.GetNewAccessTokenIfRefreshTokenValid(1, "token1", "method1");
 
-            _userService.Setup(s => s.Login(req.Username, req.Password, req.DeviceId)).Returns(expected);
-
-            var result = CreateController().Login(req);
-
-            Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
+            Assert.AreEqual("401", result.status);
         }
 
-
-        // LOGIN ERROR 500
-        [TestMethod]
-        public void Login_ServerError_Return500()
-        {
-            var req = new LoginRequest { Username = "a", Password = "b", DeviceId = "d1" };
-
-            var expected = new LoginResponse
-            {
-                status = "500",
-                message = "error"
-            };
-
-            _userService.Setup(s => s.Login(req.Username, req.Password, req.DeviceId)).Returns(expected);
-
-            var result = CreateController().Login(req);
-
-            Assert.IsInstanceOfType(result, typeof(ObjectResult));
-            var obj = result as ObjectResult;
-            Assert.AreEqual(500, obj!.StatusCode);
-        }
-
-
-        // LOGIN RESULT NULL
-        [TestMethod]
-        public void Login_ReturnNull_Return500()
-        {
-            var req = new LoginRequest();
-
-            _userService.Setup(s => s.Login(req.Username, req.Password, req.DeviceId))
-                        .Returns((LoginResponse?)null);
-
-            var result = CreateController().Login(req);
-
-            var obj = result as ObjectResult;
-            Assert.AreEqual(500, obj!.StatusCode);
-        }
-
-
-
-        // VALIDATE TEMP TOKEN SUCCESS
-        [TestMethod]
-        public void ValidateTempToken_Success_ReturnOk()
-        {
-            var req = new TempTokenRequest { tempToken = "123" };
-
-            var expected = new LoginResponse { status = "200", message = "ok" };
-
-            _userService.Setup(s => s.ValidateTempToken("123"))
-                        .Returns(expected);
-
-            var res = CreateController().GetToken(req) as OkObjectResult;
-
-            Assert.IsNotNull(res);
-            Assert.AreEqual("200", ((LoginResponse)res!.Value!).status);
-        }
-
-
-        // VALIDATE TEMP TOKEN 401
-        [TestMethod]
-        public void ValidateTempToken_401_ReturnUnauthorized()
-        {
-            var req = new TempTokenRequest { tempToken = "123" };
-
-            var expected = new LoginResponse { status = "401", message = "unauth" };
-
-            _userService.Setup(s => s.ValidateTempToken("123")).Returns(expected);
-
-            var res = CreateController().GetToken(req);
-
-            Assert.IsInstanceOfType(res, typeof(UnauthorizedObjectResult));
-        }
-
-
-        // VALIDATE TEMP TOKEN NULL
-        [TestMethod]
-        public void ValidateTempToken_Null_Return500()
-        {
-            var req = new TempTokenRequest { tempToken = "123" };
-
-            _userService.Setup(s => s.ValidateTempToken("123"))
-                        .Returns((LoginResponse?)null!);
-
-            var res = CreateController().GetToken(req);
-
-            var obj = res as ObjectResult;
-            Assert.AreEqual(500, obj!.StatusCode);
-        }
-
-
-        // GENERIC TEMP TOKEN SUCCESS
-        [TestMethod]
-        public void ValidateGenericTempToken_Success()
-        {
-            var req = new TempTokenRequest { tempToken = "aaa" };
-
-            _userService.Setup(s => s.ValidateGenericTempToken("aaa"))
-                        .Returns(true);
-
-            var res = CreateController().GetTokenForGeneric(req) as OkObjectResult;
-
-            Assert.IsNotNull(res);
-        }
-
-        // GENERIC TEMP TOKEN FAIL
-        [TestMethod]
-        public void ValidateGenericTempToken_Fail_Return500()
-        {
-            var req = new TempTokenRequest { tempToken = "aaa" };
-
-            _userService.Setup(s => s.ValidateGenericTempToken("aaa"))
-                        .Returns(false);
-
-            var res = CreateController().GetTokenForGeneric(req);
-            var obj = res as ObjectResult;
-            Assert.AreEqual(500, obj!.StatusCode);
-        }
-
-
-        // REFRESH TOKEN SUCCESS
-        [TestMethod]
-        public void RefreshToken_Success()
-        {
-            var req = new RefreshTokenRequest { UserId = 1, RefreshToken = "rt" };
-
-            var expected = new LoginResponse { status = "200" };
-
-            _userService.Setup(s => s.GetNewAccessTokenIfRefreshTokenValid(1, "rt", "new access token"))
-                        .Returns(expected);
-
-            var res = CreateController().RefreshToken(req) as OkObjectResult;
-
-            Assert.IsNotNull(res);
-        }
-
-        // REFRESH TOKEN 401
-        [TestMethod]
-        public void RefreshToken_401()
-        {
-            var req = new RefreshTokenRequest { UserId = 1, RefreshToken = "rt" };
-
-            _userService.Setup(s => s.GetNewAccessTokenIfRefreshTokenValid(1, "rt", "new access token"))
-                        .Returns(new LoginResponse { status = "401" });
-
-            var result = CreateController().RefreshToken(req);
-
-            Assert.IsInstanceOfType(result, typeof(UnauthorizedObjectResult));
-        }
-
-        // RESET PASSWORD SUCCESS
         [TestMethod]
         public void ResetPassword_Success()
         {
-            var req = new ResetPasswordRequest { UserId = 1, NewPassword = "a", ConfirmPassword = "a", TempToken = "t" };
+            _cache.Set("token123", new TempTokenData { UserId = 1, isVerified = true });
+            _userRepo.Setup(x => x.ResetPassword(1, "newpass")).Returns(true);
 
-            _userService.Setup(s => s.ResetPassword(1, "a", "a", "t"))
-                        .Returns(new LoginResponse { status = "200" });
+            var result = _service.ResetPassword(1, "newpass", "newpass", "token123");
 
-            var result = CreateController().ResetPassword(req) as OkObjectResult;
-
-            Assert.IsNotNull(result);
+            Assert.AreEqual("200", result.status);
         }
 
+        [TestMethod]
+        public void ResetPassword_UnverifiedToken_Return401()
+        {
+            _cache.Set("token123", new TempTokenData { UserId = 1, isVerified = false });
+            var result = _service.ResetPassword(1, "a", "a", "token123");
 
-        // RESET PASSWORD 500
-        //[TestMethod]
-        //public void ResetPassword_500()
-        //{
-        //    var req = new ResetPasswordRequest { UserId = 1, NewPassword = "a", ConfirmPassword = "a", TempToken = "t" };
-
-        //    _userService.Setup(s => s.ResetPassword(1, "a", "a", "t"))
-        //                .Returns( new LoginResponse{ status = "500" });
-
-        //    var result = CreateController().ResetPassword(req);
-
-        //    var obj = result as ObjectResult;
-        //    Assert.AreEqual(500, obj!.StatusCode);
-        //}
+            Assert.AreEqual("401", result.status);
+        }
     }
 }

@@ -18,5 +18,6 @@ namespace FishFarm.Services
         public bool ValidateGenericTempToken(string tempToken);
 
         public LoginResponse GetNewAccessTokenIfRefreshTokenValid(int userId, string refreshToken, string method);
+
     }
 }
