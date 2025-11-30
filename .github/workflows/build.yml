@@ -42,6 +42,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner begin /k:"Eau-Claire_Eau-Claire-Backend" /o:"eau-claire" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.coverageReportPaths="Tests/TestResults/coverage.opencover.xml"
-          dotnet build
-          ${{ runner.temp }}\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet sonarscanner begin /k:"Eau-Claire_Eau-Claire-Backend"
+          /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          /d:sonar.cs.opencover.reportsPaths=coverage.xml
+          dotnet build --no-incremental
+          & C:\tools\opencover\OpenCover.Console.exe -target:"dotnet.exe" 
+              -targetargs:"test --no-build"
+              -returntargetcode
+              -output:coverage.xml
+              -register:user
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
