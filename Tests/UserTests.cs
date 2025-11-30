@@ -14,7 +14,7 @@ namespace UserTests
         public Mock<IUserService> _userService = null!;
 
         [TestInitialize]
-        public void Init ()
+        public void Init()
         {
             _userService = new Mock<IUserService>();
         }
@@ -141,7 +141,6 @@ namespace UserTests
             Assert.IsNotNull(messageProp);
             Assert.AreEqual("User not found", messageProp!.GetValue(payload));
         }
-
     }
 }
 

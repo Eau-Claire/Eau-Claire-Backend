@@ -130,5 +130,145 @@ namespace SystemTests
 
             Assert.AreEqual("401", result.status);
         }
+
+        [TestMethod]
+        public void ValidteTempToken_ReturnsOk_WhenTokenIsValid()
+        {
+
+            var tempTokenKey = "validateToken";
+            var userToken = new TempTokenData
+            {
+                UserId = 1,
+                DeviceId = "device123",
+                isVerified = true,
+                Purpose = "login",
+                Method = "sms",
+            };
+
+            var userProfile = new UserProfile();
+            var user = new User
+            {
+                UserId = 1,
+                Phone = "1234567890",
+                Email = "",
+            };
+
+            var device = new Device
+            {
+                UserId = 1,
+                DeviceId = "device123",
+                IsVerified = true,
+            };
+
+            _cache.Set(tempTokenKey, userToken);
+
+            _deviceService.Setup(s => s.AddOrUpdateDeviceIsVerified(
+                userToken.DeviceId,
+                userToken.UserId,
+                It.IsAny<string>(),
+                It.IsAny<string>()))
+                .Returns(device);
+
+            _profileService.Setup(s => s.GetUserProfile(userToken.UserId))
+                .Returns(userProfile);
+
+            _userRepo.Setup(s => s.GetUserInfo(userToken.UserId))
+                .Returns(user);
+
+            _refreshTokenService.Setup(s => s.SaveRefreshToken(
+                userToken.UserId,
+                It.IsAny<string>(),
+                It.IsAny<DateTime>()))
+                .Returns(true);
+
+            var result = _service.ValidateTempToken(tempTokenKey);
+
+            Console.WriteLine(result.message);
+
+            Assert.AreEqual("200", result.status);
+
+        }
+
+        [TestMethod]
+        public void ValidteTempToken_ReturnsUnauthorized_WhenTokenIsInvalid()
+        {
+            var userToken = new TempTokenData
+            {
+                UserId = 1,
+                DeviceId = "device123",
+                isVerified = true,
+                Purpose = "login",
+                Method = "sms",
+            };
+
+            var userProfile = new UserProfile();
+            var user = new User
+            {
+                UserId = 1,
+                Phone = "1234567890",
+                Email = "",
+            };
+
+            var device = new Device
+            {
+                UserId = 1,
+                DeviceId = "device123",
+                IsVerified = true,
+            };
+
+            _cache.Set("invalidTokenKey", userToken);
+
+            _deviceService.Setup(s => s.AddOrUpdateDeviceIsVerified(
+              userToken.DeviceId,
+              userToken.UserId,
+              It.IsAny<string>(),
+              It.IsAny<string>()))
+              .Returns(device);
+
+            _profileService.Setup(s => s.GetUserProfile(userToken.UserId))
+                .Returns(userProfile);
+
+            _userRepo.Setup(s => s.GetUserInfo(userToken.UserId))
+                .Returns(user);
+
+            _refreshTokenService.Setup(s => s.SaveRefreshToken(
+                userToken.UserId,
+                It.IsAny<string>(),
+                It.IsAny<DateTime>()))
+                .Returns(true);
+
+            var result = _service.ValidateTempToken("key");
+
+            Console.WriteLine(result.message);
+
+            Assert.AreEqual("401", result.status);
+        }
+
+        [TestMethod]
+        public void ValidateGenericTempToken_ReturnsOk_WhenTokenIsValid()
+        {
+            string tempToken = "token";
+            var userToken = new TempTokenData
+            {
+                UserId = 1,
+                DeviceId = "device123",
+                isVerified = false,
+                Purpose = "generic",
+                Method = "email",
+            };
+
+            _cache.Set(tempToken, userToken);
+
+            var result = _service.ValidateGenericTempToken(tempToken);
+
+            Console.WriteLine(result);
+
+            var cachedToken = _cache.Get<TempTokenData>(tempToken);
+            Assert.IsNotNull(cachedToken);
+            Assert.IsTrue(cachedToken.isVerified);
+
+            Assert.AreEqual(true, result);
+        }
+
     }
 }

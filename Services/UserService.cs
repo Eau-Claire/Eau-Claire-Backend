@@ -103,7 +103,7 @@ namespace FishFarm.Services
                 Subject = new System.Security.Claims.ClaimsIdentity(
                     new[]
                         {
-                            new System.Security.Claims.Claim("username", user.Username),
+                            new System.Security.Claims.Claim("username", user.Username ?? ""),
                             new System.Security.Claims.Claim("role", user.Role ?? ""),
                             new System.Security.Claims.Claim("userId", user.UserId.ToString()),
                             new System.Security.Claims.Claim("fullName", userProfile?.FullName ?? ""),
@@ -327,9 +327,19 @@ namespace FishFarm.Services
             try
             {
                 TempTokenData userToken = _cache.Get<TempTokenData>(tempToken)!;
+                if(userToken == null)
+                {
+                    return new LoginResponse
+                    {
+                        status = "401",
+                        message = "Invalid token",
+                        isDeviceVerified = false,
+                    };
+                }
+
                 Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
-                if (userToken.Purpose != "login" || userToken.Purpose != "register")
+                if (userToken.Purpose != "login" && userToken.Purpose != "register")
                 {
                     return new LoginResponse
                     {
