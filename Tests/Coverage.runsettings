@@ -1,14 +1,35 @@
-﻿<RunSettings>
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<RunConfiguration>
+		<ResultsDirectory>TestResults</ResultsDirectory>
+	</RunConfiguration>
+
 	<DataCollectionRunSettings>
 		<DataCollectors>
 			<DataCollector friendlyName="XPlat Code Coverage">
 				<Configuration>
-					<Format>cobertura</Format>
+					<!-- output format Coverlet will produce (we'll still call dotnet test with /p:CoverletOutputFormat=opencover) -->
+					<Format>opencover</Format>
+
+					<!-- Exclude patterns (these are regexes) -->
 					<Exclude>
-						<Exclude>
-							[FishFarm.DataAccessLayer*]*,[FishFarm.Repositories*]*,*.Designer.cs,*.Tests*,[FishFarm.BusinessObjects*]
-						</Exclude>
+						<!-- exclude whole assemblies / modules whose path/name matches -->
+						<ModulePath>.*DataAccessLayer.*</ModulePath>
+						<ModulePath>.*Repositories.*</ModulePath>
+						<ModulePath>.*BusinessObjects.*</ModulePath>
+
+						<!-- exclude generated designer files -->
+						<File>.*\.Designer\.cs$</File>
+
+						<!-- exclude test assemblies/files -->
+						<File>.*Tests.*</File>
+
+						<!-- optionally exclude by attribute (common) -->
+						<Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
 					</Exclude>
+
+					<!-- don't count test assemblies as coverage targets -->
+					<IncludeTestAssembly>false</IncludeTestAssembly>
 				</Configuration>
 			</DataCollector>
 		</DataCollectors>
