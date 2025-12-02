@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace FishFarm.Services
 {
-    public static class TemplateService
+    public class Utils : IUtils
     {
-        public static string GetEmailOtpTemplate(string otp)
+        public string GetEmailOtpTemplate(string otp)
         {
             string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "OtpTemplate.html");
             string htmlContent = File.ReadAllText(templatePath);

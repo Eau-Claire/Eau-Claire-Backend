@@ -66,14 +66,14 @@ namespace FishFarmAPI_v2.Controllers
                 return BadRequest(new { Message = "Email is required for Email method" });
             }
 
-            var tempToken = _otpService.VerifyOtp(request.Method, request.InputOtp, request.UserId, request.DeviceId, request.Phone, request.Email, request.Purpose);
+            var result = _otpService.VerifyOtp(request.Method, request.InputOtp, request.UserId, request.DeviceId, request.Phone, request.Email, request.Purpose);
 
-            if (string.IsNullOrEmpty(tempToken))
+            if (!result.IsSuccess)
             {
                 return StatusCode(401, new { Message = "Invalid or expired OTP" });
             }
 
-            return Ok(new { tempToken });
+            return Ok(result.Data);
 
         }
     }

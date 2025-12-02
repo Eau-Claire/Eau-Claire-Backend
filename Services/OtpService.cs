@@ -15,25 +15,25 @@ using Twilio.Rest.Api.V2010.Account;
 
 namespace FishFarm.Services
 {
-    public class OtpService
+    public class OtpService : IOtpService
     {
         private readonly IMemoryCache _cache;
         private readonly string _accountSid;
         private readonly string _authToken;
         private readonly string _fromPhoneNumber;
-        //private readonly string _gmailAppPassword;
         private readonly string _sendGridAppPassword;
+        private readonly IUtils _utils;
 
-        public OtpService(IMemoryCache cache, IConfiguration config)
+        public OtpService(IMemoryCache cache, IUtils utils)
         {
-            _accountSid = config["Twilio:AccountSid"] ?? "";
-            _authToken = config["Twilio:AuthToken"] ?? "";
-            _fromPhoneNumber = config["Twilio:FromPhoneNumber"] ?? "";
+            _accountSid = Environment.GetEnvironmentVariable("Twilio__AccountSid") ?? "";
+            _authToken = Environment.GetEnvironmentVariable("Twilio__AuthToken") ?? "";
+            _fromPhoneNumber = Environment.GetEnvironmentVariable("Twilio__FromPhoneNumber") ?? "";
 
-            //_gmailAppPassword = config["Gmail:GmailAppPassword"] ?? "";
-            _sendGridAppPassword = config["SendGrid:SendGridPassword"] ?? "";
+            _sendGridAppPassword = Environment.GetEnvironmentVariable("SendGrid__SendGridPassword") ?? "";
 
             _cache = cache;
+            _utils = utils;
         }
         private static string GenerateOtp(int length = 6)
         {
@@ -47,13 +47,11 @@ namespace FishFarm.Services
 
             return new string(otp);
         }
-
-
         public async Task<ServiceResult> SendOtp(string method, string deviceId, string? phone, string? email)
         {
             try
             {
-                var cacheKey = method == "sms" ? $"otp_{deviceId}_{phone}" : $"otp_{deviceId}_{email}";
+                string cacheKey = method == "sms" ? $"otp_{deviceId}_{phone}" : $"otp_{deviceId}_{email}";
                 var cacheOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
@@ -90,42 +88,13 @@ namespace FishFarm.Services
                 }
                 else
                 {
-                   
                     _cache.Set(cacheKey, otp, cacheOptions);
-
-                    //using (SmtpClient client = new SmtpClient("smtp.sendgrid.net"))
-                    //{
-                    //    client.Port = 587;
-                    //    client.Credentials = new NetworkCredential("apikey", _sendGridAppPassword);
-                    //    client.EnableSsl = true;
-
-                    //    MailMessage mailMessage = new MailMessage
-                    //    {
-                    //        From = new MailAddress("eauclaire1510@gmail.com", "Eau Claire Support"),
-                    //        To = { new MailAddress(email ?? "eauclaire1510@gmail.com") },
-                    //        Subject = "Your OTP Code to Verify Eau Claire account!",
-                    //        Body = _templateService.GetEmailOtpTemplate(otp),
-                    //        IsBodyHtml = true,
-
-                    //    };
-
-                    //    await client.SendMailAsync(mailMessage);
-
-                    //    return new ServiceResult
-                    //    {
-                    //        IsSuccess = true,
-                    //        ErrorCode = "200",
-                    //        Message = "OTP sent successfully via Email",
-                    //        Data = null
-
-                    //    };
-                    //}
 
                     var client = new SendGridClient(_sendGridAppPassword);
                     var from = new EmailAddress("eauclaire1510@gmail.com", "Eau Claire Support");
                     var subject = "Your OTP Code to Verify Eau Claire account!";
                     var to = new EmailAddress(email ?? "eauclaire1510@gmail.com");
-                    var htmlContent = TemplateService.GetEmailOtpTemplate(otp);
+                    var htmlContent = _utils.GetEmailOtpTemplate(otp);
                     var msg = MailHelper.CreateSingleEmail(from, to, subject, $"Your OTP code is {otp}", htmlContent);
                     await client.SendEmailAsync(msg);
 
@@ -155,11 +124,11 @@ namespace FishFarm.Services
             }
         }
 
-        public string VerifyOtp(string method, string inputOtp, int? userId, string deviceId, string? phone, string? email, string purpose)
+        public ServiceResult VerifyOtp(string method, string inputOtp, int? userId, string deviceId, string? phone, string? email, string purpose)
         {
-            var cacheKey = method == "sms" ? $"otp_{deviceId}_{phone}" : $"otp_{deviceId}_{email}";
+            string cacheKey = method == "sms" ? $"otp_{deviceId}_{phone}" : $"otp_{deviceId}_{email}";
 
-            var storedOtp = _cache.Get<string>(cacheKey);
+            string storedOtp = _cache.Get<string>(cacheKey);
 
             if (storedOtp != null && storedOtp == inputOtp)
             {
@@ -181,9 +150,23 @@ namespace FishFarm.Services
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
                 });
 
-                return tempToken;
+                return new ServiceResult
+                {
+                    IsSuccess = true,
+                    ErrorCode = "200",
+                    Message = $"Success verifying OTP.",
+                    Data = tempToken
+
+                };
             }
-            return "Failed to verify OTP";
+            return new ServiceResult
+            {
+                IsSuccess = false,
+                ErrorCode = "500",
+                Message = $"Failed to verify OTP.",
+                Data = null
+
+            };
         }
     }
 }
