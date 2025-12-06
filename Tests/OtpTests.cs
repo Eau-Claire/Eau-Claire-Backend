@@ -9,8 +9,8 @@ namespace OtpTests
     [TestClass]
     public class OtpTests
     {
-        public IMemoryCache _cache;
-        public IOtpService _otpService;
+        public IMemoryCache _cache = null!;
+        public IOtpService _otpService = null!;
         public string otp = "";
         public Mock<IUtils> _utils = new Mock<IUtils>();
 
@@ -52,7 +52,7 @@ namespace OtpTests
             string device = "device1";
             string cacheKey = $"otp_{device}_{email}";
 
-            string otp = _cache.Get<string>(cacheKey);
+            string otp = _cache.Get<string>(cacheKey)!;
             Console.WriteLine("Nay la:" + otp);
 
             var result = _otpService.VerifyOtp("email", otp, null, device, null, email, "test-purpose");
