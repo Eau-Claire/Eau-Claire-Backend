@@ -14,7 +14,7 @@ namespace FishFarm.Services
         public LoginResponse? Login(string username, string password, string deviceId);
         public LoginResponse ResetPassword(int userId, string newPassword, string confirmPassword, string tempToken);
         public LoginResponse ValidateTempToken(string tempToken);
-        public LoginResponse ValidateRegistrationTempToken(string tempToken);
+        //public LoginResponse ValidateRegistrationTempToken(string tempToken);
         public bool ValidateGenericTempToken(string tempToken);
 
         public LoginResponse GetNewAccessTokenIfRefreshTokenValid(int userId, string refreshToken, string method);

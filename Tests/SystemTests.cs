@@ -244,6 +244,62 @@ namespace SystemTests
             Assert.AreEqual("401", result.status);
         }
 
+
+        [TestMethod]
+        public void ValidateTempToken_ReturnsExpectedResult()
+        {
+            var userToken = new TempTokenData
+            {
+                UserId = 1,
+                DeviceId = "device123",
+                isVerified = true,
+                Purpose = "notLogin",
+                Method = "sms",
+            };
+
+            var userProfile = new UserProfile();
+            var user = new User
+            {
+                UserId = 1,
+                Phone = "1234567890",
+                Email = "",
+            };
+
+            var device = new Device
+            {
+                UserId = 1,
+                DeviceId = "device123",
+                IsVerified = true,
+            };
+
+            _cache.Set("validTokenKey", userToken);
+
+            _deviceService.Setup(s => s.AddOrUpdateDeviceIsVerified(
+              userToken.DeviceId,
+              userToken.UserId,
+              It.IsAny<string>(),
+              It.IsAny<string>()))
+              .Returns(device);
+
+            _profileService.Setup(s => s.GetUserProfile(userToken.UserId))
+                .Returns(userProfile);
+
+            _userRepo.Setup(s => s.GetUserInfo(userToken.UserId))
+                .Returns(user);
+
+            _refreshTokenService.Setup(s => s.SaveRefreshToken(
+                userToken.UserId,
+                It.IsAny<string>(),
+                It.IsAny<DateTime>()))
+                .Returns(true);
+
+            var result = _service.ValidateTempToken("validTokenKey");
+
+            Console.WriteLine(result.message);
+
+            Assert.AreEqual("401", result.status);
+        }
+
         [TestMethod]
         public void ValidateGenericTempToken_ReturnsOk_WhenTokenIsValid()
         {

@@ -344,7 +344,7 @@ namespace FishFarm.Services
                     return new LoginResponse
                     {
                         status = "401",
-                        message = "Invalid token",
+                        message = "Invalid purpose",
                         isDeviceVerified = false,
                     };
                 }
@@ -407,43 +407,43 @@ namespace FishFarm.Services
 
         //Validate temp token generated after OTP verification for Register
         //Missing item: accesToken and createUser
-        public LoginResponse ValidateRegistrationTempToken(string tempToken)
-        {
-            try
-            {
-                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken)!;
-                Console.WriteLine(JsonConvert.SerializeObject(userToken));
+        //public LoginResponse ValidateRegistrationTempToken(string tempToken)
+        //{
+        //    try
+        //    {
+        //        TempTokenData userToken = _cache.Get<TempTokenData>(tempToken)!;
+        //        Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
-                if (userToken.Purpose != "register")
-                {
-                    return new LoginResponse
-                    {
-                        status = "401",
-                        message = "Invalid token",
-                        isDeviceVerified = false,
-                    };
-                }
+        //        if (userToken.Purpose != "register")
+        //        {
+        //            return new LoginResponse
+        //            {
+        //                status = "401",
+        //                message = "Invalid token",
+        //                isDeviceVerified = false,
+        //            };
+        //        }
 
-                userToken.isVerified = true;
+        //        userToken.isVerified = true;
 
-                return new LoginResponse
-                {
-                    status = "200",
-                    message = "Token is valid for registration",
-                    isDeviceVerified = true,
-                };
+        //        return new LoginResponse
+        //        {
+        //            status = "200",
+        //            message = "Token is valid for registration",
+        //            isDeviceVerified = true,
+        //        };
 
-            }
-            catch (Exception ex)
-            {
-                return new LoginResponse
-                {
-                    status = "500",
-                    message = $"Error occures while verifying Temperal Token: {ex.Message}",
-                    isDeviceVerified = false,
-                };
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new LoginResponse
+        //        {
+        //            status = "500",
+        //            message = $"Error occures while verifying Temperal Token: {ex.Message}",
+        //            isDeviceVerified = false,
+        //        };
+        //    }
+        //}
 
         //Validate temp token for other functions if needed in future
         public bool ValidateGenericTempToken(string tempToken)
