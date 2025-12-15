@@ -17,6 +17,7 @@
 						<ModulePath>.*DataAccessLayer.*</ModulePath>
 						<ModulePath>.*Repositories.*</ModulePath>
 						<ModulePath>.*BusinessObjects.*</ModulePath>
+						<ModulePath>.*FishFarmAPI_v2/Program.cs</ModulePath>
 
 						<!-- exclude generated designer files -->
 						<File>.*\.Designer\.cs$</File>

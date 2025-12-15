@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CoverageSession>
-  <Summary numSequencePoints="5428" visitedSequencePoints="319" numBranchPoints="220" visitedBranchPoints="84" sequenceCoverage="5.87" branchCoverage="38.18" maxCyclomaticComplexity="163" minCyclomaticComplexity="17" visitedClasses="11" numClasses="61" visitedMethods="67" numMethods="274" />
+  <Summary numSequencePoints="5400" visitedSequencePoints="326" numBranchPoints="218" visitedBranchPoints="86" sequenceCoverage="6.03" branchCoverage="39.44" maxCyclomaticComplexity="163" minCyclomaticComplexity="17" visitedClasses="11" numClasses="61" visitedMethods="67" numMethods="273" />
   <Modules>
-    <Module hash="8A551B19-2825-4CD0-8FE5-35A6636CFD97">
+    <Module hash="B15F2DC1-00BA-4C76-84AD-EB53A6B5B79D">
       <ModulePath>FishFarm.BusinessObjects.dll</ModulePath>
-      <ModuleTime>2025-12-15T06:30:02</ModuleTime>
+      <ModuleTime>2025-12-15T09:36:37</ModuleTime>
       <ModuleName>FishFarm.BusinessObjects</ModuleName>
       <Files>
         <File uid="1" fullPath="D:\Bu\Fish_Projects\BE\FishFarmAPI_v2\BusinessObjects\CreateUserResponse.cs" />
@@ -131,7 +131,7 @@
               <Name>System.Int32 FishFarm.BusinessObjects.Device::get_UserId()</Name>
               <FileRef uid="2" />
               <SequencePoints>
-                <SequencePoint vc="2" uspid="14" ordinal="0" sl="14" sc="1" el="14" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="3" uspid="14" ordinal="0" sl="14" sc="1" el="14" ec="2" bec="0" bev="0" fileid="2" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="1" offset="1" sc="0" sl="14" ec="1" el="14" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
@@ -142,7 +142,7 @@
               <Name>System.String FishFarm.BusinessObjects.Device::get_DeviceName()</Name>
               <FileRef uid="2" />
               <SequencePoints>
-                <SequencePoint vc="2" uspid="15" ordinal="0" sl="15" sc="1" el="15" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="3" uspid="15" ordinal="0" sl="15" sc="1" el="15" ec="2" bec="0" bev="0" fileid="2" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="2" offset="2" sc="0" sl="15" ec="1" el="15" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
@@ -153,7 +153,7 @@
               <Name>System.String FishFarm.BusinessObjects.Device::get_DeviceType()</Name>
               <FileRef uid="2" />
               <SequencePoints>
-                <SequencePoint vc="2" uspid="16" ordinal="0" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="3" uspid="16" ordinal="0" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="2" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="3" offset="3" sc="0" sl="16" ec="1" el="16" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
@@ -164,7 +164,7 @@
               <Name>System.String FishFarm.BusinessObjects.Device::get_DeviceId()</Name>
               <FileRef uid="2" />
               <SequencePoints>
-                <SequencePoint vc="4" uspid="18" ordinal="0" sl="18" sc="1" el="18" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="6" uspid="18" ordinal="0" sl="18" sc="1" el="18" ec="2" bec="0" bev="0" fileid="2" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="4" offset="4" sc="0" sl="18" ec="1" el="18" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
@@ -175,7 +175,7 @@
               <Name>System.DateTime FishFarm.BusinessObjects.Device::get_CreatedAt()</Name>
               <FileRef uid="2" />
               <SequencePoints>
-                <SequencePoint vc="2" uspid="19" ordinal="0" sl="19" sc="1" el="19" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="3" uspid="19" ordinal="0" sl="19" sc="1" el="19" ec="2" bec="0" bev="0" fileid="2" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="5" offset="5" sc="0" sl="19" ec="1" el="19" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
@@ -186,7 +186,7 @@
               <Name>System.DateTime FishFarm.BusinessObjects.Device::get_ExpiredAt()</Name>
               <FileRef uid="2" />
               <SequencePoints>
-                <SequencePoint vc="2" uspid="20" ordinal="0" sl="20" sc="1" el="20" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="3" uspid="20" ordinal="0" sl="20" sc="1" el="20" ec="2" bec="0" bev="0" fileid="2" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="6" offset="6" sc="0" sl="20" ec="1" el="20" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
@@ -197,7 +197,7 @@
               <Name>System.Boolean FishFarm.BusinessObjects.Device::get_IsVerified()</Name>
               <FileRef uid="2" />
               <SequencePoints>
-                <SequencePoint vc="4" uspid="21" ordinal="0" sl="21" sc="1" el="21" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="6" uspid="21" ordinal="0" sl="21" sc="1" el="21" ec="2" bec="0" bev="0" fileid="2" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="7" offset="7" sc="0" sl="21" ec="1" el="21" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
@@ -208,7 +208,7 @@
               <Name>FishFarm.BusinessObjects.User FishFarm.BusinessObjects.Device::get_User()</Name>
               <FileRef uid="2" />
               <SequencePoints>
-                <SequencePoint vc="2" uspid="23" ordinal="0" sl="23" sc="1" el="23" ec="2" bec="0" bev="0" fileid="2" />
+                <SequencePoint vc="3" uspid="23" ordinal="0" sl="23" sc="1" el="23" ec="2" bec="0" bev="0" fileid="2" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="8" offset="8" sc="0" sl="23" ec="1" el="23" bec="0" bev="0" fileid="2" xmlns:p8="xsi" />
@@ -458,7 +458,7 @@
               <Name>System.String FishFarm.BusinessObjects.LoginResponse::get_status()</Name>
               <FileRef uid="7" />
               <SequencePoints>
-                <SequencePoint vc="26" uspid="13" ordinal="0" sl="13" sc="1" el="13" ec="2" bec="0" bev="0" fileid="7" />
+                <SequencePoint vc="29" uspid="13" ordinal="0" sl="13" sc="1" el="13" ec="2" bec="0" bev="0" fileid="7" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="0" offset="0" sc="0" sl="13" ec="1" el="13" bec="0" bev="0" fileid="7" xmlns:p8="xsi" />
@@ -469,7 +469,7 @@
               <Name>System.String FishFarm.BusinessObjects.LoginResponse::get_message()</Name>
               <FileRef uid="7" />
               <SequencePoints>
-                <SequencePoint vc="17" uspid="15" ordinal="0" sl="15" sc="1" el="15" ec="2" bec="0" bev="0" fileid="7" />
+                <SequencePoint vc="20" uspid="15" ordinal="0" sl="15" sc="1" el="15" ec="2" bec="0" bev="0" fileid="7" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="1" offset="1" sc="0" sl="15" ec="1" el="15" bec="0" bev="0" fileid="7" xmlns:p8="xsi" />
@@ -480,7 +480,7 @@
               <Name>System.String FishFarm.BusinessObjects.LoginResponse::get_accessToken()</Name>
               <FileRef uid="7" />
               <SequencePoints>
-                <SequencePoint vc="13" uspid="16" ordinal="0" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="7" />
+                <SequencePoint vc="14" uspid="16" ordinal="0" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="7" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="2" offset="2" sc="0" sl="16" ec="1" el="16" bec="0" bev="0" fileid="7" xmlns:p8="xsi" />
@@ -491,7 +491,7 @@
               <Name>System.Int32 FishFarm.BusinessObjects.LoginResponse::get_expiresIn()</Name>
               <FileRef uid="7" />
               <SequencePoints>
-                <SequencePoint vc="12" uspid="17" ordinal="0" sl="17" sc="1" el="17" ec="2" bec="0" bev="0" fileid="7" />
+                <SequencePoint vc="13" uspid="17" ordinal="0" sl="17" sc="1" el="17" ec="2" bec="0" bev="0" fileid="7" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="3" offset="3" sc="0" sl="17" ec="1" el="17" bec="0" bev="0" fileid="7" xmlns:p8="xsi" />
@@ -502,7 +502,7 @@
               <Name>System.Int32 FishFarm.BusinessObjects.LoginResponse::get_refreshExpiresIn()</Name>
               <FileRef uid="7" />
               <SequencePoints>
-                <SequencePoint vc="12" uspid="18" ordinal="0" sl="18" sc="1" el="18" ec="2" bec="0" bev="0" fileid="7" />
+                <SequencePoint vc="13" uspid="18" ordinal="0" sl="18" sc="1" el="18" ec="2" bec="0" bev="0" fileid="7" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="4" offset="4" sc="0" sl="18" ec="1" el="18" bec="0" bev="0" fileid="7" xmlns:p8="xsi" />
@@ -513,7 +513,7 @@
               <Name>System.String FishFarm.BusinessObjects.LoginResponse::get_refreshToken()</Name>
               <FileRef uid="7" />
               <SequencePoints>
-                <SequencePoint vc="13" uspid="19" ordinal="0" sl="19" sc="1" el="19" ec="2" bec="0" bev="0" fileid="7" />
+                <SequencePoint vc="14" uspid="19" ordinal="0" sl="19" sc="1" el="19" ec="2" bec="0" bev="0" fileid="7" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="5" offset="5" sc="0" sl="19" ec="1" el="19" bec="0" bev="0" fileid="7" xmlns:p8="xsi" />
@@ -524,7 +524,7 @@
               <Name>System.String FishFarm.BusinessObjects.LoginResponse::get_tokenType()</Name>
               <FileRef uid="7" />
               <SequencePoints>
-                <SequencePoint vc="12" uspid="20" ordinal="0" sl="20" sc="1" el="20" ec="2" bec="0" bev="0" fileid="7" />
+                <SequencePoint vc="13" uspid="20" ordinal="0" sl="20" sc="1" el="20" ec="2" bec="0" bev="0" fileid="7" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="6" offset="6" sc="0" sl="20" ec="1" el="20" bec="0" bev="0" fileid="7" xmlns:p8="xsi" />
@@ -535,7 +535,7 @@
               <Name>System.String FishFarm.BusinessObjects.LoginResponse::get_scope()</Name>
               <FileRef uid="7" />
               <SequencePoints>
-                <SequencePoint vc="12" uspid="22" ordinal="0" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="7" />
+                <SequencePoint vc="13" uspid="22" ordinal="0" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="7" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="7" offset="7" sc="0" sl="22" ec="1" el="22" bec="0" bev="0" fileid="7" xmlns:p8="xsi" />
@@ -557,7 +557,7 @@
               <Name>System.Boolean FishFarm.BusinessObjects.LoginResponse::get_isDeviceVerified()</Name>
               <FileRef uid="7" />
               <SequencePoints>
-                <SequencePoint vc="10" uspid="24" ordinal="0" sl="24" sc="1" el="24" ec="2" bec="0" bev="0" fileid="7" />
+                <SequencePoint vc="11" uspid="24" ordinal="0" sl="24" sc="1" el="24" ec="2" bec="0" bev="0" fileid="7" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="9" offset="9" sc="0" sl="24" ec="1" el="24" bec="0" bev="0" fileid="7" xmlns:p8="xsi" />
@@ -568,7 +568,7 @@
               <Name>FishFarm.BusinessObjects.UserProfile FishFarm.BusinessObjects.LoginResponse::get_userProfile()</Name>
               <FileRef uid="7" />
               <SequencePoints>
-                <SequencePoint vc="12" uspid="25" ordinal="0" sl="25" sc="1" el="25" ec="2" bec="0" bev="0" fileid="7" />
+                <SequencePoint vc="13" uspid="25" ordinal="0" sl="25" sc="1" el="25" ec="2" bec="0" bev="0" fileid="7" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="10" offset="10" sc="0" sl="25" ec="1" el="25" bec="0" bev="0" fileid="7" xmlns:p8="xsi" />
@@ -1625,7 +1625,7 @@
               <Name>System.Int32 FishFarm.BusinessObjects.TempTokenData::get_UserId()</Name>
               <FileRef uid="25" />
               <SequencePoints>
-                <SequencePoint vc="29" uspid="12" ordinal="0" sl="12" sc="1" el="12" ec="2" bec="0" bev="0" fileid="25" />
+                <SequencePoint vc="39" uspid="12" ordinal="0" sl="12" sc="1" el="12" ec="2" bec="0" bev="0" fileid="25" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="0" offset="0" sc="0" sl="12" ec="1" el="12" bec="0" bev="0" fileid="25" xmlns:p8="xsi" />
@@ -1636,7 +1636,7 @@
               <Name>System.String FishFarm.BusinessObjects.TempTokenData::get_DeviceId()</Name>
               <FileRef uid="25" />
               <SequencePoints>
-                <SequencePoint vc="19" uspid="14" ordinal="0" sl="14" sc="1" el="14" ec="2" bec="0" bev="0" fileid="25" />
+                <SequencePoint vc="24" uspid="14" ordinal="0" sl="14" sc="1" el="14" ec="2" bec="0" bev="0" fileid="25" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="1" offset="1" sc="0" sl="14" ec="1" el="14" bec="0" bev="0" fileid="25" xmlns:p8="xsi" />
@@ -1647,7 +1647,7 @@
               <Name>System.String FishFarm.BusinessObjects.TempTokenData::get_Phone()</Name>
               <FileRef uid="25" />
               <SequencePoints>
-                <SequencePoint vc="11" uspid="16" ordinal="0" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="25" />
+                <SequencePoint vc="13" uspid="16" ordinal="0" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="25" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="2" offset="2" sc="0" sl="16" ec="1" el="16" bec="0" bev="0" fileid="25" xmlns:p8="xsi" />
@@ -1658,7 +1658,7 @@
               <Name>System.String FishFarm.BusinessObjects.TempTokenData::get_Email()</Name>
               <FileRef uid="25" />
               <SequencePoints>
-                <SequencePoint vc="11" uspid="18" ordinal="0" sl="18" sc="1" el="18" ec="2" bec="0" bev="0" fileid="25" />
+                <SequencePoint vc="13" uspid="18" ordinal="0" sl="18" sc="1" el="18" ec="2" bec="0" bev="0" fileid="25" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="3" offset="3" sc="0" sl="18" ec="1" el="18" bec="0" bev="0" fileid="25" xmlns:p8="xsi" />
@@ -1669,7 +1669,7 @@
               <Name>System.String FishFarm.BusinessObjects.TempTokenData::get_Method()</Name>
               <FileRef uid="25" />
               <SequencePoints>
-                <SequencePoint vc="15" uspid="20" ordinal="0" sl="20" sc="1" el="20" ec="2" bec="0" bev="0" fileid="25" />
+                <SequencePoint vc="18" uspid="20" ordinal="0" sl="20" sc="1" el="20" ec="2" bec="0" bev="0" fileid="25" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="4" offset="4" sc="0" sl="20" ec="1" el="20" bec="0" bev="0" fileid="25" xmlns:p8="xsi" />
@@ -1680,7 +1680,7 @@
               <Name>System.Boolean FishFarm.BusinessObjects.TempTokenData::get_isVerified()</Name>
               <FileRef uid="25" />
               <SequencePoints>
-                <SequencePoint vc="14" uspid="22" ordinal="0" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="25" />
+                <SequencePoint vc="16" uspid="22" ordinal="0" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="25" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="5" offset="5" sc="0" sl="22" ec="1" el="22" bec="0" bev="0" fileid="25" xmlns:p8="xsi" />
@@ -1691,7 +1691,7 @@
               <Name>System.String FishFarm.BusinessObjects.TempTokenData::get_Purpose()</Name>
               <FileRef uid="25" />
               <SequencePoints>
-                <SequencePoint vc="17" uspid="24" ordinal="0" sl="24" sc="1" el="24" ec="2" bec="0" bev="0" fileid="25" />
+                <SequencePoint vc="22" uspid="24" ordinal="0" sl="24" sc="1" el="24" ec="2" bec="0" bev="0" fileid="25" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="6" offset="6" sc="0" sl="24" ec="1" el="24" bec="0" bev="0" fileid="25" xmlns:p8="xsi" />
@@ -1725,7 +1725,7 @@
               <Name>System.Int32 FishFarm.BusinessObjects.User::get_UserId()</Name>
               <FileRef uid="27" />
               <SequencePoints>
-                <SequencePoint vc="29" uspid="9" ordinal="0" sl="9" sc="1" el="9" ec="2" bec="0" bev="0" fileid="27" />
+                <SequencePoint vc="30" uspid="9" ordinal="0" sl="9" sc="1" el="9" ec="2" bec="0" bev="0" fileid="27" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="0" offset="0" sc="0" sl="9" ec="1" el="9" bec="0" bev="0" fileid="27" xmlns:p8="xsi" />
@@ -1736,7 +1736,7 @@
               <Name>System.String FishFarm.BusinessObjects.User::get_Username()</Name>
               <FileRef uid="27" />
               <SequencePoints>
-                <SequencePoint vc="19" uspid="10" ordinal="0" sl="10" sc="1" el="10" ec="2" bec="0" bev="0" fileid="27" />
+                <SequencePoint vc="20" uspid="10" ordinal="0" sl="10" sc="1" el="10" ec="2" bec="0" bev="0" fileid="27" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="1" offset="1" sc="0" sl="10" ec="1" el="10" bec="0" bev="0" fileid="27" xmlns:p8="xsi" />
@@ -1747,7 +1747,7 @@
               <Name>System.String FishFarm.BusinessObjects.User::get_PasswordHash()</Name>
               <FileRef uid="27" />
               <SequencePoints>
-                <SequencePoint vc="8" uspid="11" ordinal="0" sl="11" sc="1" el="11" ec="2" bec="0" bev="0" fileid="27" />
+                <SequencePoint vc="9" uspid="11" ordinal="0" sl="11" sc="1" el="11" ec="2" bec="0" bev="0" fileid="27" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="2" offset="2" sc="0" sl="11" ec="1" el="11" bec="0" bev="0" fileid="27" xmlns:p8="xsi" />
@@ -1758,7 +1758,7 @@
               <Name>System.String FishFarm.BusinessObjects.User::get_Email()</Name>
               <FileRef uid="27" />
               <SequencePoints>
-                <SequencePoint vc="12" uspid="12" ordinal="0" sl="12" sc="1" el="12" ec="2" bec="0" bev="0" fileid="27" />
+                <SequencePoint vc="13" uspid="12" ordinal="0" sl="12" sc="1" el="12" ec="2" bec="0" bev="0" fileid="27" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="3" offset="3" sc="0" sl="12" ec="1" el="12" bec="0" bev="0" fileid="27" xmlns:p8="xsi" />
@@ -1769,7 +1769,7 @@
               <Name>System.String FishFarm.BusinessObjects.User::get_Phone()</Name>
               <FileRef uid="27" />
               <SequencePoints>
-                <SequencePoint vc="7" uspid="13" ordinal="0" sl="13" sc="1" el="13" ec="2" bec="0" bev="0" fileid="27" />
+                <SequencePoint vc="8" uspid="13" ordinal="0" sl="13" sc="1" el="13" ec="2" bec="0" bev="0" fileid="27" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="4" offset="4" sc="0" sl="13" ec="1" el="13" bec="0" bev="0" fileid="27" xmlns:p8="xsi" />
@@ -1791,7 +1791,7 @@
               <Name>System.Collections.Generic.ICollection`1&lt;FishFarm.BusinessObjects.Notification&gt; FishFarm.BusinessObjects.User::get_Notifications()</Name>
               <FileRef uid="27" />
               <SequencePoints>
-                <SequencePoint vc="7" uspid="16" ordinal="0" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="27" />
+                <SequencePoint vc="8" uspid="16" ordinal="0" sl="16" sc="1" el="16" ec="2" bec="0" bev="0" fileid="27" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="6" offset="6" sc="0" sl="16" ec="1" el="16" bec="0" bev="0" fileid="27" xmlns:p8="xsi" />
@@ -1802,7 +1802,7 @@
               <Name>System.Collections.Generic.ICollection`1&lt;FishFarm.BusinessObjects.ShopOwner&gt; FishFarm.BusinessObjects.User::get_ShopOwners()</Name>
               <FileRef uid="27" />
               <SequencePoints>
-                <SequencePoint vc="7" uspid="18" ordinal="0" sl="18" sc="1" el="18" ec="2" bec="0" bev="0" fileid="27" />
+                <SequencePoint vc="8" uspid="18" ordinal="0" sl="18" sc="1" el="18" ec="2" bec="0" bev="0" fileid="27" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="7" offset="7" sc="0" sl="18" ec="1" el="18" bec="0" bev="0" fileid="27" xmlns:p8="xsi" />
@@ -1813,7 +1813,7 @@
               <Name>System.Collections.Generic.ICollection`1&lt;FishFarm.BusinessObjects.ShopStaff&gt; FishFarm.BusinessObjects.User::get_ShopStaffs()</Name>
               <FileRef uid="27" />
               <SequencePoints>
-                <SequencePoint vc="7" uspid="20" ordinal="0" sl="20" sc="1" el="20" ec="2" bec="0" bev="0" fileid="27" />
+                <SequencePoint vc="8" uspid="20" ordinal="0" sl="20" sc="1" el="20" ec="2" bec="0" bev="0" fileid="27" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="8" offset="8" sc="0" sl="20" ec="1" el="20" bec="0" bev="0" fileid="27" xmlns:p8="xsi" />
@@ -1824,7 +1824,7 @@
               <Name>System.Collections.Generic.ICollection`1&lt;FishFarm.BusinessObjects.SpendingRecord&gt; FishFarm.BusinessObjects.User::get_SpendingRecords()</Name>
               <FileRef uid="27" />
               <SequencePoints>
-                <SequencePoint vc="7" uspid="22" ordinal="0" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="27" />
+                <SequencePoint vc="8" uspid="22" ordinal="0" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="27" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="9" offset="9" sc="0" sl="22" ec="1" el="22" bec="0" bev="0" fileid="27" xmlns:p8="xsi" />
@@ -1835,7 +1835,7 @@
               <Name>System.Collections.Generic.ICollection`1&lt;FishFarm.BusinessObjects.UserProfile&gt; FishFarm.BusinessObjects.User::get_UserProfiles()</Name>
               <FileRef uid="27" />
               <SequencePoints>
-                <SequencePoint vc="7" uspid="24" ordinal="0" sl="24" sc="1" el="24" ec="2" bec="0" bev="0" fileid="27" />
+                <SequencePoint vc="8" uspid="24" ordinal="0" sl="24" sc="1" el="24" ec="2" bec="0" bev="0" fileid="27" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="10" offset="10" sc="0" sl="24" ec="1" el="24" bec="0" bev="0" fileid="27" xmlns:p8="xsi" />
@@ -1990,7 +1990,7 @@
               <Name>FishFarm.BusinessObjects.User FishFarm.BusinessObjects.UserProfile::get_User()</Name>
               <FileRef uid="29" />
               <SequencePoints>
-                <SequencePoint vc="8" uspid="22" ordinal="0" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="29" />
+                <SequencePoint vc="9" uspid="22" ordinal="0" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="29" />
               </SequencePoints>
               <BranchPoints />
               <MethodPoint vc="1" uspid="0" p8:type="SequencePoint" ordinal="7" offset="7" sc="0" sl="22" ec="1" el="22" bec="0" bev="0" fileid="29" xmlns:p8="xsi" />
@@ -1999,9 +1999,9 @@
         </Class>
       </Classes>
     </Module>
-    <Module hash="6178FFB8-0E79-4181-B3F6-8FDBBCD52197">
+    <Module hash="1CFA01E3-D189-4EC8-B26B-B2C3D3C1FF2B">
       <ModulePath>FishFarm.DataAccessLayer.dll</ModulePath>
-      <ModuleTime>2025-12-15T06:30:02</ModuleTime>
+      <ModuleTime>2025-12-15T09:36:37</ModuleTime>
       <ModuleName>FishFarm.DataAccessLayer</ModuleName>
       <Files>
         <File uid="30" fullPath="D:\Bu\Fish_Projects\BE\FishFarmAPI_v2\DataAccessLayer\DeviceDAO.cs" />
@@ -7187,9 +7187,9 @@
         </Class>
       </Classes>
     </Module>
-    <Module hash="5B24D871-2046-4928-83AE-4FD3CD49CF00">
+    <Module hash="E2086D6A-44F4-4D70-8E9D-026357D6E724">
       <ModulePath>FishFarm.Repositories.dll</ModulePath>
-      <ModuleTime>2025-12-15T06:30:02</ModuleTime>
+      <ModuleTime>2025-12-15T09:36:37</ModuleTime>
       <ModuleName>FishFarm.Repositories</ModuleName>
       <Files>
         <File uid="44" fullPath="D:\Bu\Fish_Projects\BE\FishFarmAPI_v2\Repositories\DeviceRepository.cs" />
@@ -7449,9 +7449,9 @@
         </Class>
       </Classes>
     </Module>
-    <Module hash="9ED830EA-63E2-4D12-8B95-D61CEAFB6F18">
+    <Module hash="A441A199-D194-4ABB-8309-8A5FF6F0881A">
       <ModulePath>FishFarm.Services.dll</ModulePath>
-      <ModuleTime>2025-12-15T06:30:02</ModuleTime>
+      <ModuleTime>2025-12-15T09:36:37</ModuleTime>
       <ModuleName>FishFarm.Services</ModuleName>
       <Files>
         <File uid="48" fullPath="D:\Bu\Fish_Projects\BE\FishFarmAPI_v2\Services\DeviceService.cs" />
@@ -7825,7 +7825,7 @@
           </Methods>
         </Class>
         <Class>
-          <Summary numSequencePoints="302" visitedSequencePoints="152" numBranchPoints="84" visitedBranchPoints="55" sequenceCoverage="50.33" branchCoverage="65.47" maxCyclomaticComplexity="52" minCyclomaticComplexity="1" visitedClasses="1" numClasses="1" visitedMethods="7" numMethods="10" />
+          <Summary numSequencePoints="274" visitedSequencePoints="159" numBranchPoints="82" visitedBranchPoints="57" sequenceCoverage="58.02" branchCoverage="69.51" maxCyclomaticComplexity="52" minCyclomaticComplexity="1" visitedClasses="1" numClasses="1" visitedMethods="7" numMethods="9" />
           <FullName>FishFarm.Services.UserService</FullName>
           <Methods>
             <Method cyclomaticComplexity="1" nPathComplexity="1" sequenceCoverage="0" branchCoverage="100" isConstructor="False" isGetter="False" isSetter="False" isStatic="True">
@@ -8145,16 +8145,16 @@
               </BranchPoints>
               <MethodPoint vc="24" uspid="0" p8:type="SequencePoint" ordinal="5" offset="5" sc="0" sl="265" ec="1" el="322" bec="0" bev="0" fileid="52" xmlns:p8="xsi" />
             </Method>
-            <Method cyclomaticComplexity="16" nPathComplexity="16" sequenceCoverage="37.7" branchCoverage="50" isConstructor="False" isGetter="False" isSetter="False" isStatic="True">
-              <Summary numSequencePoints="61" visitedSequencePoints="23" numBranchPoints="16" visitedBranchPoints="8" sequenceCoverage="37.7" branchCoverage="50" maxCyclomaticComplexity="16" minCyclomaticComplexity="16" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
+            <Method cyclomaticComplexity="16" nPathComplexity="16" sequenceCoverage="49.18" branchCoverage="62.5" isConstructor="False" isGetter="False" isSetter="False" isStatic="True">
+              <Summary numSequencePoints="61" visitedSequencePoints="30" numBranchPoints="16" visitedBranchPoints="10" sequenceCoverage="49.18" branchCoverage="62.5" maxCyclomaticComplexity="16" minCyclomaticComplexity="16" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
               <MetadataToken />
               <Name>FishFarm.BusinessObjects.LoginResponse FishFarm.Services.UserService::ValidateTempToken(System.String)</Name>
               <FileRef uid="52" />
               <SequencePoints>
-                <SequencePoint vc="2" uspid="326" ordinal="0" sl="326" sc="1" el="326" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="2" uspid="328" ordinal="1" sl="328" sc="1" el="328" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="2" uspid="329" ordinal="2" sl="329" sc="1" el="329" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="2" uspid="330" ordinal="3" sl="330" sc="1" el="330" ec="2" bec="2" bev="2" fileid="52" />
+                <SequencePoint vc="3" uspid="326" ordinal="0" sl="326" sc="1" el="326" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="3" uspid="328" ordinal="1" sl="328" sc="1" el="328" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="3" uspid="329" ordinal="2" sl="329" sc="1" el="329" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="3" uspid="330" ordinal="3" sl="330" sc="1" el="330" ec="2" bec="2" bev="2" fileid="52" />
                 <SequencePoint vc="1" uspid="331" ordinal="4" sl="331" sc="1" el="331" ec="2" bec="0" bev="0" fileid="52" />
                 <SequencePoint vc="1" uspid="332" ordinal="5" sl="332" sc="1" el="332" ec="2" bec="0" bev="0" fileid="52" />
                 <SequencePoint vc="1" uspid="333" ordinal="6" sl="333" sc="1" el="333" ec="2" bec="0" bev="0" fileid="52" />
@@ -8162,15 +8162,15 @@
                 <SequencePoint vc="1" uspid="335" ordinal="8" sl="335" sc="1" el="335" ec="2" bec="0" bev="0" fileid="52" />
                 <SequencePoint vc="1" uspid="336" ordinal="9" sl="336" sc="1" el="336" ec="2" bec="0" bev="0" fileid="52" />
                 <SequencePoint vc="1" uspid="337" ordinal="10" sl="337" sc="1" el="337" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="1" uspid="340" ordinal="11" sl="340" sc="1" el="340" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="1" uspid="342" ordinal="12" sl="342" sc="1" el="342" ec="2" bec="4" bev="2" fileid="52" />
-                <SequencePoint vc="0" uspid="343" ordinal="13" sl="343" sc="1" el="343" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="344" ordinal="14" sl="344" sc="1" el="344" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="345" ordinal="15" sl="345" sc="1" el="345" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="346" ordinal="16" sl="346" sc="1" el="346" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="347" ordinal="17" sl="347" sc="1" el="347" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="348" ordinal="18" sl="348" sc="1" el="348" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="349" ordinal="19" sl="349" sc="1" el="349" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="2" uspid="340" ordinal="11" sl="340" sc="1" el="340" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="2" uspid="342" ordinal="12" sl="342" sc="1" el="342" ec="2" bec="4" bev="4" fileid="52" />
+                <SequencePoint vc="1" uspid="343" ordinal="13" sl="343" sc="1" el="343" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="1" uspid="344" ordinal="14" sl="344" sc="1" el="344" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="1" uspid="345" ordinal="15" sl="345" sc="1" el="345" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="1" uspid="346" ordinal="16" sl="346" sc="1" el="346" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="1" uspid="347" ordinal="17" sl="347" sc="1" el="347" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="1" uspid="348" ordinal="18" sl="348" sc="1" el="348" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="1" uspid="349" ordinal="19" sl="349" sc="1" el="349" ec="2" bec="0" bev="0" fileid="52" />
                 <SequencePoint vc="1" uspid="352" ordinal="20" sl="352" sc="1" el="352" ec="2" bec="0" bev="0" fileid="52" />
                 <SequencePoint vc="1" uspid="353" ordinal="21" sl="353" sc="1" el="353" ec="2" bec="0" bev="0" fileid="52" />
                 <SequencePoint vc="1" uspid="355" ordinal="22" sl="355" sc="1" el="355" ec="2" bec="4" bev="2" fileid="52" />
@@ -8211,14 +8211,14 @@
                 <SequencePoint vc="0" uspid="401" ordinal="57" sl="401" sc="1" el="401" ec="2" bec="0" bev="0" fileid="52" />
                 <SequencePoint vc="0" uspid="402" ordinal="58" sl="402" sc="1" el="402" ec="2" bec="0" bev="0" fileid="52" />
                 <SequencePoint vc="0" uspid="403" ordinal="59" sl="403" sc="1" el="403" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="2" uspid="405" ordinal="60" sl="405" sc="1" el="405" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="3" uspid="405" ordinal="60" sl="405" sc="1" el="405" ec="2" bec="0" bev="0" fileid="52" />
               </SequencePoints>
               <BranchPoints>
                 <BranchPoint vc="1" uspid="330" ordinal="0" path="0" offset="21" offsetend="23" sl="330" fileid="52" />
-                <BranchPoint vc="1" uspid="330" ordinal="1" path="1" offset="21" offsetend="68" sl="330" fileid="52" />
-                <BranchPoint vc="0" uspid="342" ordinal="2" path="0" offset="96" offsetend="98" sl="342" fileid="52" />
+                <BranchPoint vc="2" uspid="330" ordinal="1" path="1" offset="21" offsetend="68" sl="330" fileid="52" />
+                <BranchPoint vc="1" uspid="342" ordinal="2" path="0" offset="96" offsetend="98" sl="342" fileid="52" />
                 <BranchPoint vc="1" uspid="342" ordinal="3" path="1" offset="96" offsetend="116" sl="342" fileid="52" />
-                <BranchPoint vc="0" uspid="342" ordinal="4" path="0" offset="121" offsetend="123" sl="342" fileid="52" />
+                <BranchPoint vc="1" uspid="342" ordinal="4" path="0" offset="121" offsetend="123" sl="342" fileid="52" />
                 <BranchPoint vc="1" uspid="342" ordinal="5" path="1" offset="121" offsetend="168" sl="342" fileid="52" />
                 <BranchPoint vc="1" uspid="355" ordinal="6" path="0" offset="205" offsetend="207" sl="355" fileid="52" />
                 <BranchPoint vc="0" uspid="355" ordinal="7" path="1" offset="205" offsetend="218" sl="355" fileid="52" />
@@ -8231,48 +8231,7 @@
                 <BranchPoint vc="0" uspid="384" ordinal="14" path="0" offset="435" offsetend="437" sl="384" fileid="52" />
                 <BranchPoint vc="0" uspid="384" ordinal="15" path="1" offset="435" offsetend="439" sl="384" fileid="52" />
               </BranchPoints>
-              <MethodPoint vc="23" uspid="0" p8:type="SequencePoint" ordinal="6" offset="6" sc="0" sl="326" ec="1" el="405" bec="0" bev="0" fileid="52" xmlns:p8="xsi" />
-            </Method>
-            <Method cyclomaticComplexity="2" nPathComplexity="2" sequenceCoverage="0" branchCoverage="0" isConstructor="False" isGetter="False" isSetter="False" isStatic="True">
-              <Summary numSequencePoints="28" visitedSequencePoints="0" numBranchPoints="2" visitedBranchPoints="0" sequenceCoverage="0" branchCoverage="0" maxCyclomaticComplexity="2" minCyclomaticComplexity="2" visitedClasses="0" numClasses="0" visitedMethods="0" numMethods="1" />
-              <MetadataToken />
-              <Name>FishFarm.BusinessObjects.LoginResponse FishFarm.Services.UserService::ValidateRegistrationTempToken(System.String)</Name>
-              <FileRef uid="52" />
-              <SequencePoints>
-                <SequencePoint vc="0" uspid="411" ordinal="0" sl="411" sc="1" el="411" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="413" ordinal="1" sl="413" sc="1" el="413" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="414" ordinal="2" sl="414" sc="1" el="414" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="415" ordinal="3" sl="415" sc="1" el="415" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="417" ordinal="4" sl="417" sc="1" el="417" ec="2" bec="2" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="418" ordinal="5" sl="418" sc="1" el="418" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="419" ordinal="6" sl="419" sc="1" el="419" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="420" ordinal="7" sl="420" sc="1" el="420" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="421" ordinal="8" sl="421" sc="1" el="421" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="422" ordinal="9" sl="422" sc="1" el="422" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="423" ordinal="10" sl="423" sc="1" el="423" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="424" ordinal="11" sl="424" sc="1" el="424" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="427" ordinal="12" sl="427" sc="1" el="427" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="429" ordinal="13" sl="429" sc="1" el="429" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="430" ordinal="14" sl="430" sc="1" el="430" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="431" ordinal="15" sl="431" sc="1" el="431" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="432" ordinal="16" sl="432" sc="1" el="432" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="433" ordinal="17" sl="433" sc="1" el="433" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="434" ordinal="18" sl="434" sc="1" el="434" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="437" ordinal="19" sl="437" sc="1" el="437" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="438" ordinal="20" sl="438" sc="1" el="438" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="439" ordinal="21" sl="439" sc="1" el="439" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="440" ordinal="22" sl="440" sc="1" el="440" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="441" ordinal="23" sl="441" sc="1" el="441" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="442" ordinal="24" sl="442" sc="1" el="442" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="443" ordinal="25" sl="443" sc="1" el="443" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="444" ordinal="26" sl="444" sc="1" el="444" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="0" uspid="446" ordinal="27" sl="446" sc="1" el="446" ec="2" bec="0" bev="0" fileid="52" />
-              </SequencePoints>
-              <BranchPoints>
-                <BranchPoint vc="0" uspid="417" ordinal="0" path="0" offset="45" offsetend="47" sl="417" fileid="52" />
-                <BranchPoint vc="0" uspid="417" ordinal="1" path="1" offset="45" offsetend="88" sl="417" fileid="52" />
-              </BranchPoints>
-              <MethodPoint vc="0" uspid="0" p8:type="SequencePoint" ordinal="7" offset="7" sc="0" sl="411" ec="1" el="446" bec="0" bev="0" fileid="52" xmlns:p8="xsi" />
+              <MethodPoint vc="30" uspid="0" p8:type="SequencePoint" ordinal="6" offset="6" sc="0" sl="326" ec="1" el="405" bec="0" bev="0" fileid="52" xmlns:p8="xsi" />
             </Method>
             <Method cyclomaticComplexity="2" nPathComplexity="2" sequenceCoverage="57.14" branchCoverage="50" isConstructor="False" isGetter="False" isSetter="False" isStatic="True">
               <Summary numSequencePoints="14" visitedSequencePoints="8" numBranchPoints="2" visitedBranchPoints="1" sequenceCoverage="57.14" branchCoverage="50" maxCyclomaticComplexity="2" minCyclomaticComplexity="2" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
@@ -8299,7 +8258,7 @@
                 <BranchPoint vc="0" uspid="456" ordinal="0" path="0" offset="45" offsetend="47" sl="456" fileid="52" />
                 <BranchPoint vc="1" uspid="456" ordinal="1" path="1" offset="45" offsetend="52" sl="456" fileid="52" />
               </BranchPoints>
-              <MethodPoint vc="8" uspid="0" p8:type="SequencePoint" ordinal="8" offset="8" sc="0" sl="450" ec="1" el="469" bec="0" bev="0" fileid="52" xmlns:p8="xsi" />
+              <MethodPoint vc="8" uspid="0" p8:type="SequencePoint" ordinal="7" offset="7" sc="0" sl="450" ec="1" el="469" bec="0" bev="0" fileid="52" xmlns:p8="xsi" />
             </Method>
             <Method cyclomaticComplexity="1" nPathComplexity="1" sequenceCoverage="100" branchCoverage="100" isConstructor="True" isGetter="False" isSetter="False" isStatic="True">
               <Summary numSequencePoints="10" visitedSequencePoints="10" numBranchPoints="0" visitedBranchPoints="0" sequenceCoverage="100" branchCoverage="100" maxCyclomaticComplexity="1" minCyclomaticComplexity="1" visitedClasses="0" numClasses="0" visitedMethods="1" numMethods="1" />
@@ -8307,19 +8266,19 @@
               <Name>System.Void FishFarm.Services.UserService::.ctor(Microsoft.Extensions.Caching.Memory.IMemoryCache,FishFarm.Repositories.IUserRepository,FishFarm.Services.IUserProfileService,FishFarm.Services.IDeviceService,FishFarm.Services.IRefreshTokenService)</Name>
               <FileRef uid="52" />
               <SequencePoints>
-                <SequencePoint vc="9" uspid="21" ordinal="0" sl="21" sc="1" el="21" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="9" uspid="22" ordinal="1" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="9" uspid="23" ordinal="2" sl="23" sc="1" el="23" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="9" uspid="24" ordinal="3" sl="24" sc="1" el="24" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="9" uspid="25" ordinal="4" sl="25" sc="1" el="25" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="9" uspid="26" ordinal="5" sl="26" sc="1" el="26" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="9" uspid="27" ordinal="6" sl="27" sc="1" el="27" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="9" uspid="28" ordinal="7" sl="28" sc="1" el="28" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="9" uspid="29" ordinal="8" sl="29" sc="1" el="29" ec="2" bec="0" bev="0" fileid="52" />
-                <SequencePoint vc="9" uspid="30" ordinal="9" sl="30" sc="1" el="30" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="10" uspid="21" ordinal="0" sl="21" sc="1" el="21" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="10" uspid="22" ordinal="1" sl="22" sc="1" el="22" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="10" uspid="23" ordinal="2" sl="23" sc="1" el="23" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="10" uspid="24" ordinal="3" sl="24" sc="1" el="24" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="10" uspid="25" ordinal="4" sl="25" sc="1" el="25" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="10" uspid="26" ordinal="5" sl="26" sc="1" el="26" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="10" uspid="27" ordinal="6" sl="27" sc="1" el="27" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="10" uspid="28" ordinal="7" sl="28" sc="1" el="28" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="10" uspid="29" ordinal="8" sl="29" sc="1" el="29" ec="2" bec="0" bev="0" fileid="52" />
+                <SequencePoint vc="10" uspid="30" ordinal="9" sl="30" sc="1" el="30" ec="2" bec="0" bev="0" fileid="52" />
               </SequencePoints>
               <BranchPoints />
-              <MethodPoint vc="10" uspid="0" p8:type="SequencePoint" ordinal="9" offset="9" sc="0" sl="21" ec="1" el="30" bec="0" bev="0" fileid="52" xmlns:p8="xsi" />
+              <MethodPoint vc="10" uspid="0" p8:type="SequencePoint" ordinal="8" offset="8" sc="0" sl="21" ec="1" el="30" bec="0" bev="0" fileid="52" xmlns:p8="xsi" />
             </Method>
           </Methods>
         </Class>
@@ -8348,9 +8307,9 @@
         </Class>
       </Classes>
     </Module>
-    <Module hash="69E06BCD-9707-43BB-A26F-CDBF9583B6FF">
+    <Module hash="A4594CFA-A05C-4FC9-A9FD-68317D32BA43">
       <ModulePath>FishFarmAPI_v2.dll</ModulePath>
-      <ModuleTime>2025-12-15T06:30:02</ModuleTime>
+      <ModuleTime>2025-12-15T09:36:37</ModuleTime>
       <ModuleName>FishFarmAPI_v2</ModuleName>
       <Files>
         <File uid="54" fullPath="D:\Bu\Fish_Projects\BE\FishFarmAPI_v2\FishFarmAPI_v2\Program.cs" />
