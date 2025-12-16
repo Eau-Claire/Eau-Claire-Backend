@@ -1,5 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using FishFarm.BusinessObjects;
 using FishFarm.Services;
+using FishFarmAPI_v2.Controllers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
 
@@ -41,6 +45,80 @@ namespace OtpTests
 
             Console.WriteLine(_cache.Get<string>(cacheKey));
 
+        }
+
+        [TestMethod]
+        public async Task SendOTPCode_Controller_ReturnOk_WithExistedOTP()
+        {
+            var request = new OtpRequest
+            {
+                Method = "email",
+                DeviceId = "device1",
+                Email = "test@gmail.com",
+                Phone = "",
+                Purpose = "login"
+            };
+
+            var serviceResult = new ServiceResult
+            {
+                ErrorCode = "200",
+                IsSuccess = true,
+                Message = "OTP already exists"
+            };
+
+            var otpServiceMock = new Mock<IOtpService>();
+            otpServiceMock
+                .Setup(s => s.SendOtp("email", "device1", "", "test@gmail.com"))
+                .ReturnsAsync(serviceResult);
+
+            var controller = new OtpController(otpServiceMock.Object);
+
+            var result = await controller.GetOtpCode(request);
+
+            var ok = result as OkObjectResult;
+            Assert.IsNotNull(ok);
+
+            var payload = ok.Value as ServiceResult;
+            Assert.IsNotNull(payload);
+            Assert.AreEqual("200", payload.ErrorCode);
+        }
+
+        [TestMethod]
+        public void VerifyOTPCode_Controller_ReturnUnauthorized_WhenOtpInvalid()
+        {
+            var request = new OtpRequest
+            {
+                Method = "email",
+                InputOtp = "123456",
+                Purpose = "login",
+                Email = "test@gmail.com",
+                DeviceId = "device1"
+            };
+
+            var verifyResult = new ServiceResult
+            {
+                IsSuccess = false
+            };
+
+            var otpServiceMock = new Mock<IOtpService>();
+            otpServiceMock
+                .Setup(s => s.VerifyOtp(
+                    "email",
+                    "123456",
+                    It.IsAny<int?>(),
+                    "device1",
+                    null,
+                    "test@gmail.com",
+                    "login"))
+                .Returns(verifyResult);
+
+            var controller = new OtpController(otpServiceMock.Object);
+
+            var result = controller.VerifyOtpCode(request);
+
+            var unauthorized = result as ObjectResult;
+            Assert.IsNotNull(unauthorized);
+            Assert.AreEqual(401, unauthorized.StatusCode);
         }
 
         [TestMethod]

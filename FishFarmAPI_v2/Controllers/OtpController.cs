@@ -10,8 +10,8 @@ namespace FishFarmAPI_v2.Controllers
     [Route("api/v1/sys")]
     public class OtpController : ControllerBase
     {
-        private readonly OtpService _otpService;
-        public OtpController(OtpService otpService)
+        private readonly IOtpService _otpService;
+        public OtpController(IOtpService otpService)
         {
             _otpService = otpService;
         }
