@@ -1,7 +1,11 @@
+using System.Security.Claims;
 using FishFarm.BusinessObjects;
 using FishFarm.Repositories;
 using FishFarm.Services;
 using FishFarmAPI_v2.Controllers;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Moq;
@@ -17,6 +21,7 @@ namespace SystemTests
         private Mock<IUserProfileService> _profileService = null!;
         private Mock<IDeviceService> _deviceService = null!;
         private Mock<IRefreshTokenService> _refreshTokenService = null!;
+        private SystemController _controller = null!;
         private IMemoryCache _cache = null!;
 
         [TestInitialize]
@@ -36,10 +41,26 @@ namespace SystemTests
                 _refreshTokenService.Object
             );
 
+            //_controller = CreateControllerWithUser(new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim ( "userId", "42" ) }, "Test")));
+
             Environment.SetEnvironmentVariable("Jwt__Key", "vT9kY3qL4FxP8mS1H0bN7cW2QpR5uJ6tZyA3KdF8MvB2TxQ1");
             Environment.SetEnvironmentVariable("Jwt__Issuer", "test-issuer");
             Environment.SetEnvironmentVariable("Jwt__Audience", "test-audience");
         }
+
+        //private SystemController CreateControllerWithUser(ClaimsPrincipal? principal = null)
+        //{
+        //    var controller = new SystemController(_service);
+        //    if (principal != null)
+        //    {
+        //        controller.ControllerContext = new ControllerContext
+        //        {
+        //            HttpContext = new DefaultHttpContext { User = principal}
+        //        };
+        //    }
+        //    return controller;
+
+        //}
 
         [TestMethod]
         public void Login_Success_Test()
@@ -324,6 +345,136 @@ namespace SystemTests
             Assert.IsTrue(cachedToken.isVerified);
 
             Assert.AreEqual(true, result);
+        }
+
+        //Controller-API Test
+        [TestMethod]
+        public void Login_SystemController_Ok()
+        {
+            var loginRequest = new FishFarm.BusinessObjects.LoginRequest
+            {
+                Username = "test",
+                Password = "pass",
+                DeviceId = "device1"
+            };
+
+            var result = new LoginResponse
+            {
+                status = "200",
+                message = "Login successful",
+                isDeviceVerified = true,
+                accessToken = "a",
+                refreshExpiresIn = 86400,
+                expiresIn = 3600,
+                refreshToken = "b",
+                scope = "profile email",
+                tokenType = "Bearer",
+                userId = 1,
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+            
+            userServiceMock.Setup(s => s.Login(loginRequest.Username, loginRequest.Password, loginRequest.DeviceId))
+                .Returns(result);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            IActionResult actionResult = controller.Login(loginRequest);
+
+            var oK = actionResult as OkObjectResult;
+            Assert.IsNotNull(oK);
+
+            var payload = oK.Value;
+
+            Assert.IsNotNull(payload);
+
+            Assert.AreEqual("200", payload.GetType().GetProperty("status")!.GetValue(payload));
+
+        }
+
+        [TestMethod]
+        public void Login_SystemController_Cancel() 
+        {
+            var loginRequest = new FishFarm.BusinessObjects.LoginRequest
+            {
+                Username = "test",
+                Password = "pass",
+                DeviceId = "device1"
+            };
+
+            var result = new LoginResponse
+            {
+                status = "401",
+                message = "",
+                isDeviceVerified = true,
+                accessToken = "a",
+                refreshExpiresIn = 86400,
+                expiresIn = 3600,
+                refreshToken = "b",
+                scope = "profile email",
+                tokenType = "Bearer",
+                userId = 1,
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+
+            userServiceMock.Setup(s => s.Login(loginRequest.Username, loginRequest.Password, loginRequest.DeviceId))
+                .Returns(result);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            IActionResult actionResult = controller.Login(loginRequest);
+
+            var unauthoized = actionResult as UnauthorizedObjectResult;
+            Assert.IsNotNull(unauthoized);
+
+            var payload = unauthoized.Value;
+
+            Assert.IsNotNull(payload);
+
+            Assert.AreEqual(401, unauthoized.StatusCode);
+        }
+
+        [TestMethod]
+        public void GetToken_SystemController_Ok()
+        {
+            TempTokenRequest tempTokenRequest = new TempTokenRequest
+            {
+                tempToken = "abbbb"
+            };
+
+            LoginResponse response = new LoginResponse
+            {
+                status = "200",
+                message = "Login successful",
+                isDeviceVerified = true,
+                accessToken = "a",
+                refreshExpiresIn = 86400,
+                expiresIn = 3600,
+                refreshToken = "b",
+                scope = "profile email",
+                tokenType = "Bearer",
+                userId = 1,
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+
+            userServiceMock.Setup(s => s.ValidateTempToken(tempTokenRequest.tempToken))
+                .Returns(response);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            IActionResult actionResult = controller.GetToken(tempTokenRequest);
+
+            var oK = actionResult as OkObjectResult;
+            Assert.IsNotNull(oK);
+
+            var payload = oK.Value;
+
+            Assert.IsNotNull(payload);
+
+            Assert.AreEqual("200", payload.GetType().GetProperty("status")!.GetValue(payload));
+
         }
     }
 }
