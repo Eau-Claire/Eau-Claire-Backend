@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using FishFarm.BusinessObjects;
 using FishFarm.Services;
@@ -228,6 +229,123 @@ namespace OtpTests
             var badRequest = result as BadRequestObjectResult;
             Assert.IsNotNull(badRequest);
         }
+        [TestMethod]
+        public void RefreshToken_ReturnOk_WhenTokenValid()
+        {
+            // Arrange
+            var request = new RefreshTokenRequest
+            {
+                UserId = 1,
+                RefreshToken = "valid-refresh-token"
+            };
 
+            var serviceResult = new LoginResponse
+            {
+                status = "200",
+                message = "Success",
+                accessToken = "new-access-token"
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+            userServiceMock
+                .Setup(s => s.GetNewAccessTokenIfRefreshTokenValid(
+                    1,
+                    "valid-refresh-token",
+                    It.IsAny<string>()))
+                .Returns(serviceResult);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            // Act
+            var actionResult = controller.RefreshToken(request);
+
+            // Assert
+            var ok = actionResult as OkObjectResult;
+            Assert.IsNotNull(ok);
+
+            var payload = ok.Value as LoginResponse;
+            Assert.IsNotNull(payload);
+            Assert.AreEqual("200", payload.status);
+        }
+
+        [TestMethod]
+        public void RefreshToken_ReturnUnauthorized_WhenTokenInvalid()
+        {
+            // Arrange
+            var request = new RefreshTokenRequest
+            {
+                UserId = 1,
+                RefreshToken = "invalid-token"
+            };
+
+            var serviceResult = new LoginResponse
+            {
+                status = "401",
+                message = "Invalid refresh token"
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+            userServiceMock
+                .Setup(s => s.GetNewAccessTokenIfRefreshTokenValid(
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()))
+                .Returns(serviceResult);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            // Act
+            var actionResult = controller.RefreshToken(request);
+
+            // Assert
+            var unauthorized = actionResult as UnauthorizedObjectResult;
+            Assert.IsNotNull(unauthorized);
+        }
+
+        [TestMethod]
+        public void ResetPassword_ReturnOk_WhenSuccess()
+        {
+            // Arrange
+            var request = new ResetPasswordRequest
+            {
+                UserId = 1,
+                NewPassword = "newpass123",
+                ConfirmPassword = "newpass123",
+                TempToken = "temp-token"
+            };
+
+            var loginResponse = new LoginResponse
+            {
+                status = "200",
+                message = "",
+                isDeviceVerified = true,
+                accessToken = "a",
+                refreshExpiresIn = 86400,
+                expiresIn = 3600,
+                refreshToken = "b",
+                scope = "profile email",
+                tokenType = "Bearer",
+                userId = 1,
+
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+            userServiceMock
+                .Setup(s => s.ResetPassword(
+                    request.UserId,
+                    request.NewPassword,
+                    request.ConfirmPassword,
+                    request.TempToken))
+                .Returns(loginResponse);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            // Act
+            var actionResult = controller.ResetPassword(request);
+
+            // Assert
+            var ok = actionResult as OkObjectResult;
+            Assert.IsNotNull(ok);
+        }
     }
 }
