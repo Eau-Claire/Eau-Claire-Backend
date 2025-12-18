@@ -107,44 +107,6 @@ namespace OtpTests
         }
 
         [TestMethod]
-        public void VerifyOTPCode_Controller_ReturnUnauthorized_WhenOtpInvalid()
-        {
-            var request = new OtpRequest
-            {
-                Method = "email",
-                InputOtp = "123456",
-                Purpose = "login",
-                Email = "test@gmail.com",
-                DeviceId = "device1"
-            };
-
-            var verifyResult = new ServiceResult
-            {
-                IsSuccess = false
-            };
-
-            var otpServiceMock = new Mock<IOtpService>();
-            otpServiceMock
-                .Setup(s => s.VerifyOtp(
-                    "email",
-                    "123456",
-                    It.IsAny<int?>(),
-                    "device1",
-                    null,
-                    "test@gmail.com",
-                    "login"))
-                .Returns(verifyResult);
-
-            var controller = new OtpController(otpServiceMock.Object);
-
-            var result = controller.VerifyOtpCode(request);
-
-            var unauthorized = result as ObjectResult;
-            Assert.IsNotNull(unauthorized);
-            Assert.AreEqual(401, unauthorized.StatusCode);
-        }
-
-        [TestMethod]
         public async Task GetOtpCode_Return500_WhenDeviceIdMissing()
         {
             var request = new OtpRequest
@@ -228,6 +190,160 @@ namespace OtpTests
 
             var badRequest = result as BadRequestObjectResult;
             Assert.IsNotNull(badRequest);
+        }
+
+        [TestMethod]
+        public void VerifyOTPCode_Controller_ReturnUnauthorized_WhenOtpInvalid()
+        {
+            var request = new OtpRequest
+            {
+                Method = "email",
+                InputOtp = "123456",
+                Purpose = "login",
+                Email = "test@gmail.com",
+                DeviceId = "device1"
+            };
+
+            var verifyResult = new ServiceResult
+            {
+                IsSuccess = false
+            };
+
+            var otpServiceMock = new Mock<IOtpService>();
+            otpServiceMock
+                .Setup(s => s.VerifyOtp(
+                    "email",
+                    "123456",
+                    It.IsAny<int?>(),
+                    "device1",
+                    null,
+                    "test@gmail.com",
+                    "login"))
+                .Returns(verifyResult);
+
+            var controller = new OtpController(otpServiceMock.Object);
+
+            var result = controller.VerifyOtpCode(request);
+
+            var unauthorized = result as ObjectResult;
+            Assert.IsNotNull(unauthorized);
+            Assert.AreEqual(401, unauthorized.StatusCode);
+        }
+
+        [TestMethod]
+        public void VerifyOTPCode_Return400_WhenRequiredFieldsMissing()
+        {
+            var request = new OtpRequest
+            {
+                Method = "",
+                InputOtp = "",
+                Purpose = ""
+            };
+
+            var otpServiceMock = new Mock<IOtpService>();
+            var controller = new OtpController(otpServiceMock.Object);
+
+            var result = controller.VerifyOtpCode(request);
+
+            var bad = result as BadRequestObjectResult;
+            Assert.IsNotNull(bad);
+        }
+
+        [TestMethod]
+        public void VerifyOTPCode_Return400_WhenMethodInvalid()
+        {
+            var request = new OtpRequest
+            {
+                Method = "push",
+                InputOtp = "123456",
+                Purpose = "login"
+            };
+
+            var otpServiceMock = new Mock<IOtpService>();
+            var controller = new OtpController(otpServiceMock.Object);
+
+            var result = controller.VerifyOtpCode(request);
+
+            var bad = result as BadRequestObjectResult;
+            Assert.IsNotNull(bad);
+        }
+
+        [TestMethod]
+        public void VerifyOTPCode_Return400_WhenSmsWithoutPhone()
+        {
+            var request = new OtpRequest
+            {
+                Method = "sms",
+                InputOtp = "123456",
+                Purpose = "login",
+                Phone = ""
+            };
+
+            var otpServiceMock = new Mock<IOtpService>();
+            var controller = new OtpController(otpServiceMock.Object);
+
+            var result = controller.VerifyOtpCode(request);
+
+            var bad = result as BadRequestObjectResult;
+            Assert.IsNotNull(bad);
+        }
+
+        [TestMethod]
+        public void VerifyOTPCode_Return400_WhenEmailWithoutEmail()
+        {
+            var request = new OtpRequest
+            {
+                Method = "email",
+                InputOtp = "123456",
+                Purpose = "login",
+                Email = ""
+            };
+
+            var otpServiceMock = new Mock<IOtpService>();
+            var controller = new OtpController(otpServiceMock.Object);
+
+            var result = controller.VerifyOtpCode(request);
+
+            var bad = result as BadRequestObjectResult;
+            Assert.IsNotNull(bad);
+        }
+
+        [TestMethod]
+        public void VerifyOTPCode_Controller_ReturnOk_WhenSuccess()
+        {
+            var request = new OtpRequest
+            {
+                Method = "email",
+                InputOtp = "123456",
+                Purpose = "login",
+                Email = "test@gmail.com",
+                DeviceId = "device1"
+            };
+
+            var serviceResult = new ServiceResult
+            {
+                IsSuccess = true,
+                Data = new { verified = true }
+            };
+
+            var otpServiceMock = new Mock<IOtpService>();
+            otpServiceMock
+                .Setup(s => s.VerifyOtp(
+                    "email",
+                    "123456",
+                    It.IsAny<int?>(),
+                    "device1",
+                    null,
+                    "test@gmail.com",
+                    "login"))
+                .Returns(serviceResult);
+
+            var controller = new OtpController(otpServiceMock.Object);
+
+            var result = controller.VerifyOtpCode(request);
+
+            var ok = result as OkObjectResult;
+            Assert.IsNotNull(ok);
         }
     }
 }
