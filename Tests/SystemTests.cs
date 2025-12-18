@@ -550,6 +550,85 @@ namespace SystemTests
         }
 
         [TestMethod]
+        public void RefreshToken_Return500_WhenServiceReturnNull()
+        {
+            var request = new RefreshTokenRequest
+            {
+                UserId = 1,
+                RefreshToken = "rt"
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+            userServiceMock
+                .Setup(s => s.GetNewAccessTokenIfRefreshTokenValid(1, "rt", It.IsAny<string>()))
+                .Returns((LoginResponse?)null);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            var result = controller.RefreshToken(request);
+
+            var status = result as ObjectResult;
+            Assert.IsNotNull(status);
+            Assert.AreEqual(500, status.StatusCode);
+        }
+
+        [TestMethod]
+        public void RefreshToken_Return401_WhenUnauthorized()
+        {
+            var request = new RefreshTokenRequest
+            {
+                UserId = 1,
+                RefreshToken = "rt"
+            };
+
+            var response = new LoginResponse
+            {
+                status = "401",
+                message = "Invalid refresh token"
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+            userServiceMock
+                .Setup(s => s.GetNewAccessTokenIfRefreshTokenValid(1, "rt", It.IsAny<string>()))
+                .Returns(response);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            var result = controller.RefreshToken(request);
+
+            var unauthorized = result as UnauthorizedObjectResult;
+            Assert.IsNotNull(unauthorized);
+        }
+
+        [TestMethod]
+        public void RefreshToken_ReturnOk_WhenSuccess()
+        {
+            var request = new RefreshTokenRequest
+            {
+                UserId = 1,
+                RefreshToken = "rt"
+            };
+
+            var response = new LoginResponse
+            {
+                status = "200",
+                accessToken = "new-token"
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+            userServiceMock
+                .Setup(s => s.GetNewAccessTokenIfRefreshTokenValid(1, "rt", It.IsAny<string>()))
+                .Returns(response);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            var result = controller.RefreshToken(request);
+
+            var ok = result as OkObjectResult;
+            Assert.IsNotNull(ok);
+        }
+
+        [TestMethod]
         public void ResetPassword_ReturnOk_WhenSuccess()
         {
             // Arrange
@@ -593,6 +672,78 @@ namespace SystemTests
             // Assert
             var ok = actionResult as OkObjectResult;
             Assert.IsNotNull(ok);
+        }
+        [TestMethod]
+        public void GetTokenForGeneric_Return500_WhenTokenInvalid()
+        {
+            var request = new TempTokenRequest
+            {
+                tempToken = "invalid-token"
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+            userServiceMock
+                .Setup(s => s.ValidateGenericTempToken("invalid-token"))
+                .Returns(false);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            var result = controller.GetTokenForGeneric(request);
+
+            var status = result as ObjectResult;
+            Assert.IsNotNull(status);
+            Assert.AreEqual(500, status.StatusCode);
+        }
+
+        [TestMethod]
+        public void GetTokenForGeneric_ReturnOk_WhenTokenValid()
+        {
+            var request = new TempTokenRequest
+            {
+                tempToken = "valid-token"
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+            userServiceMock
+                .Setup(s => s.ValidateGenericTempToken("valid-token"))
+                .Returns(true);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            var result = controller.GetTokenForGeneric(request);
+
+            var ok = result as OkObjectResult;
+            Assert.IsNotNull(ok);
+        }
+
+        [TestMethod]
+        public void ResetPassword_Return500_WhenServiceFail()
+        {
+            var request = new FishFarm.BusinessObjects.ResetPasswordRequest
+            {
+                UserId = 1,
+                NewPassword = "123",
+                ConfirmPassword = "123",
+                TempToken = "t"
+            };
+
+            var response = new LoginResponse
+            {
+                status = "500"
+            };
+
+            var userServiceMock = new Mock<IUserService>();
+            userServiceMock
+                .Setup(s => s.ResetPassword(1, "123", "123", "t"))
+                .Returns(response);
+
+            var controller = new SystemController(userServiceMock.Object);
+
+            var result = controller.ResetPassword(request);
+
+            var status = result as ObjectResult;
+            Assert.IsNotNull(status);
+            Assert.AreEqual(500, status.StatusCode);
         }
 
     }
