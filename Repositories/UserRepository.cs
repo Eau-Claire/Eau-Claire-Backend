@@ -30,6 +30,10 @@ namespace FishFarm.Repositories
         {
             return _userDAO.GetUserByUsername(username);
         }
+        public bool IsUserExisted(string username)
+        {
+            return _userDAO.IsUserExisted(username);
+        }
         public User? Login(string username, string passwordHash)
         {
             return _userDAO.Login(username, passwordHash);

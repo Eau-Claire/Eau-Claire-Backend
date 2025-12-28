@@ -11,7 +11,12 @@ public partial class User
     public string PasswordHash { get; set; } = null!;
     public string? Email { get; set; }
     public string? Phone { get; set; }
-    public string? Role { get; set; }
+    public int Role { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+    public bool status { get; set; } = true;
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 

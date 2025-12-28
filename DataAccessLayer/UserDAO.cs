@@ -28,6 +28,12 @@ namespace FishFarm.DataAccessLayer
             return _dbcontext.Users.FirstOrDefault(u => u.Username == username);
         }
 
+        public bool IsUserExisted(string username)
+        {
+            var user = _dbcontext.Users.FirstOrDefault(u => u.Username == username);
+            return user != null;
+        }
+
         public User? Login(string username, string passwordHash)
         {
             var user = _dbcontext.Users.FirstOrDefault(u => u.Username == username && u.PasswordHash == passwordHash);
@@ -37,10 +43,6 @@ namespace FishFarm.DataAccessLayer
         public bool Register(string username, string passwordHash)
         {
             var existingUser = _dbcontext.Users.FirstOrDefault(u => u.Username == username);
-            if (existingUser != null)
-            {
-                return false;
-            }
             var newUser = new User
             {
                 Username = username,

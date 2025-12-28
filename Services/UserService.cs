@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using BCrypt.Net;
 
 namespace FishFarm.Services
 {
@@ -18,7 +19,7 @@ namespace FishFarm.Services
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IMemoryCache _cache;
 
-        public UserService(IMemoryCache cache, 
+        public UserService(IMemoryCache cache,
             IUserRepository userRepository, IUserProfileService userProfileService,
             IDeviceService deviceService, IRefreshTokenService refreshTokenService)
         {
@@ -73,7 +74,7 @@ namespace FishFarm.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var keyBase64 = Environment.GetEnvironmentVariable("Jwt__Key");
 
-            if(string.IsNullOrEmpty(keyBase64))
+            if (string.IsNullOrEmpty(keyBase64))
             {
                 return new LoginResponse
                 {
@@ -89,7 +90,8 @@ namespace FishFarm.Services
             {
                 keyBytes = Convert.FromBase64String(keyBase64);
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new LoginResponse
                 {
@@ -104,7 +106,7 @@ namespace FishFarm.Services
                     new[]
                         {
                             new System.Security.Claims.Claim("username", user.Username ?? ""),
-                            new System.Security.Claims.Claim("role", user.Role ?? ""),
+                            new System.Security.Claims.Claim("role", user.Role.ToString()),
                             new System.Security.Claims.Claim("userId", user.UserId.ToString()),
                             new System.Security.Claims.Claim("fullName", userProfile?.FullName ?? ""),
                             new System.Security.Claims.Claim("contactAddress", userProfile?.ContactAddress ?? ""),
@@ -168,54 +170,89 @@ namespace FishFarm.Services
 
         }
 
-        //public LoginResponse? Register(string username, string password, string? phone, string? email, string deviceId, string tempToken)
-        //{
-        //    try
-        //    {
-        //        TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
-        //        Console.WriteLine(JsonConvert.SerializeObject(userToken));
+        // sau khi tao them API cho customer thi chuyen cai nay qua customer service
+        public LoginResponse? Register(string username, string password, string? phone, string? email, string deviceId, string tempToken)
+        {
+            try
+            {
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken) ?? new TempTokenData();
+                Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
-        //        if (userToken == null)
-        //        {
-        //            return new LoginResponse
-        //            {
-        //                status = "401",
-        //                message = "Invalid token",
-        //                isDeviceVerified = false,
-        //            };
-        //        } else if (userToken.isVerified == false)
-        //        {
-        //            return new LoginResponse
-        //            {
-        //                status = "401",
-        //                message = "Token not verified for registration",
-        //                isDeviceVerified = false,
-        //            };
-        //        }
+                if (userToken == null)
+                {
+                    return new LoginResponse
+                    {
+                        status = "401",
+                        message = "Invalid token",
+                        isDeviceVerified = false,
+                    };
+                }
+                else if (userToken.isVerified == false)
+                {
+                    return new LoginResponse
+                    {
+                        status = "401",
+                        message = "Token not verified for registration",
+                        isDeviceVerified = false,
+                    };
+                }
+                else if (userToken.Purpose != "register")
+                {
+                    return new LoginResponse
+                    {
+                        status = "401",
+                        message = "Invalid token purpose for registration",
+                        isDeviceVerified = false,
+                    };
+                }
 
-        //        var registerResponse = _userRepository.RegisterNewUser(username, password, phone, email, deviceId);
+                bool isUserExists = _userRepository.IsUserExisted(username);
 
-        //        _cache.Remove(tempToken);
+                if (isUserExists == true)
+                {
+                    return new LoginResponse
+                    {
+                        status = "409",
+                        message = "User with the same email or phone already exists",
+                        isDeviceVerified = false,
+                    };
+                }
 
-        //        //Goi genrate token response de tra ve cho client neu dang ky thanh cong
+                _cache.Remove(tempToken);
 
-        //        return registerResponse;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new LoginResponse
-        //        {
-        //            status = "500",
-        //            message = "An error occurred during registration",
-        //            isDeviceVerified = false,
-        //        };
-        //    }
-        //}
+                string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
-        //public LoginResponse ProcessTempToken (string tempToken)
-        //{
+                bool isRegisterSuccess = _userRepository.Register(username, passwordHash);
+                
+                if (!isRegisterSuccess)
+                {
+                    return new LoginResponse
+                    {
+                        status = "500",
+                        message = "Registration failed due to internal error",
+                        isDeviceVerified = false,
+                    };
+                }
+                
+                var user = _userRepository.GetUserByUsername(username);
 
-        //}
+
+                _cache.Remove(tempToken);
+
+                //Goi genrate token response de tra ve cho client neu dang ky thanh cong
+                return GenerateTokenResponse(user, new UserProfile(), "registration");
+            }
+            catch (Exception ex)
+            {
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = "An error occurred during registration",
+                    isDeviceVerified = false,
+                };
+            }
+        }
+
         public LoginResponse? Login(string username, string password, string deviceId)
         {
             try
@@ -327,7 +364,7 @@ namespace FishFarm.Services
             try
             {
                 TempTokenData userToken = _cache.Get<TempTokenData>(tempToken)!;
-                if(userToken == null)
+                if (userToken == null)
                 {
                     return new LoginResponse
                     {
@@ -406,44 +443,43 @@ namespace FishFarm.Services
 
 
         //Validate temp token generated after OTP verification for Register
-        //Missing item: accesToken and createUser
-        //public LoginResponse ValidateRegistrationTempToken(string tempToken)
-        //{
-        //    try
-        //    {
-        //        TempTokenData userToken = _cache.Get<TempTokenData>(tempToken)!;
-        //        Console.WriteLine(JsonConvert.SerializeObject(userToken));
+        public LoginResponse ValidateRegistrationTempToken(string tempToken)
+        {
+            try
+            {
+                TempTokenData userToken = _cache.Get<TempTokenData>(tempToken)!;
+                Console.WriteLine(JsonConvert.SerializeObject(userToken));
 
-        //        if (userToken.Purpose != "register")
-        //        {
-        //            return new LoginResponse
-        //            {
-        //                status = "401",
-        //                message = "Invalid token",
-        //                isDeviceVerified = false,
-        //            };
-        //        }
+                if (userToken.Purpose != "register")
+                {
+                    return new LoginResponse
+                    {
+                        status = "401",
+                        message = "Invalid token",
+                        isDeviceVerified = false,
+                    };
+                }
 
-        //        userToken.isVerified = true;
+                userToken.isVerified = true;
 
-        //        return new LoginResponse
-        //        {
-        //            status = "200",
-        //            message = "Token is valid for registration",
-        //            isDeviceVerified = true,
-        //        };
+                return new LoginResponse
+                {
+                    status = "200",
+                    message = "Token is valid for registration",
+                    isDeviceVerified = true,
+                };
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new LoginResponse
-        //        {
-        //            status = "500",
-        //            message = $"Error occures while verifying Temperal Token: {ex.Message}",
-        //            isDeviceVerified = false,
-        //        };
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                return new LoginResponse
+                {
+                    status = "500",
+                    message = $"Error occures while verifying Temperal Token: {ex.Message}",
+                    isDeviceVerified = false,
+                };
+            }
+        }
 
         //Validate temp token for other functions if needed in future
         public bool ValidateGenericTempToken(string tempToken)

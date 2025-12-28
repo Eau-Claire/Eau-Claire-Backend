@@ -25,13 +25,25 @@ namespace FishFarm.DataAccessLayer
             var user = _dbcontext.UserProfiles.FirstOrDefault(u => u.UserId == userId);
             if (user == null)
             {
-                return false;
+                bool created = _dbcontext.UserProfiles.Add(new UserProfile
+                {
+                    UserId = userId,
+                    FullName = fullName,
+                    ContactAddress = currentAddress,
+                    PermanentAddress = permanentAddress,
+                    CurrentPhoneNumber = curentPhoneNumber,
+                    DateOfBirth = dob
+                }) != null;
             }
-            user.FullName = fullName;
-            user.ContactAddress = currentAddress;
-            user.ContactAddress = permanentAddress;
-            user.CurrentPhoneNumber = curentPhoneNumber;
-            user.DateOfBirth = dob;
+            else
+            {
+
+                user.FullName = fullName;
+                user.ContactAddress = currentAddress;
+                user.ContactAddress = permanentAddress;
+                user.CurrentPhoneNumber = curentPhoneNumber;
+                user.DateOfBirth = dob;
+            }
             _dbcontext.SaveChanges();
             return true;
         }
