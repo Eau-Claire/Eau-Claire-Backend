@@ -14,7 +14,7 @@ namespace FishFarm.Repositories
         public bool IsUserExisted(string username);
 
         public User? Login(string username, string passwordHash);
-        public bool Register(string username, string passwordHash);
+        public bool Register(string username, string passwordHash, int storeId);
         public bool ResetPassword(int id, string newPasswordHash);
     }
 }

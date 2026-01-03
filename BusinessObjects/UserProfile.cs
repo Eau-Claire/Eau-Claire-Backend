@@ -5,19 +5,15 @@ namespace FishFarm.BusinessObjects;
 
 public partial class UserProfile
 {
-    public int ProfileId { get; set; }
+    public int UserProfileId { get; set; }
 
     public int UserId { get; set; }
 
-    public string? FullName { get; set; }
+    public string FullName { get; set; } = null!;
 
-    public DateOnly? DateOfBirth { get; set; }
+    public DateTime? Dob { get; set; }
 
-    public string? CurrentPhoneNumber { get; set; }
-
-    public string? PermanentAddress { get; set; }
-
-    public string? ContactAddress { get; set; }
+    public string? Gender { get; set; }
 
     public virtual User User { get; set; } = null!;
 }

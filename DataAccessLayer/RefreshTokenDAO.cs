@@ -9,18 +9,18 @@ namespace FishFarm.DataAccessLayer
 {
     public class RefreshTokenDAO
     {
-        private readonly FishFarmDbV2Context _dbcontext;
+        private readonly FishFarmContext _dbcontext;
 
-        public RefreshTokenDAO (FishFarmDbV2Context dbcontext)
+        public RefreshTokenDAO (FishFarmContext dbcontext)
         {
             _dbcontext = dbcontext;
         }
 
-        public bool SaveRefreshToken(int userId, string refreshToken, DateTime expiryDate)
+        public bool SaveRefreshToken(int userId, string deviceId, string refreshToken, DateTime expiryDate)
         {
             try
             {
-                var tokenEntry = _dbcontext.RefreshToken.FirstOrDefault(t => t.UserId == userId);
+                var tokenEntry = _dbcontext.RefreshTokens.FirstOrDefault(t => t.UserId == userId);
                 if (tokenEntry != null)
                 {
                     tokenEntry.Token = refreshToken;
@@ -37,7 +37,7 @@ namespace FishFarm.DataAccessLayer
                         Expires = expiryDate,
                         Created = DateTime.UtcNow
                     };
-                    _dbcontext.RefreshToken.Add(tokenEntry);
+                    _dbcontext.RefreshTokens.Add(tokenEntry);
                 }
                 _dbcontext.SaveChanges();
                 return true;
@@ -56,11 +56,11 @@ namespace FishFarm.DataAccessLayer
         {
             try
             {
-                var tokenEntry = _dbcontext.RefreshToken.FirstOrDefault(t => t.UserId == userId && t.Token == refreshToken);
-                if (tokenEntry != null && !tokenEntry.IsExpired)
-                {
-                    return true;
-                }
+                var tokenEntry = _dbcontext.RefreshTokens.FirstOrDefault(t => t.UserId == userId && t.Token == refreshToken);
+                //if (tokenEntry != null && !tokenEntry.IsExpired)
+                //{
+                //    return true;
+                //}
                 return false;
             }
             catch (Exception ex)

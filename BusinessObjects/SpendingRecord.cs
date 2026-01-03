@@ -11,15 +11,19 @@ public partial class SpendingRecord
 
     public int SpendingTypeId { get; set; }
 
-    public decimal Amount { get; set; }
+    public decimal? Amount { get; set; }
 
     public string? Description { get; set; }
-
-    public string? Status { get; set; }
 
     public string? AccountNo { get; set; }
 
     public string? BankNo { get; set; }
+
+    public string? Status { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
 
     public DateTime? Timestamp { get; set; }
 

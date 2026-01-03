@@ -99,20 +99,16 @@ namespace FishFarm.Services
                     message = $"Error while processing JWT Key: {ex.Message}"
                 };
             }
-
+            
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new System.Security.Claims.ClaimsIdentity(
                     new[]
                         {
                             new System.Security.Claims.Claim("username", user.Username ?? ""),
-                            new System.Security.Claims.Claim("role", user.Role.ToString()),
                             new System.Security.Claims.Claim("userId", user.UserId.ToString()),
                             new System.Security.Claims.Claim("fullName", userProfile?.FullName ?? ""),
-                            new System.Security.Claims.Claim("contactAddress", userProfile?.ContactAddress ?? ""),
-                            new System.Security.Claims.Claim("permanentAddress", userProfile?.PermanentAddress ?? ""),
-                            new System.Security.Claims.Claim("phoneNumber", userProfile?.CurrentPhoneNumber ?? ""),
-                            new System.Security.Claims.Claim("dateOfBirth", userProfile?.DateOfBirth.ToString() ?? ""),
+                            new System.Security.Claims.Claim("dateOfBirth", userProfile?.Dob.ToString() ?? ""),
                             new System.Security.Claims.Claim("email", user.Email ?? "")
                         }),
                 Expires = DateTime.UtcNow.AddHours(1),
@@ -161,17 +157,14 @@ namespace FishFarm.Services
                 userProfile = new UserProfile
                 {
                     FullName = userProfile?.FullName ?? "",
-                    ContactAddress = userProfile?.ContactAddress ?? "",
-                    PermanentAddress = userProfile?.PermanentAddress ?? "",
-                    CurrentPhoneNumber = userProfile?.CurrentPhoneNumber ?? "",
-                    DateOfBirth = userProfile?.DateOfBirth ?? null
+                    Dob = userProfile?.Dob ?? null
                 }
             };
 
         }
 
         // sau khi tao them API cho customer thi chuyen cai nay qua customer service
-        public LoginResponse? Register(string username, string password, string? phone, string? email, string deviceId, string tempToken)
+        public LoginResponse? Register(string username, string password, int storeId, string? phone, string? email, string deviceId, string tempToken)
         {
             try
             {
@@ -222,7 +215,7 @@ namespace FishFarm.Services
 
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
-                bool isRegisterSuccess = _userRepository.Register(username, passwordHash);
+                bool isRegisterSuccess = _userRepository.Register(username, passwordHash, storeId);
                 
                 if (!isRegisterSuccess)
                 {
@@ -253,7 +246,7 @@ namespace FishFarm.Services
             }
         }
 
-        public LoginResponse? Login(string username, string password, string deviceId)
+        public LoginResponse? Login(string username, string password, string deviceIdentifier)
         {
             try
             {
@@ -271,7 +264,7 @@ namespace FishFarm.Services
 
                 var userProfile = _userProfileService.GetUserProfile(user.UserId);
 
-                var isVerified = _deviceService.CheckDeviceIsVerified(deviceId, user.UserId);
+                var isVerified = _deviceService.CheckDeviceIsVerified(deviceIdentifier, user.UserId);
 
                 if (!isVerified)
                 {
@@ -401,7 +394,7 @@ namespace FishFarm.Services
 
                 if (userToken.Purpose == "login")
                 {
-                    Device device = _deviceService.AddOrUpdateDeviceIsVerified(userToken.DeviceId, userToken.UserId, "", "");
+                    Device device = _deviceService.AddOrUpdateDeviceIsVerified(userToken.UserId, userToken.DeviceId, "", "");
 
                     if (device == null)
                     {

@@ -9,9 +9,9 @@ namespace FishFarm.DataAccessLayer
 {
     public class UserProfileDAO
     {
-        private readonly FishFarmDbV2Context _dbcontext ;
+        private readonly FishFarmContext _dbcontext ;
 
-        public UserProfileDAO(FishFarmDbV2Context dbcontext)
+        public UserProfileDAO(FishFarmContext dbcontext)
         {
             _dbcontext = dbcontext;
         }
@@ -20,7 +20,7 @@ namespace FishFarm.DataAccessLayer
         {
             return _dbcontext.UserProfiles.FirstOrDefault(u => u.UserId == userId);
         }
-        public bool UpdateUserProfile(int userId, string fullName, string currentAddress, string permanentAddress, string curentPhoneNumber, DateOnly dob)
+        public bool UpdateUserProfile(int userId, string fullName, DateTime dob)
         {
             var user = _dbcontext.UserProfiles.FirstOrDefault(u => u.UserId == userId);
             if (user == null)
@@ -29,20 +29,14 @@ namespace FishFarm.DataAccessLayer
                 {
                     UserId = userId,
                     FullName = fullName,
-                    ContactAddress = currentAddress,
-                    PermanentAddress = permanentAddress,
-                    CurrentPhoneNumber = curentPhoneNumber,
-                    DateOfBirth = dob
+                    Dob = dob
                 }) != null;
             }
             else
             {
 
                 user.FullName = fullName;
-                user.ContactAddress = currentAddress;
-                user.ContactAddress = permanentAddress;
-                user.CurrentPhoneNumber = curentPhoneNumber;
-                user.DateOfBirth = dob;
+                user.Dob = dob;
             }
             _dbcontext.SaveChanges();
             return true;

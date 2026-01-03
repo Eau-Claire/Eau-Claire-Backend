@@ -10,9 +10,9 @@ namespace FishFarm.DataAccessLayer
 {
     public class UserDAO
     {
-        private readonly FishFarmDbV2Context _dbcontext;
+        private readonly FishFarmContext _dbcontext;
 
-        public UserDAO(FishFarmDbV2Context dbcontext)
+        public UserDAO(FishFarmContext dbcontext)
         {
             _dbcontext = dbcontext;
             Console.WriteLine(_dbcontext.Database.GetConnectionString());
@@ -40,17 +40,23 @@ namespace FishFarm.DataAccessLayer
             return user;
         }
 
-        public bool Register(string username, string passwordHash)
+        public bool Register(string username, string passwordHash, int storeId)
         {
             var existingUser = _dbcontext.Users.FirstOrDefault(u => u.Username == username);
             var newUser = new User
             {
                 Username = username,
-                PasswordHash = passwordHash,
-                Role = "Guest"
+                PasswordHash = passwordHash
+            };
+
+            var userStoreRole = new UserStoreRole
+            {
+                UserId = newUser.UserId,
+                StoreId = storeId
             };
 
             _dbcontext.Users.Add(newUser);
+            _dbcontext.UserStoreRoles.Add(userStoreRole);
             _dbcontext.SaveChanges();
             return true;
         }

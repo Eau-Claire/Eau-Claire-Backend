@@ -22,9 +22,9 @@ namespace FishFarm.Repositories
             return _userProfileDAO.GetUserProfile(userId);
         }
 
-        public bool UpdateUserProfile(int userId, string fullName, string currentAddress, string permanentAddress, string curentPhoneNumber, DateOnly dob)
+        public bool UpdateUserProfile(int userId, string fullName, DateTime dob)
         {
-            return _userProfileDAO.UpdateUserProfile(userId, fullName, currentAddress, permanentAddress, curentPhoneNumber, dob);
+            return _userProfileDAO.UpdateUserProfile(userId, fullName, dob);
         }
     }
 }

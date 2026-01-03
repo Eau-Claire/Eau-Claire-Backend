@@ -54,6 +54,14 @@ builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+builder.Services.AddScoped<IOtpService, OtpService>();
+builder.Services.AddScoped<IUtils, Utils>();
+builder.Services.AddScoped<IDeviceService, DeviceService>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+
+
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<DeviceService>();
 builder.Services.AddScoped<UserProfileService>();
@@ -72,11 +80,11 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 AppContext.SetSwitch("System.Net.DontEnableSystemDefaultDns", true);
 AppContext.SetSwitch("System.Net.DisableIPv6", true);
 
-builder.Services.AddDbContext<FishFarmDbV2Context>(options =>
+builder.Services.AddDbContext<FishFarmContext>(options =>
 {
     if (provider == "Postgres")
         options.UseNpgsql(conn)
-        .UseSnakeCaseNamingConvention();  // ép EF dùng kiểu snake_case tương thích với PostgreSQL
+        .UseSnakeCaseNamingConvention();  // ép EF dùng kiểu snake_case tương thích với PostgreSQL - Supabase
 
     else
         options.UseSqlServer(conn);

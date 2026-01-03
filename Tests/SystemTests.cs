@@ -243,7 +243,7 @@ namespace SystemTests
             var device = new Device
             {
                 UserId = 1,
-                DeviceId = "device123",
+                DeviceIdentifier = "device123",
                 IsVerified = true,
             };
 
@@ -299,7 +299,7 @@ namespace SystemTests
             var device = new Device
             {
                 UserId = 1,
-                DeviceId = "device123",
+                DeviceIdentifier = "device123",
                 IsVerified = true,
             };
 
@@ -355,7 +355,7 @@ namespace SystemTests
             var device = new Device
             {
                 UserId = 1,
-                DeviceId = "device123",
+                DeviceIdentifier = "device123",
                 IsVerified = true,
             };
 

@@ -10,6 +10,6 @@ namespace FishFarm.Services
     public interface IUserProfileService
     {
         public UserProfile GetUserProfile(int userId);
-        public bool UpdateUserProfile(int userId, string fullName, string currentAddress, string permanentAddress, string curentPhoneNumber, DateOnly dob);
+        public bool UpdateUserProfile(int userId, string fullName, DateTime dob);
     }
 }

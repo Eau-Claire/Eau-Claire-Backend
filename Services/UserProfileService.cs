@@ -21,9 +21,9 @@ namespace FishFarm.Services
             return _userProfileRepository.GetUserProfile(userId);
         }
 
-        public bool UpdateUserProfile(int userId, string fullName, string currentAddress, string permanentAddress, string curentPhoneNumber, DateOnly dob)
+        public bool UpdateUserProfile(int userId, string fullName, DateTime dob)
         {
-            return _userProfileRepository.UpdateUserProfile(userId, fullName, currentAddress, permanentAddress, curentPhoneNumber, dob);
+            return _userProfileRepository.UpdateUserProfile(userId, fullName, dob);
         }
     }
 }

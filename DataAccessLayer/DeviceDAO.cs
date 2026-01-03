@@ -10,37 +10,37 @@ namespace FishFarm.DataAccessLayer
 {
     public class DeviceDAO
     {
-        private readonly FishFarmDbV2Context _context;
-        public DeviceDAO(FishFarmDbV2Context context)
+        private readonly FishFarmContext _context;
+        public DeviceDAO(FishFarmContext context)
         {
             _context = context;
         }
 
-        public Device AddDevice(string deviceId, int userId, string? deviceName, string? deviceType)
+        public Device AddDevice(int userId, string deviceIdentifier, string? deviceName, string? deviceType)
         {
 
             Device device = new Device 
             { 
                 UserId = userId, 
                 DeviceName = deviceName ?? "", 
+                DeviceIdentifier = deviceIdentifier ?? "",
                 DeviceType = deviceType ?? "", 
-                DeviceId = deviceId!, 
                 CreatedAt = DateTime.UtcNow, 
                 ExpiredAt = DateTime.UtcNow.AddDays(1),
                 IsVerified = true
             };
 
-            _context.Device.Add(device);
+            _context.Devices.Add(device);
             _context.SaveChanges();
 
             return device;
         }
 
-        public bool CheckDeviceStatus(string deviceId)
+        public bool CheckDeviceStatus(string deviceIdentifier, int userId)
         {
             try
             {
-                var device = _context.Device.FirstOrDefault(d => d.DeviceId == deviceId)!;
+                var device = _context.Devices.FirstOrDefault(d => d.DeviceIdentifier == deviceIdentifier && d.UserId == userId)!;
                 DateTime createdAt = device.CreatedAt;
                 DateTime expiredAt = device.ExpiredAt;
 
@@ -48,7 +48,7 @@ namespace FishFarm.DataAccessLayer
 
                 if (timeSpan < TimeSpan.Zero)
                 {
-                    _context.Device.Remove(device);
+                    _context.Devices.Remove(device);
                     return false;
                 }
                 return true;
@@ -60,9 +60,9 @@ namespace FishFarm.DataAccessLayer
             }
         }
 
-        public bool CheckDeviceIsVerified (string deviceId, int userId)
+        public bool CheckDeviceIsVerified (string deviceIdentifier, int userId)
         {
-            Device existedDevice = _context.Device.FirstOrDefault(d => d.DeviceId == deviceId && d.UserId == userId)!;
+            Device existedDevice = _context.Devices.FirstOrDefault(d => d.DeviceIdentifier == deviceIdentifier && d.UserId == userId)!;
 
             if (existedDevice == null) 
             {
@@ -78,18 +78,18 @@ namespace FishFarm.DataAccessLayer
             }
         }
         
-        public Device AddOrUpdateDeviceIsVerified(string deviceId, int userId, string? deviceName, string? deviceType)
+        public Device AddOrUpdateDeviceIsVerified(int userId, string deviceIdentifier, string? deviceName, string? deviceType)
         {
             try
             {
-                Device existedDevice = _context.Device.FirstOrDefault(d => d.DeviceId == deviceId && d.UserId == userId)!;
+                Device existedDevice = _context.Devices.FirstOrDefault(d => d.DeviceIdentifier == deviceIdentifier && d.UserId == userId)!;
                 if (existedDevice == null)
                 {
-                    var addedDevice = AddDevice(deviceId, userId, deviceName, deviceType);
+                    var addedDevice = AddDevice(userId, deviceIdentifier, deviceName, deviceType);
                     return addedDevice;
                 }
                 existedDevice.IsVerified = true;
-                _context.Device.Update(existedDevice);
+                _context.Devices.Update(existedDevice);
                 _context.SaveChanges();
                 return existedDevice;
 

@@ -39,9 +39,9 @@ namespace FishFarm.Repositories
             return _userDAO.Login(username, passwordHash);
         }
 
-        public bool Register(string username, string passwordHash)
+        public bool Register(string username, string passwordHash, int storeId)
         {
-            return _userDAO.Register(username, passwordHash);
+            return _userDAO.Register(username, passwordHash, storeId);
         }
     }
 }

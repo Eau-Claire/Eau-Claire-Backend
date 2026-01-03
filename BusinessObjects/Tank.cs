@@ -7,7 +7,7 @@ public partial class Tank
 {
     public int TankId { get; set; }
 
-    public string Name { get; set; } = null!;
+    public string? Name { get; set; }
 
     public int? Quantity { get; set; }
 
@@ -15,11 +15,15 @@ public partial class Tank
 
     public int? BreedId { get; set; }
 
+    public string? Status { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
     public virtual FishBreed? Breed { get; set; }
 
     public virtual TankCluster? Cluster { get; set; }
-
-    public virtual ICollection<FishHealthStatus> FishHealthStatuses { get; set; } = new List<FishHealthStatus>();
 
     public virtual ICollection<Sensor> Sensors { get; set; } = new List<Sensor>();
 }

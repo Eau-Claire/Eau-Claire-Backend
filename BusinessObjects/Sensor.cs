@@ -9,17 +9,19 @@ public partial class Sensor
 
     public int SensorTypeId { get; set; }
 
-    public string? Status { get; set; }
-
     public int? AssignedToTank { get; set; }
 
     public int? AssignedToCluster { get; set; }
+
+    public string? Status { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
 
     public virtual TankCluster? AssignedToClusterNavigation { get; set; }
 
     public virtual Tank? AssignedToTankNavigation { get; set; }
 
-    public virtual ICollection<IoTdatum> IoTdata { get; set; } = new List<IoTdatum>();
-
-    public virtual SensorType SensorType { get; set; } = null!;
+    public virtual SensorsType SensorType { get; set; } = null!;
 }

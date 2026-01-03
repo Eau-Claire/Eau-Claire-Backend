@@ -17,24 +17,24 @@ namespace FishFarm.Services
             _deviceRepository = deviceRepository;
         }
 
-        public Device AddDevice(string deviceId, int userId, string? deviceName, string? deviceType)
+        public Device AddDevice(int userId, string deviceIdentifier, string? deviceName, string? deviceType)
         {
-            return _deviceRepository.AddDevice(deviceId, userId, deviceName, deviceType);
+            return _deviceRepository.AddDevice( userId, deviceIdentifier, deviceName, deviceType);
         }
 
-        public Device AddOrUpdateDeviceIsVerified(string deviceId, int userId, string? deviceName, string? deviceType)
+        public Device AddOrUpdateDeviceIsVerified(int userId, string deviceIdentifier, string? deviceName, string? deviceType)
         {
-            return _deviceRepository.AddOrUpdateDeviceIsVerified(deviceId, userId, deviceName, deviceType);
+            return _deviceRepository.AddOrUpdateDeviceIsVerified(userId, deviceIdentifier, deviceName, deviceType);
         }
 
-        public bool CheckDeviceIsVerified(string deviceId, int userId)
+        public bool CheckDeviceIsVerified(string deviceIdentifier, int userId)
         {
-            return _deviceRepository.CheckDeviceIsVerified(deviceId, userId);
+            return _deviceRepository.CheckDeviceIsVerified(deviceIdentifier, userId);
         }
 
-        public bool CheckDeviceStatus(string deviceId)
+        public bool CheckDeviceStatus(string deviceIdentifier, int userId)
         {
-            return _deviceRepository.CheckDeviceStatus(deviceId);
+            return _deviceRepository.CheckDeviceStatus(deviceIdentifier, userId);
         }
     }
 }

@@ -9,11 +9,11 @@ namespace FishFarm.Repositories
 {
     public interface IDeviceRepository
     {
-        public Device AddDevice(string deviceId, int userId, string? deviceName, string? deviceType);
-        public bool CheckDeviceStatus(string deviceId);
+        public Device AddDevice(int userId, string deviceIdentifier, string? deviceName, string? deviceType);
+        public bool CheckDeviceStatus(string deviceIdentifier, int userId);
 
-        public bool CheckDeviceIsVerified(string deviceId, int userId);
+        public bool CheckDeviceIsVerified(string deviceIdentifier, int userId);
 
-        public Device AddOrUpdateDeviceIsVerified(string deviceId, int userId, string? deviceName, string? deviceType);
+        public Device AddOrUpdateDeviceIsVerified(int userId, string deviceIdentifier, string? deviceName, string? deviceType);
     }
 }
